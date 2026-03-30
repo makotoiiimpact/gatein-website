@@ -118,10 +118,12 @@ export function Team() {
             <div className="font-bold text-xl">Forterra</div>
             <div className="font-bold text-xl">NavTrac</div>
             <div className="font-bold text-xl">amazon</div>
+          </div>
+          <div className="flex justify-center mt-10">
             <img
               src="/nvidia-inception-program-badge-rgb-for-screen.png"
               alt="NVIDIA Inception Program"
-              className="h-10 object-contain"
+              className="h-20 object-contain"
             />
           </div>
         </div>
