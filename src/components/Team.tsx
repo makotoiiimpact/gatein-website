@@ -63,18 +63,27 @@ export function Team() {
             transition={{
               delay: index * 0.1
             }}
-            className="bg-slate-50 border border-slate-200 rounded-lg p-8 text-center">
-            
+            whileHover={{
+              y: -6,
+              boxShadow: '0 20px 40px rgba(91,127,255,0.12), 0 8px 16px rgba(0,0,0,0.08)',
+              borderColor: 'rgba(91,127,255,0.3)',
+            }}
+            className="bg-slate-50 border border-slate-200 rounded-lg p-8 text-center cursor-default transition-colors duration-300">
+
               {member.photo ? (
-                <img
+                <motion.img
                   src={member.photo}
                   alt={member.name}
-                  className="w-24 h-24 rounded-full mx-auto mb-6 object-cover object-top"
+                  className="w-24 h-24 rounded-full mx-auto mb-6 object-cover object-top ring-2 ring-transparent transition-all duration-300"
+                  whileHover={{ scale: 1.08 }}
                 />
               ) : (
-                <div className="w-24 h-24 bg-slate-300 rounded-full mx-auto mb-6 flex items-center justify-center text-slate-500 font-medium text-sm">
+                <motion.div
+                  className="w-24 h-24 bg-slate-300 rounded-full mx-auto mb-6 flex items-center justify-center text-slate-500 font-medium text-sm ring-2 ring-transparent transition-all duration-300"
+                  whileHover={{ scale: 1.08 }}
+                >
                   {member.name.split(' ').map(n => n[0]).join('')}
-                </div>
+                </motion.div>
               )}
               <h3 className="text-2xl font-bold mb-1">{member.name}</h3>
               <div className="text-[#5B7FFF] font-bold text-sm mb-4">
