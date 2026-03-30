@@ -1,7 +1,7 @@
 'use client'
 
-import React, { Fragment } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 const painPoints = [
 {
   num: '01',
@@ -27,6 +27,66 @@ const painPoints = [
   description:
   'Problems are discovered hours or days after the fact. By the time you know a container is damaged or missing, the cost has already been incurred.'
 }];
+
+function PainPointRow({ point, index }: { point: typeof painPoints[number]; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { margin: '-40% 0px -40% 0px' });
+  const isOdd = index % 2 === 0; // 0-indexed: 01, 03 are odd-numbered rows
+  const slideDirection = isOdd ? -40 : 40;
+
+  return (
+    <div ref={ref} className="relative group">
+      <motion.div
+        initial={{ opacity: 0, x: slideDirection }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: '-100px' }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        animate={{
+          backgroundColor: isInView ? '#0F172A' : 'rgba(15,23,42,0)',
+        }}
+        className="flex flex-col md:flex-row items-start md:items-center py-12 md:py-16 gap-6 md:gap-12 px-8 md:px-12 rounded-xl transition-colors duration-500"
+      >
+        {/* Number */}
+        <div className="w-full md:w-32 flex-shrink-0">
+          <span
+            className="text-7xl md:text-8xl font-light font-mono text-transparent transition-all duration-500"
+            style={{
+              WebkitTextStroke: isInView ? '1px rgba(255,255,255,0.25)' : '1px #cbd5e1',
+            }}
+          >
+            {point.num}
+          </span>
+        </div>
+
+        {/* Content */}
+        <div className="flex-grow max-w-2xl">
+          <h3
+            className="text-2xl md:text-3xl font-bold mb-4 transition-colors duration-500"
+            style={{ color: isInView ? '#5B7FFF' : '#0f172a' }}
+          >
+            {point.title}
+          </h3>
+          <p
+            className="text-lg leading-relaxed font-light transition-colors duration-500"
+            style={{ color: isInView ? '#9ca3af' : '#64748b' }}
+          >
+            {point.description}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Bottom Border */}
+      <motion.div
+        className="absolute bottom-0 left-0 h-[1px] transition-colors duration-500"
+        style={{ backgroundColor: isInView ? 'rgba(91,127,255,0.2)' : '#e2e8f0' }}
+        initial={{ width: 0 }}
+        whileInView={{ width: '100%' }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+      />
+    </div>
+  );
+}
 
 export function PainPoints() {
   return (
@@ -116,73 +176,9 @@ export function PainPoints() {
             }} />
           
 
-          {painPoints.map((point, index) => {
-            const isDark = index % 2 === 0; // 01, 03 get dark bg
-            const slideDirection = isDark ? -40 : 40;
-            return (
-              <div key={index} className="relative group">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    x: slideDirection
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    x: 0
-                  }}
-                  viewport={{
-                    once: true,
-                    margin: '-100px'
-                  }}
-                  transition={{
-                    duration: 0.7,
-                    ease: 'easeOut'
-                  }}
-                  className={`flex flex-col md:flex-row items-start md:items-center py-12 md:py-16 gap-6 md:gap-12 px-8 md:px-12 rounded-xl ${isDark ? 'bg-[#0F172A]' : ''}`}>
-
-                  {/* Number */}
-                  <div className="w-full md:w-32 flex-shrink-0">
-                    <span
-                      className={`text-7xl md:text-8xl font-light font-mono text-transparent transition-colors duration-500 ${isDark ? 'group-hover:text-white/10' : 'group-hover:text-slate-50'}`}
-                      style={{
-                        WebkitTextStroke: isDark ? '1px rgba(255,255,255,0.25)' : '1px #cbd5e1'
-                      }}>
-
-                      {point.num}
-                    </span>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-grow max-w-2xl">
-                    <h3 className={`text-2xl md:text-3xl font-bold mb-4 transition-colors duration-300 ${isDark ? 'text-[#5B7FFF]' : 'text-slate-900 group-hover:text-[#5B7FFF]'}`}>
-                      {point.title}
-                    </h3>
-                    <p className={`text-lg leading-relaxed font-light ${isDark ? 'text-gray-400' : 'text-slate-500'}`}>
-                      {point.description}
-                    </p>
-                  </div>
-                </motion.div>
-
-                {/* Animated Bottom Border */}
-                <motion.div
-                  className={`absolute bottom-0 left-0 h-[1px] ${isDark ? 'bg-[#5B7FFF]/20' : 'bg-slate-200'} group-hover:bg-[#5B7FFF]/30 transition-colors duration-500`}
-                  initial={{
-                    width: 0
-                  }}
-                  whileInView={{
-                    width: '100%'
-                  }}
-                  viewport={{
-                    once: true
-                  }}
-                  transition={{
-                    duration: 0.8,
-                    ease: 'easeOut'
-                  }} />
-
-              </div>);
-
-          })}
+          {painPoints.map((point, index) => (
+            <PainPointRow key={index} point={point} index={index} />
+          ))}
         </div>
       </div>
     </section>);
