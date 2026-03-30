@@ -6,17 +6,20 @@ const team = [
 {
   name: 'Bernardo Mendez',
   role: 'CEO',
-  desc: '18 years product management. Energy, robotics, autonomous vehicles.'
+  desc: '18 years product management. Energy, robotics, autonomous vehicles.',
+  photo: '/team-bernardo.jpg',
 },
 {
   name: 'Michael Pivtoraiko',
   role: 'CTO',
-  desc: 'Carnegie Mellon PhD. Computer vision and AI recognition expert.'
+  desc: 'Carnegie Mellon PhD. Computer vision and AI recognition expert.',
+  photo: null,
 },
 {
   name: 'Jordi Goni',
   role: 'CPO/COO',
-  desc: 'IT and supply chain. Edge computing specialist across EMEA, US, LATAM.'
+  desc: 'IT and supply chain. Edge computing specialist across EMEA, US, LATAM.',
+  photo: null,
 }];
 
 export function Team() {
@@ -62,9 +65,17 @@ export function Team() {
             }}
             className="bg-slate-50 border border-slate-200 rounded-lg p-8 text-center">
             
-              <div className="w-24 h-24 bg-slate-300 rounded-full mx-auto mb-6 flex items-center justify-center text-slate-500 font-medium">
-                Photo
-              </div>
+              {member.photo ? (
+                <img
+                  src={member.photo}
+                  alt={member.name}
+                  className="w-24 h-24 rounded-full mx-auto mb-6 object-cover object-top"
+                />
+              ) : (
+                <div className="w-24 h-24 bg-slate-300 rounded-full mx-auto mb-6 flex items-center justify-center text-slate-500 font-medium text-sm">
+                  {member.name.split(' ').map(n => n[0]).join('')}
+                </div>
+              )}
               <h3 className="text-2xl font-bold mb-1">{member.name}</h3>
               <div className="text-[#5B7FFF] font-bold text-sm mb-4">
                 {member.role}
