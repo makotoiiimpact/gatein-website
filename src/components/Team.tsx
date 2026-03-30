@@ -118,9 +118,11 @@ export function Team() {
             <div className="font-bold text-xl">Forterra</div>
             <div className="font-bold text-xl">NavTrac</div>
             <div className="font-bold text-xl">amazon</div>
-            <div className="font-bold text-xl tracking-tighter border border-current px-2 py-1 rounded-sm">
-              NVIDIA <span className="font-light text-xs">INCEPTION</span>
-            </div>
+            <img
+              src="/nvidia-inception-program-badge-rgb-for-screen.png"
+              alt="NVIDIA Inception Program"
+              className="h-10 object-contain"
+            />
           </div>
         </div>
       </div>
