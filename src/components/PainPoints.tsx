@@ -117,8 +117,8 @@ export function PainPoints() {
           
 
           {painPoints.map((point, index) => {
-            const isOdd = index % 2 === 0; // 0-indexed, so 0 is '01' (odd row)
-            const slideDirection = isOdd ? -40 : 40;
+            const isDark = index % 2 === 0; // 01, 03 get dark bg
+            const slideDirection = isDark ? -40 : 40;
             return (
               <div key={index} className="relative group">
                 <motion.div
@@ -138,26 +138,26 @@ export function PainPoints() {
                     duration: 0.7,
                     ease: 'easeOut'
                   }}
-                  className="flex flex-col md:flex-row items-start md:items-center py-12 md:py-16 gap-6 md:gap-12">
-                  
+                  className={`flex flex-col md:flex-row items-start md:items-center py-12 md:py-16 gap-6 md:gap-12 px-8 md:px-12 rounded-xl ${isDark ? 'bg-[#0F172A]' : ''}`}>
+
                   {/* Number */}
                   <div className="w-full md:w-32 flex-shrink-0">
                     <span
-                      className="text-7xl md:text-8xl font-light font-mono text-transparent transition-colors duration-500 group-hover:text-slate-50"
+                      className={`text-7xl md:text-8xl font-light font-mono text-transparent transition-colors duration-500 ${isDark ? 'group-hover:text-white/10' : 'group-hover:text-slate-50'}`}
                       style={{
-                        WebkitTextStroke: '1px #cbd5e1'
+                        WebkitTextStroke: isDark ? '1px rgba(255,255,255,0.25)' : '1px #cbd5e1'
                       }}>
-                      
+
                       {point.num}
                     </span>
                   </div>
 
                   {/* Content */}
                   <div className="flex-grow max-w-2xl">
-                    <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 transition-colors duration-300 group-hover:text-[#5B7FFF]">
+                    <h3 className={`text-2xl md:text-3xl font-bold mb-4 transition-colors duration-300 ${isDark ? 'text-[#5B7FFF]' : 'text-slate-900 group-hover:text-[#5B7FFF]'}`}>
                       {point.title}
                     </h3>
-                    <p className="text-lg text-slate-500 leading-relaxed font-light">
+                    <p className={`text-lg leading-relaxed font-light ${isDark ? 'text-gray-400' : 'text-slate-500'}`}>
                       {point.description}
                     </p>
                   </div>
@@ -165,7 +165,7 @@ export function PainPoints() {
 
                 {/* Animated Bottom Border */}
                 <motion.div
-                  className="absolute bottom-0 left-0 h-[1px] bg-slate-200 group-hover:bg-[#5B7FFF]/30 transition-colors duration-500"
+                  className={`absolute bottom-0 left-0 h-[1px] ${isDark ? 'bg-[#5B7FFF]/20' : 'bg-slate-200'} group-hover:bg-[#5B7FFF]/30 transition-colors duration-500`}
                   initial={{
                     width: 0
                   }}
@@ -179,7 +179,7 @@ export function PainPoints() {
                     duration: 0.8,
                     ease: 'easeOut'
                   }} />
-                
+
               </div>);
 
           })}
