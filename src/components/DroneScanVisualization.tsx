@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from 'react';
 import { useAnimationFrame } from 'framer-motion';
 function easeOutCubic(t: number) {

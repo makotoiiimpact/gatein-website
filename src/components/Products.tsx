@@ -1,3 +1,5 @@
+'use client'
+
 import React, { Fragment } from 'react';
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';

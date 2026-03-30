@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Play, ChevronRight, Zap, Target, Clock } from 'lucide-react';
