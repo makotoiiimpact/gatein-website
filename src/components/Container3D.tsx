@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { motion, useMotionValue, useTransform, useMotionValueEvent } from 'framer-motion';
 // Container dimensions
 const W = 440;
 const H = 180;
@@ -215,6 +215,68 @@ export function Container3D() {
   const act1Op = useTransform(progress, [0.02, 0.05, 0.3, 0.35], [0, 1, 1, 0]);
   const act2Op = useTransform(progress, [0.35, 0.4, 0.65, 0.7], [0, 1, 1, 0]);
   const act3Op = useTransform(progress, [0.7, 0.75, 0.95, 1], [0, 1, 1, 1]);
+  // ==========================================
+  // ACT 3: DASHBOARD ANIMATIONS
+  // ==========================================
+  const [dashActive, setDashActive] = useState(false);
+  const [dashTime, setDashTime] = useState(0);
+  const dashStartRef = useRef<number | null>(null);
+  const rafRef = useRef<number>(0);
+
+  useMotionValueEvent(progress, 'change', (v) => {
+    if (v >= 0.85 && !dashActive) {
+      setDashActive(true);
+      dashStartRef.current = null;
+    }
+    if (v < 0.7) {
+      setDashActive(false);
+      setDashTime(0);
+      dashStartRef.current = null;
+    }
+  });
+
+  const animateDash = useCallback((timestamp: number) => {
+    if (dashStartRef.current === null) dashStartRef.current = timestamp;
+    const elapsed = timestamp - dashStartRef.current;
+    setDashTime(elapsed);
+    if (elapsed < 5000) {
+      rafRef.current = requestAnimationFrame(animateDash);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (dashActive) {
+      rafRef.current = requestAnimationFrame(animateDash);
+    }
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [dashActive, animateDash]);
+
+  // Counter values (count up over 1.2s)
+  const counterProgress = Math.min(dashTime / 1200, 1);
+  const eased = 1 - Math.pow(1 - counterProgress, 3); // easeOutCubic
+  const scannedCount = Math.round(eased * 847);
+  const issuesCount = Math.round(eased * 23);
+  const scanTimeCount = (eased * 1.8).toFixed(1);
+
+  // Terminal report lines (appear one by one, 300ms apart, starting at 400ms)
+  const reportLines = [
+    { text: '┌── CONTAINER INSPECTION REPORT ──┐', className: 'text-white font-bold mb-4' },
+    { text: 'ID: EGHU 826260-6', className: 'text-[#5B7FFF] mb-4' },
+    { text: 'External: ✓ Code Validated', className: 'mb-2', hasGreen: true },
+    { text: 'Internal: 3 issues found', className: 'mb-2', hasYellow: true },
+    { text: '  • Floor Damage — CRITICAL (92)', className: 'pl-4 mb-1 text-red-400' },
+    { text: '  • Wall Puncture — HIGH (79)', className: 'pl-4 mb-1 text-orange-400' },
+    { text: '  • Corrosion — MODERATE (63)', className: 'pl-4 mb-4 text-yellow-400' },
+    { text: 'Overall: ✗ FAIL', className: 'mb-1', hasFail: true },
+    { text: 'Standard: CEDEX / IICL', className: 'mb-6' },
+  ];
+  const REPORT_START = 400;
+  const REPORT_LINE_DELAY = 250;
+
+  // Recent scans slide in (stagger 200ms, starting at 2200ms)
+  const SCANS_START = 2200;
+  const SCAN_STAGGER = 200;
+
   // Bounding Boxes Act 1
   const frontBoxOp = useTransform(
     progress,
@@ -833,14 +895,14 @@ export function Container3D() {
           }}>
           
           <div className="bg-[#1E293B] border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col">
-            {/* Top Stats */}
+            {/* Top Stats — Counting Up */}
             <div className="grid grid-cols-3 border-b border-white/5 bg-white/5">
               <div className="p-4 border-r border-white/5 text-center">
                 <div className="text-gray-400 text-[10px] uppercase tracking-wider font-sans mb-1">
                   Containers Scanned
                 </div>
                 <div className="text-white font-mono text-2xl font-bold">
-                  847
+                  {dashActive ? scannedCount.toLocaleString() : '0'}
                 </div>
               </div>
               <div className="p-4 border-r border-white/5 text-center">
@@ -848,7 +910,7 @@ export function Container3D() {
                   Issues Detected
                 </div>
                 <div className="text-[#FBBF24] font-mono text-2xl font-bold">
-                  23
+                  {dashActive ? issuesCount : '0'}
                 </div>
               </div>
               <div className="p-4 text-center">
@@ -856,77 +918,85 @@ export function Container3D() {
                   Avg Scan Time
                 </div>
                 <div className="text-[#22C55E] font-mono text-2xl font-bold">
-                  1.8s
+                  {dashActive ? `${scanTimeCount}s` : '0.0s'}
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row">
-              {/* Terminal Report */}
+              {/* Terminal Report — Typewriter */}
               <div className="flex-1 p-6 border-r border-white/5 font-mono text-xs leading-relaxed text-gray-300">
-                <div className="text-white font-bold mb-4">
-                  ┌── CONTAINER INSPECTION REPORT ──┐
-                </div>
-                <div className="text-[#5B7FFF] mb-4">ID: EGHU 826260-6</div>
+                {reportLines.map((line, i) => {
+                  const lineStart = REPORT_START + i * REPORT_LINE_DELAY;
+                  const lineEnd = lineStart + 400;
+                  const visible = dashActive && dashTime >= lineStart;
+                  const typing = dashActive && dashTime >= lineStart && dashTime < lineEnd;
+                  const charProgress = !visible ? 0 : Math.min((dashTime - lineStart) / 400, 1);
+                  const displayText = line.text.slice(0, Math.ceil(charProgress * line.text.length));
 
-                <div className="mb-2">
-                  External:{' '}
-                  <span className="text-[#22C55E]">✓ Code Validated</span>
-                </div>
-                <div className="mb-2">
-                  Internal:{' '}
-                  <span className="text-[#FBBF24]">3 issues found</span>
-                </div>
-                <div className="pl-4 mb-1 text-red-400">
-                  • Floor Damage — CRITICAL (92)
-                </div>
-                <div className="pl-4 mb-1 text-orange-400">
-                  • Wall Puncture — HIGH (79)
-                </div>
-                <div className="pl-4 mb-4 text-yellow-400">
-                  • Corrosion — MODERATE (63)
-                </div>
+                  if (!visible) return null;
 
-                <div className="mb-1">
-                  Overall:{' '}
-                  <span className="text-red-500 font-bold">✗ FAIL</span>
-                </div>
-                <div className="mb-6">Standard: CEDEX / IICL</div>
+                  let content: React.ReactNode = displayText;
+                  if (line.hasGreen && charProgress >= 1) {
+                    content = <>External: <span className="text-[#22C55E]">✓ Code Validated</span></>;
+                  } else if (line.hasYellow && charProgress >= 1) {
+                    content = <>Internal: <span className="text-[#FBBF24]">3 issues found</span></>;
+                  } else if (line.hasFail && charProgress >= 1) {
+                    content = <>Overall: <span className="text-red-500 font-bold">✗ FAIL</span></>;
+                  }
 
-                <div className="flex gap-4 text-[10px]">
-                  <button className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors">
-                    [View Full Report]
-                  </button>
-                  <button className="bg-red-500/20 text-red-400 hover:bg-red-500/30 px-3 py-1.5 rounded transition-colors">
-                    [Flag for Review]
-                  </button>
-                </div>
+                  return (
+                    <div key={i} className={line.className}>
+                      {content}
+                      {typing && <span className="animate-pulse">▌</span>}
+                    </div>
+                  );
+                })}
+
+                {dashActive && dashTime >= REPORT_START + reportLines.length * REPORT_LINE_DELAY + 200 && (
+                  <div className="flex gap-4 text-[10px]">
+                    <button className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors">
+                      [View Full Report]
+                    </button>
+                    <button className="bg-red-500/20 text-red-400 hover:bg-red-500/30 px-3 py-1.5 rounded transition-colors">
+                      [Flag for Review]
+                    </button>
+                  </div>
+                )}
               </div>
 
-              {/* Mini Table */}
+              {/* Mini Table — Slide In */}
               <div className="w-full md:w-72 p-6 bg-black/20 font-mono text-[10px]">
                 <div className="text-gray-500 mb-4 uppercase tracking-wider">
                   Recent Scans
                 </div>
                 <div className="flex flex-col gap-3">
-                  <div className="flex items-center justify-between bg-white/5 p-2 rounded border border-red-500/20">
-                    <span className="text-white">EGHU 826260-6</span>
-                    <span className="text-red-400">FAIL</span>
-                    <span className="text-gray-400">3 issues</span>
-                    <div className="w-2 h-2 rounded-full bg-red-500" />
-                  </div>
-                  <div className="flex items-center justify-between bg-white/5 p-2 rounded border border-green-500/20">
-                    <span className="text-white">TRHU 534444-0</span>
-                    <span className="text-green-400">PASS</span>
-                    <span className="text-gray-400">0 issues</span>
-                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                  </div>
-                  <div className="flex items-center justify-between bg-white/5 p-2 rounded border border-yellow-500/20">
-                    <span className="text-white">MCDU 307712-9</span>
-                    <span className="text-yellow-400">REVIEW</span>
-                    <span className="text-gray-400">1 issue</span>
-                    <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                  </div>
+                  {[
+                    { code: 'EGHU 826260-6', status: 'FAIL', statusColor: 'text-red-400', issues: '3 issues', dotColor: 'bg-red-500', borderColor: 'border-red-500/20' },
+                    { code: 'TRHU 534444-0', status: 'PASS', statusColor: 'text-green-400', issues: '0 issues', dotColor: 'bg-green-500', borderColor: 'border-green-500/20' },
+                    { code: 'MCDU 307712-9', status: 'REVIEW', statusColor: 'text-yellow-400', issues: '1 issue', dotColor: 'bg-yellow-500', borderColor: 'border-yellow-500/20' },
+                  ].map((scan, i) => {
+                    const scanStart = SCANS_START + i * SCAN_STAGGER;
+                    const visible = dashActive && dashTime >= scanStart;
+                    const slideProgress = !visible ? 0 : Math.min((dashTime - scanStart) / 300, 1);
+                    const slideEased = 1 - Math.pow(1 - slideProgress, 3);
+
+                    return (
+                      <div
+                        key={i}
+                        className={`flex items-center justify-between bg-white/5 p-2 rounded border ${scan.borderColor}`}
+                        style={{
+                          opacity: slideEased,
+                          transform: `translateY(${(1 - slideEased) * 20}px)`,
+                        }}
+                      >
+                        <span className="text-white">{scan.code}</span>
+                        <span className={scan.statusColor}>{scan.status}</span>
+                        <span className="text-gray-400">{scan.issues}</span>
+                        <div className={`w-2 h-2 rounded-full ${scan.dotColor}`} />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
