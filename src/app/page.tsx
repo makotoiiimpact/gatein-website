@@ -9,6 +9,7 @@ import { DroneScanVisualization } from '@/components/DroneScanVisualization'
 import { AllWeather } from '@/components/AllWeather'
 import { CompetitiveEdge } from '@/components/CompetitiveEdge'
 import { Team } from '@/components/Team'
+import { ResourcesPreview } from '@/components/ResourcesPreview'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
 
@@ -27,6 +28,7 @@ export default function Home() {
         <AllWeather />
         <CompetitiveEdge />
         <Team />
+        <ResourcesPreview />
         <Contact />
       </main>
       <Footer />

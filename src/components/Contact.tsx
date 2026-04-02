@@ -9,7 +9,8 @@ export function Contact() {
   const [name, setName] = useState('');
   const [company, setCompany] = useState('');
   const [email, setEmail] = useState('');
-  const [fleetSize, setFleetSize] = useState('');
+  const [facilityType, setFacilityType] = useState('');
+  const [helpType, setHelpType] = useState('');
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
@@ -21,13 +22,13 @@ export function Contact() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, company, email, fleetSize, message }),
+        body: JSON.stringify({ name, company, email, facilityType, helpType, message }),
       });
 
       if (!res.ok) throw new Error('Submission failed');
 
       setStatus('success');
-      posthog.capture('demo_requested', { company, fleetSize });
+      posthog.capture('demo_requested', { company, facilityType });
     } catch {
       setStatus('error');
     }
@@ -45,9 +46,8 @@ export function Contact() {
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
             See it in action.
           </h2>
-          <p className="text-xl text-gray-400">
-            <span className="font-mono">30</span>-minute demo. No commitment.
-            See GateIn AI tracking containers in real-time.
+          <p className="text-lg md:text-xl text-gray-400 whitespace-nowrap">
+            <span className="font-mono">30</span>-minute demo. No commitment. See GateIn AI tracking containers in real-time.
           </p>
         </motion.div>
 
@@ -102,18 +102,37 @@ export function Contact() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">Fleet Size</label>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">Facility Type</label>
                     <select
-                      value={fleetSize}
-                      onChange={(e) => setFleetSize(e.target.value)}
+                      value={facilityType}
+                      onChange={(e) => setFacilityType(e.target.value)}
                       className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#5B7FFF] transition-colors appearance-none"
                     >
-                      <option value="">Select size...</option>
-                      <option value="1-50">1-50 trucks</option>
-                      <option value="51-200">51-200 trucks</option>
-                      <option value="200+">200+ trucks</option>
+                      <option value="">Select type...</option>
+                      <option value="container-depot">Container Depot</option>
+                      <option value="intermodal-terminal">Intermodal Terminal</option>
+                      <option value="warehouse">Warehouse/Distribution Center</option>
+                      <option value="3pl">3PL Operation</option>
+                      <option value="container-port">Container Port</option>
+                      <option value="manufacturing">Manufacturing Facility</option>
+                      <option value="cold-storage">Refrigerated/Cold Storage</option>
+                      <option value="other">Other</option>
                     </select>
                   </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-2">How can we help?</label>
+                  <select
+                    value={helpType}
+                    onChange={(e) => setHelpType(e.target.value)}
+                    className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#5B7FFF] transition-colors appearance-none"
+                  >
+                    <option value="">Select one...</option>
+                    <option value="schedule-demo">Schedule a demo</option>
+                    <option value="roi-consultation">ROI consultation</option>
+                    <option value="pilot-program">Discuss pilot program</option>
+                    <option value="something-else">Something else</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-2">Message</label>
@@ -136,9 +155,10 @@ export function Contact() {
                       Sending...
                     </>
                   ) : (
-                    'Request a Demo'
+                    'Submit Request'
                   )}
                 </button>
+                <p className="text-xs text-gray-500 text-center">By submitting, you agree to receive communications from GateIn AI.</p>
                 {status === 'error' && (
                   <p className="text-red-400 text-sm text-center">
                     Something went wrong. Please try again or email us directly.
@@ -160,8 +180,8 @@ export function Contact() {
                 <Mail size={24} />
               </div>
               <h3 className="text-xl font-bold mb-2">Email us directly</h3>
-              <a href="mailto:bernardo@gatein.ai" className="text-gray-400 hover:text-white transition-colors">
-                bernardo@gatein.ai
+              <a href="mailto:hello@gatein.ai" className="text-gray-400 hover:text-white transition-colors">
+                hello@gatein.ai
               </a>
             </motion.div>
 
@@ -170,16 +190,27 @@ export function Contact() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-[#1E293B] p-8 rounded-lg border border-white/5 h-[calc(50%-12px)] flex flex-col justify-center"
+              className="bg-[#1E293B] p-8 rounded-lg border border-white/5 h-[calc(50%-12px)] flex flex-col justify-start"
             >
-              <div className="w-12 h-12 bg-[#5B7FFF]/10 rounded-lg flex items-center justify-center text-[#5B7FFF] mb-6 border border-[#5B7FFF]/20">
-                <Calendar size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-4">Book a time</h3>
-              <button className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-md font-medium transition-colors text-left w-full flex justify-between items-center">
-                Open Calendar
-                <Calendar size={16} />
-              </button>
+              <h3 className="text-xl font-bold mb-8">What happens next?</h3>
+              <ol className="space-y-4 text-base">
+                <li className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-[#5B7FFF]/20 text-[#5B7FFF] flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                  <span className="text-gray-300">Schedule 30 min discovery call</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-[#5B7FFF]/20 text-[#5B7FFF] flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                  <span className="text-gray-300">Receive customized ROI analysis</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-[#5B7FFF]/20 text-[#5B7FFF] flex items-center justify-center text-xs font-bold shrink-0">3</span>
+                  <span className="text-gray-300">On-site proof of value demo</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full bg-[#5B7FFF]/20 text-[#5B7FFF] flex items-center justify-center text-xs font-bold shrink-0">4</span>
+                  <span className="text-gray-300">Go live in weeks, not months</span>
+                </li>
+              </ol>
             </motion.div>
           </div>
         </div>

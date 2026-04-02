@@ -33,11 +33,6 @@ export function Footer() {
           </div>
 
           <div className="flex items-center gap-4">
-            <img
-              src="/nvidia-inception-program-badge-rgb-for-screen.png"
-              alt="NVIDIA Inception Program"
-              className="h-7 object-contain brightness-0 invert opacity-60" />
-            
             <a href="#" className="hover:text-white transition-colors">
               <svg
                 className="w-5 h-5"

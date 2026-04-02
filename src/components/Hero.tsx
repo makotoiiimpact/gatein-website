@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, ChevronRight, Zap, Target, Clock } from 'lucide-react';
+import { ChevronRight, Zap, Target, Clock } from 'lucide-react';
 export function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-end pt-32 pb-40 overflow-hidden bg-[#0F172A]">
@@ -19,7 +19,7 @@ export function Hero() {
         <source src="/hero-bg.mp4" type="video/mp4" />
       </video>
       {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/50 z-[1]" />
+      <div className="absolute inset-0 bg-black/50 z-[1] pointer-events-none" />
       
 
       {/* Animated Scan Line */}
@@ -57,7 +57,7 @@ export function Hero() {
               ease: 'easeOut'
             }}>
             
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold text-white leading-[1.05] tracking-tighter mb-6">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-[1.05] tracking-tighter mb-6">
               AI-Powered <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5B7FFF] to-[#8AA6FF]">
                 Container Intelligence
@@ -79,10 +79,10 @@ export function Hero() {
               delay: 0.3,
               ease: 'easeOut'
             }}
-            className="text-lg md:text-xl text-gray-400 mb-10 leading-relaxed max-w-2xl font-light">
+            className="text-xl md:text-2xl text-gray-200 mb-10 leading-relaxed max-w-2xl font-light">
             
-            Automated tracking. Real-time visibility. Every container, every
-            condition, every time.
+            Automated tracking. Real-time visibility.<br />
+            Every container, every condition, every time.
           </motion.p>
 
           <motion.div
@@ -101,20 +101,16 @@ export function Hero() {
             }}
             className="flex flex-col sm:flex-row gap-4 mb-16">
             
-            <button className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(91,127,255,0.3)] hover:shadow-[0_0_30px_rgba(91,127,255,0.5)]">
+            <a href="#contact" className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(91,127,255,0.3)] hover:shadow-[0_0_30px_rgba(91,127,255,0.5)]">
               Request a Demo
               <ChevronRight
                 size={20}
                 className="group-hover:translate-x-1 transition-transform" />
-              
-            </button>
-            <button className="bg-transparent border border-white/30 hover:border-white hover:bg-white/5 text-white px-8 py-4 rounded-md text-lg font-bold transition-all flex items-center justify-center gap-2">
-              <Play size={20} className="fill-current" />
-              Watch It Work
-            </button>
+
+            </a>
           </motion.div>
 
-          <div className="flex flex-wrap gap-4 md:gap-6">
+          <div className="flex flex-row gap-2 md:gap-6">
             {[
             {
               icon: Zap,
@@ -150,16 +146,16 @@ export function Hero() {
                 delay: item.delay,
                 ease: 'easeOut'
               }}
-              className="flex items-center gap-4 bg-white/5 backdrop-blur-md border border-[#5B7FFF]/20 rounded-lg p-4 pr-8 shadow-[0_4px_20px_rgba(91,127,255,0.05)] hover:shadow-[0_4px_25px_rgba(91,127,255,0.1)] transition-shadow">
-              
-                <div className="w-10 h-10 rounded-full bg-[#5B7FFF]/20 flex items-center justify-center text-[#5B7FFF] shadow-[0_0_10px_rgba(91,127,255,0.2)]">
-                  <item.icon size={20} />
+              className="flex items-center gap-2 md:gap-4 bg-white/5 backdrop-blur-md border border-[#5B7FFF]/20 rounded-lg p-2 pr-3 md:p-4 md:pr-8 shadow-[0_4px_20px_rgba(91,127,255,0.05)] hover:shadow-[0_4px_25px_rgba(91,127,255,0.1)] transition-shadow">
+
+                <div className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-[#5B7FFF]/20 flex items-center justify-center text-[#5B7FFF] shadow-[0_0_10px_rgba(91,127,255,0.2)] shrink-0">
+                  <item.icon className="w-3.5 h-3.5 md:w-5 md:h-5" />
                 </div>
                 <div>
-                  <div className="text-white font-bold text-lg leading-tight">
+                  <div className="text-white font-bold text-xs md:text-lg leading-tight">
                     {item.stat}
                   </div>
-                  <div className="text-gray-400 text-sm">{item.label}</div>
+                  <div className="text-gray-400 text-[10px] md:text-sm">{item.label}</div>
                 </div>
               </motion.div>
             )}
@@ -207,11 +203,7 @@ export function Hero() {
             Trusted by industry leaders
           </span>
           <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-            <img
-              src="/nvidia-inception-program-badge-rgb-for-screen.png"
-              alt="NVIDIA Inception Program"
-              className="h-8 object-contain brightness-0 invert" />
-            
+            <div className="font-bold text-xl text-white">NavTrac</div>
             <div className="font-bold text-xl text-white">YASKAWA</div>
             <div className="font-bold text-xl text-white">Google</div>
             <div className="font-bold text-xl text-white">McKinsey</div>

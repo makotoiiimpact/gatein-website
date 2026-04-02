@@ -36,7 +36,7 @@ export function AllWeather() {
           className="mb-16 text-center"
         >
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-            Rain. Night. Desert. Doesn&apos;t matter.
+            Rain. Night. Shine. Any Condition. Doesn&apos;t matter.
           </h2>
         </motion.div>
 
@@ -80,9 +80,9 @@ export function AllWeather() {
           <div className="text-lg font-medium text-slate-700">
             Deployed in Oakland, USA and Koper, Europe. Bidding in Qatar.
           </div>
-          <button className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-8 py-3 rounded-md text-lg font-bold transition-all whitespace-nowrap">
+          <a href="#contact" className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-8 py-3 rounded-md text-lg font-bold transition-all whitespace-nowrap">
             Request a Demo
-          </button>
+          </a>
         </motion.div>
       </div>
     </section>

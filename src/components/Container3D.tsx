@@ -91,84 +91,47 @@ export function Container3D() {
   const [animationDone, setAnimationDone] = useState(false);
   const touchStartY = useRef(0);
   const progressRef = useRef(0);
-  const scrollYBeforeLock = useRef(0);
-  const unlockForward = useRef(false);
   const progress = useMotionValue(0);
   const TOTAL_DELTA = 800;
 
-  // Detect when section enters viewport — use IntersectionObserver for reliable iOS detection
+  // Detect when section top reaches viewport top — engage scroll lock
   useEffect(() => {
+    if (isLocked) return;
     const section = sectionRef.current;
     if (!section) return;
 
-    // Forward lock: section scrolls up to top edge
-    const forwardObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (!isLocked && !animationDone && !entry.isIntersecting) {
-          // Section top has crossed above viewport top — lock it
-          const rect = section.getBoundingClientRect();
-          if (rect.top <= 0) {
-            window.scrollTo(0, section.offsetTop);
-            setIsLocked(true);
-          }
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    // Reverse lock: scrolling back up into completed section
-    const reverseObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (!isLocked && animationDone && entry.isIntersecting) {
-          const rect = section.getBoundingClientRect();
-          if (rect.top >= -10 && rect.top <= 10) {
-            window.scrollTo(0, section.offsetTop);
-            progressRef.current = 1;
-            progress.set(1);
-            setAnimationDone(false);
-            setIsLocked(true);
-          }
-        }
-      },
-      { threshold: 0.99 }
-    );
-
-    forwardObserver.observe(section);
-    reverseObserver.observe(section);
-    return () => {
-      forwardObserver.disconnect();
-      reverseObserver.disconnect();
+    const handleScroll = () => {
+      const rect = section.getBoundingClientRect();
+      // Forward: section top has reached viewport top
+      if (!animationDone && rect.top <= 0 && rect.bottom > 0) {
+        window.scrollTo(0, section.offsetTop);
+        setIsLocked(true);
+      }
+      // Reverse: scrolling back up into a completed section
+      if (animationDone && rect.top >= -10 && rect.top <= 10) {
+        window.scrollTo(0, section.offsetTop);
+        progressRef.current = 1;
+        progress.set(1);
+        setAnimationDone(false);
+        setIsLocked(true);
+      }
     };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [isLocked, animationDone, progress]);
 
-  // Lock/unlock body scroll — use position:fixed trick for iOS
+  // Lock body scroll with overflow hidden (no position:fixed — avoids scroll reset issues)
   useEffect(() => {
     if (isLocked) {
-      scrollYBeforeLock.current = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollYBeforeLock.current}px`;
-      document.body.style.left = '0';
-      document.body.style.right = '0';
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
-      const section = sectionRef.current;
-      if (unlockForward.current && section) {
-        // Completed forward — scroll past the section so user continues down
-        window.scrollTo(0, section.offsetTop + section.offsetHeight);
-      } else {
-        window.scrollTo(0, scrollYBeforeLock.current);
-      }
     }
     return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
   }, [isLocked]);
@@ -183,14 +146,16 @@ export function Container3D() {
       progressRef.current = next;
       progress.set(next);
       if (next >= 1) {
-        unlockForward.current = true;
-        setIsLocked(false);
-        setAnimationDone(true);
+        const section = sectionRef.current;
+        if (section) {
+          setAnimationDone(true);
+          setIsLocked(false);
+          window.scrollTo(0, section.offsetTop + section.offsetHeight);
+        }
       }
       if (next <= 0 && e.deltaY < 0) {
-        unlockForward.current = false;
-        setIsLocked(false);
         setAnimationDone(false);
+        setIsLocked(false);
       }
     };
     window.addEventListener('wheel', handleWheel, { passive: false });
@@ -213,14 +178,13 @@ export function Container3D() {
       progressRef.current = next;
       progress.set(next);
       if (next >= 1) {
-        unlockForward.current = true;
-        setIsLocked(false);
         setAnimationDone(true);
+        setIsLocked(false);
+        window.scrollTo(0, section.offsetTop + section.offsetHeight);
       }
       if (next <= 0 && touchDelta < 0) {
-        unlockForward.current = false;
-        setIsLocked(false);
         setAnimationDone(false);
+        setIsLocked(false);
       }
     };
     section.addEventListener('touchstart', handleTouchStart, { passive: true });

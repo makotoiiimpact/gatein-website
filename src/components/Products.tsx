@@ -121,9 +121,9 @@ export function Products() {
         </motion.div>
 
         <div className="text-center">
-          <button className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all inline-block">
+          <a href="#contact" className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all inline-block">
             Request a Demo
-          </button>
+          </a>
         </div>
       </div>
     </section>);
