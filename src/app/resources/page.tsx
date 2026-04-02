@@ -30,7 +30,7 @@ export default function ResourcesPage() {
               Resources
             </span>
             <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
-              Insights &amp; Best Practices
+              Insights
             </h1>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">
               Stay ahead with the latest on container logistics, AI automation, and yard management best practices.

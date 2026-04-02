@@ -2,7 +2,6 @@
 
 import React, { Fragment } from 'react';
 import { motion } from 'framer-motion';
-import { Play } from 'lucide-react';
 const products = [
 {
   title: 'Gate OCR',
@@ -95,30 +94,6 @@ export function Products() {
             </motion.div>
           )}
         </div>
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0
-          }}
-          viewport={{
-            once: true
-          }}
-          className="w-full aspect-video bg-slate-900 rounded-lg overflow-hidden relative flex items-center justify-center group cursor-pointer mb-12">
-          
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-          <div className="w-20 h-20 bg-[#5B7FFF] rounded-lg flex items-center justify-center z-20 group-hover:scale-105 transition-transform shadow-xl">
-            <Play size={32} className="text-white fill-current ml-2" />
-          </div>
-          <div className="absolute bottom-8 left-8 z-20">
-            <div className="text-white font-bold text-xl">Platform Demo</div>
-            <div className="text-gray-300">See GateIn AI in action</div>
-          </div>
-        </motion.div>
 
         <div className="text-center">
           <a href="#contact" className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all inline-block">
