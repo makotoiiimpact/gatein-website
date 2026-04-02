@@ -6,19 +6,25 @@ import { Play, ChevronRight, Zap, Target, Clock } from 'lucide-react';
 export function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-end pt-32 pb-40 overflow-hidden bg-[#0F172A]">
-      {/* Background Grid */}
-      <div
-        className="absolute inset-0 opacity-20 pointer-events-none z-0"
-        style={{
-          backgroundImage:
-          'radial-gradient(rgba(91,127,255,0.2) 1px, transparent 1px)',
-          backgroundSize: '32px 32px'
-        }} />
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        poster="/hero-poster.jpg"
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      >
+        <source src="/hero-bg.mp4" type="video/mp4" />
+      </video>
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-black/50 z-[1]" />
       
 
       {/* Animated Scan Line */}
       <motion.div
-        className="absolute top-0 bottom-0 w-[1px] z-0"
+        className="absolute top-0 bottom-0 w-[1px] z-[2]"
         style={{
           background:
           'linear-gradient(to bottom, transparent, rgba(91,127,255,0.8), transparent)',

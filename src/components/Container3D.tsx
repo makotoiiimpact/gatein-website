@@ -92,6 +92,7 @@ export function Container3D() {
   const touchStartY = useRef(0);
   const progressRef = useRef(0);
   const scrollYBeforeLock = useRef(0);
+  const unlockForward = useRef(false);
   const progress = useMotionValue(0);
   const TOTAL_DELTA = 800;
 
@@ -155,7 +156,13 @@ export function Container3D() {
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.overflow = '';
-      window.scrollTo(0, scrollYBeforeLock.current);
+      const section = sectionRef.current;
+      if (unlockForward.current && section) {
+        // Completed forward — scroll past the section so user continues down
+        window.scrollTo(0, section.offsetTop + section.offsetHeight);
+      } else {
+        window.scrollTo(0, scrollYBeforeLock.current);
+      }
     }
     return () => {
       document.body.style.position = '';
@@ -176,10 +183,12 @@ export function Container3D() {
       progressRef.current = next;
       progress.set(next);
       if (next >= 1) {
+        unlockForward.current = true;
         setIsLocked(false);
         setAnimationDone(true);
       }
       if (next <= 0 && e.deltaY < 0) {
+        unlockForward.current = false;
         setIsLocked(false);
         setAnimationDone(false);
       }
@@ -204,10 +213,12 @@ export function Container3D() {
       progressRef.current = next;
       progress.set(next);
       if (next >= 1) {
+        unlockForward.current = true;
         setIsLocked(false);
         setAnimationDone(true);
       }
       if (next <= 0 && touchDelta < 0) {
+        unlockForward.current = false;
         setIsLocked(false);
         setAnimationDone(false);
       }
