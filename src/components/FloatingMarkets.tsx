@@ -97,7 +97,7 @@ function FloatingCard({ market, config, sectionRef, index }: {
         overflow: 'hidden',
         willChange: 'transform',
         boxShadow: '0 12px 40px -10px rgba(0,0,0,0.25)',
-        zIndex: (index === 2 || index === 3) ? 18 : 10 - index,
+        zIndex: 10 - index,
       }}
     >
       <img
@@ -313,7 +313,9 @@ export function FloatingMarkets() {
             textAlign: 'center',
             maxWidth: isMobile ? '100%' : 'none',
             width: 'auto',
-            padding: isMobile ? '0 0 32px' : '0 24px',
+            padding: isMobile ? '0 0 32px' : '40px 60px',
+            background: isMobile ? 'none' : 'radial-gradient(ellipse at center, rgba(248,250,252,0.95) 0%, rgba(248,250,252,0.8) 60%, transparent 80%)',
+            borderRadius: 24,
           }}
         >
           <div

@@ -46,7 +46,7 @@ export function Contact() {
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
             See it in action.
           </h2>
-          <p className="text-lg md:text-xl text-gray-400 whitespace-nowrap">
+          <p className="text-lg md:text-xl text-gray-400 md:whitespace-nowrap">
             <span className="font-mono">30</span>-minute demo. No commitment. See GateIn AI tracking containers in real-time.
           </p>
         </motion.div>

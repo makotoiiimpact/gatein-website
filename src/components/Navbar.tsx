@@ -28,8 +28,8 @@ export function Navbar() {
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0F172A]/90 backdrop-blur-md py-4 border-b border-white/10' : 'bg-transparent py-6'}`}>
       
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <a href="/" className="flex items-center gap-2 cursor-pointer">
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
+        <a href="/" className="flex items-center gap-2 cursor-pointer z-10">
           <img
             src="/GateIn_AI_Brand_Icon.png"
             alt="GateIn AI"
@@ -40,7 +40,7 @@ export function Navbar() {
           </span>
         </a>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           <a
             href="/"
             className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
@@ -71,10 +71,11 @@ export function Navbar() {
 
             Resources
           </a>
-          <a href="/#contact" onClick={(e) => scrollToSection(e, 'contact')} className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-5 py-2.5 rounded-md text-sm font-bold transition-colors cursor-pointer">
-            Request a Demo
-          </a>
         </div>
+
+        <a href="/#contact" onClick={(e) => scrollToSection(e, 'contact')} className="hidden md:inline-flex bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-5 py-2.5 rounded-md text-sm font-bold transition-colors cursor-pointer z-10">
+          Request a Demo
+        </a>
 
         <button
           className="md:hidden text-white"
