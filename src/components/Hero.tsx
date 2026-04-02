@@ -97,7 +97,7 @@ export function Hero() {
   const [systemActive, setSystemActive] = useState(false);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-end pt-32 pb-40 overflow-hidden bg-[#0F172A]">
+    <section className="relative min-h-screen flex flex-col justify-end pt-32 pb-52 md:pb-40 overflow-hidden bg-[#0F172A]">
       {/* Background Video */}
       <video
         autoPlay
