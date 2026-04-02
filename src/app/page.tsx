@@ -8,6 +8,7 @@ import { GateScanVisualization } from '@/components/GateScanVisualization'
 import { DroneScanVisualization } from '@/components/DroneScanVisualization'
 import { AllWeather } from '@/components/AllWeather'
 import { CompetitiveEdge } from '@/components/CompetitiveEdge'
+import { FloatingMarkets } from '@/components/FloatingMarkets'
 import { Team } from '@/components/Team'
 import { ResourcesPreview } from '@/components/ResourcesPreview'
 import { Contact } from '@/components/Contact'
@@ -27,6 +28,7 @@ export default function Home() {
         <DroneScanVisualization />
         <AllWeather />
         <CompetitiveEdge />
+        <FloatingMarkets />
         <Team />
         <ResourcesPreview />
         <Contact />

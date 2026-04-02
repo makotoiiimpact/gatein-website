@@ -1,0 +1,342 @@
+'use client'
+
+import React, { useState, useEffect, useRef } from 'react'
+
+const MARKETS = [
+  {
+    name: 'Container Depots',
+    color: '#3B82F6',
+    tags: ['Container OCR', 'Damage Detection', 'Inventory Accuracy'],
+    src: '/shipping-containers-stacked-port.jpg',
+  },
+  {
+    name: 'Intermodal Terminals',
+    color: '#6366F1',
+    tags: ['Rail OCR', 'Chassis Tracking', 'Cross-dock Flow'],
+    src: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=440&h=330&fit=crop&auto=format',
+  },
+  {
+    name: 'Warehouse & DC Yards',
+    color: '#475569',
+    tags: ['Dock Scheduling', 'Trailer Tracking', 'WMS Integration'],
+    src: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=390&h=520&fit=crop&auto=format',
+  },
+  {
+    name: 'Third-Party Logistics (3PL)',
+    color: '#0D9488',
+    tags: ['Multi-tenant', 'Customer Portals', 'SLA Tracking'],
+    src: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=460&h=340&fit=crop&auto=format',
+  },
+  {
+    name: 'Refrigerated & Cold Storage',
+    color: '#0EA5E9',
+    tags: ['Reefer Priority', 'Cold Chain', 'FSMA Compliance'],
+    src: '/coldstoragecontainer.png',
+  },
+  {
+    name: 'Manufacturing Facilities',
+    color: '#8B5CF6',
+    tags: ['JIT Delivery', 'Vendor Managed', 'ERP Integration'],
+    src: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=480&h=370&fit=crop&auto=format',
+  },
+]
+
+// Positions: left column + right column, staggered vertically
+// Speed varies dramatically: slow cards feel "heavy", fast cards feel "light"
+const CARD_CONFIGS = [
+  { top: '3%',   left: '2%',   w: 375, h: 285, speed: -0.25, rotate: -2.5 },
+  { top: '3%',   right: '3%',  w: 330, h: 248, speed: 0.55,  rotate: 2 },
+  { top: '35%',  left: '12%',  w: 293, h: 280, speed: -0.08, rotate: -0.8 },
+  { top: '35%',  right: '10%', w: 345, h: 255, speed: 0.4,   rotate: 2.5 },
+  { top: '67%',  left: '12%',  w: 338, h: 255, speed: -0.35, rotate: -1.5 },
+  { top: '67%',  right: '10%', w: 360, h: 255, speed: 0.15,  rotate: 1 },
+]
+
+function FloatingCard({ market, config, sectionRef, index }: {
+  market: typeof MARKETS[number]
+  config: typeof CARD_CONFIGS[number]
+  sectionRef: React.RefObject<HTMLElement | null>
+  index: number
+}) {
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    let ticking = false
+    const handleScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        if (!sectionRef.current || !cardRef.current) { ticking = false; return }
+        const rect = sectionRef.current.getBoundingClientRect()
+        const wh = window.innerHeight
+        // progress: 0 when section enters bottom, 1 when it leaves top
+        const progress = (wh - rect.top) / (wh + rect.height)
+        const clamped = Math.max(0, Math.min(1, progress))
+        const yOffset = (clamped - 0.5) * config.speed * 900
+        const rot = config.rotate * (0.5 + clamped * 0.5)
+        cardRef.current.style.transform = `translate3d(0, ${yOffset}px, 0) rotate(${rot}deg)`
+        ticking = false
+      })
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [sectionRef, config.speed, config.rotate])
+
+  return (
+    <div
+      ref={cardRef}
+      style={{
+        position: 'absolute',
+        top: config.top,
+        left: (config as { left?: string }).left || 'auto',
+        right: (config as { right?: string }).right || 'auto',
+        width: config.w,
+        height: config.h,
+        borderRadius: 14,
+        overflow: 'hidden',
+        willChange: 'transform',
+        boxShadow: '0 12px 40px -10px rgba(0,0,0,0.25)',
+        zIndex: (index === 2 || index === 3) ? 18 : 10 - index,
+      }}
+    >
+      <img
+        src={market.src}
+        alt={market.name}
+        loading="lazy"
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.05) 100%)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          padding: '16px 18px',
+        }}
+      >
+        <div
+          style={{
+            color: '#fff',
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 14,
+            fontWeight: 600,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+            marginBottom: 8,
+          }}
+        >
+          {market.name}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+          {market.tags.map((tag) => (
+            <span
+              key={tag}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: '0.03em',
+                color: 'rgba(255,255,255,0.9)',
+                background: 'rgba(255,255,255,0.15)',
+                border: '1px solid rgba(255,255,255,0.25)',
+                borderRadius: 100,
+                padding: '3px 10px',
+                whiteSpace: 'nowrap',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+              }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function FloatingMarkets() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+      `}</style>
+
+      <section
+        ref={sectionRef}
+        style={{
+          position: 'relative',
+          width: '100%',
+          minHeight: isMobile ? 'auto' : '100vh',
+          background: '#F8FAFC',
+          overflow: 'hidden',
+          padding: isMobile ? '60px 20px' : '0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {!isMobile &&
+          MARKETS.map((market, i) => (
+            <FloatingCard
+              key={market.name}
+              market={market}
+              config={CARD_CONFIGS[i]}
+              sectionRef={sectionRef}
+              index={i}
+            />
+          ))}
+
+        {/* Center text — z-index 16, between background cards and foreground cards */}
+        <div
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 16,
+            textAlign: 'center',
+            maxWidth: 'none',
+            width: 'auto',
+            padding: isMobile ? '0' : '0 24px',
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 14,
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: '#5B7FFF',
+              marginBottom: 20,
+            }}
+          >
+            Industrial Versatility
+          </div>
+          <h2
+            style={{
+              fontSize: isMobile ? 48 : 64,
+              fontWeight: 800,
+              lineHeight: 1.1,
+              color: '#0A1628',
+              letterSpacing: '-0.02em',
+              margin: '0 auto 24px',
+              textAlign: 'center',
+              display: 'inline-block',
+            }}
+          >
+            <span style={{ whiteSpace: 'nowrap' }}>Precision built for the</span>
+            <br />
+            <span style={{ color: '#5B7FFF', whiteSpace: 'nowrap' }}>global supply chain.</span>
+          </h2>
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 15,
+              lineHeight: 1.65,
+              color: '#64748B',
+              maxWidth: 550,
+              margin: '0 auto',
+            }}
+          >
+            From container depots to distribution centers, our AI-native platform
+            adapts to your unique yard management challenges.
+          </p>
+        </div>
+
+        {/* Mobile: static 2×3 grid */}
+        {isMobile && (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 12,
+              marginTop: 40,
+              width: '100%',
+              maxWidth: 400,
+            }}
+          >
+            {MARKETS.map((market) => (
+              <div
+                key={market.name}
+                style={{
+                  borderRadius: 12,
+                  overflow: 'hidden',
+                  position: 'relative',
+                  minHeight: 130,
+                }}
+              >
+                <img
+                  src={market.src}
+                  alt={market.name}
+                  loading="lazy"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 100%)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    padding: '10px 12px',
+                  }}
+                >
+                  <div
+                    style={{
+                      color: '#fff',
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: 9,
+                      fontWeight: 600,
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase',
+                      marginBottom: 5,
+                    }}
+                  >
+                    {market.name}
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+                    {market.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        style={{
+                          fontFamily: "'JetBrains Mono', monospace",
+                          fontSize: 7,
+                          fontWeight: 500,
+                          color: 'rgba(255,255,255,0.85)',
+                          background: 'rgba(255,255,255,0.12)',
+                          border: '1px solid rgba(255,255,255,0.15)',
+                          borderRadius: 100,
+                          padding: '2px 6px',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </>
+  )
+}
