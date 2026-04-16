@@ -1,16 +1,22 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, PenLine, Clock, Scan, Box, Database } from 'lucide-react'
 
-const DAMAGE_TYPES = [
-  { label: 'Dent damage',       gradient: 'linear-gradient(135deg, #3F3120 0%, #7C5A3A 100%)' },
-  { label: 'Rust / corrosion',  gradient: 'linear-gradient(135deg, #4A2818 0%, #B55B2E 100%)' },
-  { label: 'Panel hole',        gradient: 'linear-gradient(135deg, #1F2937 0%, #475569 100%)' },
-  { label: 'Door damage',       gradient: 'linear-gradient(135deg, #312E2A 0%, #6B5B47 100%)' },
-  { label: 'Floor damage',      gradient: 'linear-gradient(135deg, #2A2218 0%, #5A4530 100%)' },
-  { label: 'Roof damage',       gradient: 'linear-gradient(135deg, #1E293B 0%, #475569 100%)' },
+type DamageType = {
+  label: string
+  images: string[]
+  gradient: string
+}
+
+const DAMAGE_TYPES: DamageType[] = [
+  { label: 'Dent damage',      images: ['1.jpeg', '2.jpeg', '10.jpeg'], gradient: 'linear-gradient(135deg, #3F3120 0%, #7C5A3A 100%)' },
+  { label: 'Rust / corrosion', images: ['3.jpeg', '9.jpeg'],            gradient: 'linear-gradient(135deg, #4A2818 0%, #B55B2E 100%)' },
+  { label: 'Panel hole',       images: ['4.jpeg', '5.jpeg', '6.jpeg'],  gradient: 'linear-gradient(135deg, #1F2937 0%, #475569 100%)' },
+  { label: 'Door damage',      images: ['7.jpeg', '8.jpeg'],            gradient: 'linear-gradient(135deg, #312E2A 0%, #6B5B47 100%)' },
+  { label: 'Floor damage',     images: ['11.jpeg', '12.jpeg'],          gradient: 'linear-gradient(135deg, #2A2218 0%, #5A4530 100%)' },
+  { label: 'Roof damage',      images: ['13.jpeg', '14.jpeg'],          gradient: 'linear-gradient(135deg, #1E293B 0%, #475569 100%)' },
 ]
 
 const SURVEY_ROWS = [
@@ -41,31 +47,70 @@ function Eyebrow({ children, tone }: { children: React.ReactNode; tone: 'manual'
   )
 }
 
-function DamageCard({ label, gradient }: { label: string; gradient: string }) {
+const CROSSFADE_CYCLE_MS = 3500
+const STAGGER_STEP_MS = 500
+
+function DamageCard({
+  label,
+  images,
+  gradient,
+  staggerIndex,
+}: {
+  label: string
+  images: string[]
+  gradient: string
+  staggerIndex: number
+}) {
+  const [activeIdx, setActiveIdx] = useState(0)
+
+  useEffect(() => {
+    if (images.length <= 1) return
+    let intervalId: ReturnType<typeof setInterval> | undefined
+    const startDelay = staggerIndex * STAGGER_STEP_MS
+    const startTimeout = setTimeout(() => {
+      setActiveIdx((i) => (i + 1) % images.length)
+      intervalId = setInterval(() => {
+        setActiveIdx((i) => (i + 1) % images.length)
+      }, CROSSFADE_CYCLE_MS)
+    }, startDelay)
+    return () => {
+      clearTimeout(startTimeout)
+      if (intervalId) clearInterval(intervalId)
+    }
+  }, [images.length, staggerIndex])
+
+  const currentFile = images[activeIdx] ?? ''
+
   return (
     <div
       className="relative rounded-lg overflow-hidden aspect-[4/3]"
       style={{ background: gradient, boxShadow: '0 6px 18px -6px rgba(0,0,0,0.4)' }}
     >
+      {images.map((file, i) => (
+        <div
+          key={file}
+          aria-hidden="true"
+          className="absolute inset-0 transition-opacity duration-[800ms] ease-in-out"
+          style={{
+            backgroundImage: `url(/assets/damage/${file})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: i === activeIdx ? 1 : 0,
+          }}
+        />
+      ))}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 60%, rgba(255,255,255,0.04) 100%)',
-        }}
-      />
-      <div
-        className="absolute inset-0 opacity-[0.08] pointer-events-none"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(45deg, rgba(255,255,255,0.15) 0 2px, transparent 2px 6px)',
+            'linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0) 100%)',
         }}
       />
       <span className="absolute bottom-2.5 left-3 right-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/95">
         {label}
       </span>
-      <span className="absolute top-2.5 left-3 font-mono text-[9px] uppercase tracking-[0.1em] text-white/50">
-        IMG.JPG
+      <span className="absolute top-2.5 left-3 font-mono text-[9px] uppercase tracking-[0.1em] text-white/70 bg-black/30 px-1.5 py-0.5 rounded-sm backdrop-blur-[2px]">
+        {currentFile}
       </span>
     </div>
   )
@@ -262,8 +307,14 @@ export function DamageInspection() {
             </p>
 
             <div className="grid grid-cols-3 gap-3 mb-8">
-              {DAMAGE_TYPES.map((d) => (
-                <DamageCard key={d.label} label={d.label} gradient={d.gradient} />
+              {DAMAGE_TYPES.map((d, i) => (
+                <DamageCard
+                  key={d.label}
+                  label={d.label}
+                  images={d.images}
+                  gradient={d.gradient}
+                  staggerIndex={i}
+                />
               ))}
             </div>
 
