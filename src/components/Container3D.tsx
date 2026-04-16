@@ -201,11 +201,11 @@ export function Container3D() {
   const rotY = useTransform(progress, [0, 0.35], [-15, 35]);
   // ACT 2: 0.35 - 0.70 (Explosion & Interior)
   const exp = useTransform(progress, [0.35, 0.5], [0, 1]);
-  const scanColor = useTransform(progress, [0.35, 0.45], ['#5B7FFF', '#FBBF24']);
+  const scanColor = useTransform(progress, [0.35, 0.45], ['#2563EB', '#FBBF24']);
   const scanShadow = useTransform(
     progress,
     [0.35, 0.45],
-    ['0 0 20px 2px rgba(91,127,255,0.5)', '0 0 20px 2px rgba(251,191,36,0.5)']
+    ['0 0 20px 2px rgba(37,99,235,0.5)', '0 0 20px 2px rgba(251,191,36,0.5)']
   );
   const blueprintOp = useTransform(progress, [0.35, 0.45], [0, 1]);
   // ACT 3: 0.70 - 1.0 (Dashboard)
@@ -270,7 +270,7 @@ export function Container3D() {
   // Terminal report lines (appear one by one, 300ms apart, starting at 400ms)
   const reportLines = [
     { text: '┌── CONTAINER INSPECTION REPORT ──┐', className: 'text-white font-bold mb-4' },
-    { text: 'ID: EGHU 826260-6', className: 'text-[#5B7FFF] mb-4' },
+    { text: 'ID: EGHU 826260-6', className: 'text-[#2563EB] mb-4' },
     { text: 'External: ✓ Code Validated', className: 'mb-2', hasGreen: true },
     { text: 'Internal: 3 issues found', className: 'mb-2', hasYellow: true },
     { text: '  • Floor Damage — CRITICAL (92)', className: 'pl-4 mb-1 text-red-400' },
@@ -339,17 +339,17 @@ export function Container3D() {
           className="absolute inset-0 opacity-30 pointer-events-none z-0"
           style={{
             backgroundImage:
-            'radial-gradient(rgba(91,127,255,0.15) 1px, transparent 1px)',
+            'radial-gradient(rgba(37,99,235,0.15) 1px, transparent 1px)',
             backgroundSize: '32px 32px'
           }} />
         
 
         {/* Viewfinder Corners */}
         <div className="absolute inset-6 pointer-events-none z-0 opacity-30">
-          <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-[#5B7FFF]" />
-          <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-[#5B7FFF]" />
-          <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-[#5B7FFF]" />
-          <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-[#5B7FFF]" />
+          <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-[#2563EB]" />
+          <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-[#2563EB]" />
+          <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-[#2563EB]" />
+          <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-[#2563EB]" />
         </div>
 
         {/* System Active Indicator */}
@@ -368,7 +368,7 @@ export function Container3D() {
             opacity: headerOp
           }}>
           
-          <p className="text-[#5B7FFF] font-semibold text-xs uppercase tracking-[0.25em] mb-3 font-sans">
+          <p className="text-[#2563EB] font-semibold text-xs uppercase tracking-[0.25em] mb-3 font-sans">
             Industrial Precision Architecture
           </p>
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight font-sans">
@@ -385,7 +385,7 @@ export function Container3D() {
             style={{
               opacity: act1Op
             }}
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap text-[#5B7FFF]">
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap text-[#2563EB]">
             
             Phase 1: External Code Detection
           </motion.div>
@@ -433,7 +433,7 @@ export function Container3D() {
               <div className="relative">
                 <div className="w-[80px] h-[40px] rounded-full bg-gradient-to-br from-white to-gray-400 shadow-xl flex items-center justify-end pr-3">
                   <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center border border-gray-700">
-                    <div className="w-3 h-3 rounded-full bg-[#5B7FFF] shadow-[0_0_10px_#5B7FFF] animate-pulse" />
+                    <div className="w-3 h-3 rounded-full bg-[#2563EB] shadow-[0_0_10px_#2563EB] animate-pulse" />
                   </div>
                 </div>
                 <svg
@@ -446,12 +446,12 @@ export function Container3D() {
                     y1="0"
                     x2="1"
                     y2="60"
-                    stroke="#5B7FFF"
+                    stroke="#2563EB"
                     strokeWidth="1"
                     strokeDasharray="2 2" />
                   
                 </svg>
-                <div className="absolute top-[calc(100%+60px)] left-1/2 -translate-x-1/2 bg-[#0A0F1A]/90 border border-[#5B7FFF]/30 px-3 py-1.5 rounded text-[#5B7FFF] font-mono text-sm whitespace-nowrap">
+                <div className="absolute top-[calc(100%+60px)] left-1/2 -translate-x-1/2 bg-[#0A0F1A]/90 border border-[#2563EB]/30 px-3 py-1.5 rounded text-[#2563EB] font-mono text-sm whitespace-nowrap">
                   AI Vision Camera
                 </div>
               </div>
@@ -729,10 +729,10 @@ export function Container3D() {
                 <div
                   className="absolute inset-0"
                   style={{
-                    background: 'rgba(91,127,255,0.02)',
-                    backgroundImage: `linear-gradient(rgba(91,127,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(91,127,255,0.07) 1px, transparent 1px)`,
+                    background: 'rgba(37,99,235,0.02)',
+                    backgroundImage: `linear-gradient(rgba(37,99,235,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.07) 1px, transparent 1px)`,
                     backgroundSize: '20px 20px',
-                    border: '1px solid rgba(91,127,255,0.12)'
+                    border: '1px solid rgba(37,99,235,0.12)'
                   }} />
                 
 

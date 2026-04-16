@@ -34,7 +34,7 @@ const FlowConnection = ({
     <ArrowDown size={20} className={`-mt-2 ${textColor}`} />
     {label && Icon &&
   <div
-    className={`absolute left-1/2 ml-6 top-1/2 -translate-y-1/2 flex items-center gap-2 whitespace-nowrap text-sm font-medium ${isError ? 'text-gray-500' : 'text-[#5B7FFF]'}`}>
+    className={`absolute left-1/2 ml-6 top-1/2 -translate-y-1/2 flex items-center gap-2 whitespace-nowrap text-sm font-medium ${isError ? 'text-gray-500' : 'text-[#2563EB]'}`}>
     
         <Icon size={16} className={isError ? 'text-gray-600' : ''} />
         {label}
@@ -142,23 +142,23 @@ export function CompetitiveEdge() {
             
             <h3 className="text-2xl font-bold mb-12 text-white flex items-center gap-3 relative z-10">
               GateIn AI
-              <span className="bg-[#5B7FFF]/20 text-[#5B7FFF] text-xs font-mono px-3 py-1 rounded-sm border border-[#5B7FFF]/30 tracking-wide">
+              <span className="bg-[#2563EB]/20 text-[#2563EB] text-xs font-mono px-3 py-1 rounded-sm border border-[#2563EB]/30 tracking-wide">
                 THE STANDARD
               </span>
             </h3>
             <div className="w-full max-w-[320px] relative z-10">
               <Node text="Camera Array" />
               <FlowConnection
-                lineColor="bg-[#5B7FFF]"
-                textColor="text-[#5B7FFF]" />
+                lineColor="bg-[#2563EB]"
+                textColor="text-[#2563EB]" />
               
 
               {/* Hero Node: Physical Truth Engine */}
-              <div className="relative bg-[#0F172A] border border-[#5B7FFF]/40 rounded-lg p-6 text-center z-20 overflow-hidden shadow-[0_0_20px_rgba(91,127,255,0.1)]">
+              <div className="relative bg-[#0F172A] border border-[#2563EB]/40 rounded-lg p-6 text-center z-20 overflow-hidden shadow-[0_0_20px_rgba(37,99,235,0.1)]">
                 {/* Inner glow */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[#5B7FFF]/10 to-transparent opacity-50 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#2563EB]/10 to-transparent opacity-50 pointer-events-none" />
 
-                <h4 className="text-xl font-extrabold text-[#5B7FFF] mb-5 relative z-10 tracking-tight">
+                <h4 className="text-xl font-extrabold text-[#2563EB] mb-5 relative z-10 tracking-tight">
                   Physical Truth Engine
                 </h4>
 
@@ -178,9 +178,9 @@ export function CompetitiveEdge() {
                     transition={{
                       delay: 0.3
                     }}
-                    className="flex items-center justify-center gap-2 bg-[#5B7FFF]/10 py-2 px-4 rounded-lg border border-[#5B7FFF]/20">
+                    className="flex items-center justify-center gap-2 bg-[#2563EB]/10 py-2 px-4 rounded-lg border border-[#2563EB]/20">
                     
-                    <CheckCircle size={16} className="text-[#5B7FFF]" />{' '}
+                    <CheckCircle size={16} className="text-[#2563EB]" />{' '}
                     <span className="font-medium">Reconcile</span>
                   </motion.div>
                   <motion.div
@@ -198,9 +198,9 @@ export function CompetitiveEdge() {
                     transition={{
                       delay: 0.5
                     }}
-                    className="flex items-center justify-center gap-2 bg-[#5B7FFF]/10 py-2 px-4 rounded-lg border border-[#5B7FFF]/20">
+                    className="flex items-center justify-center gap-2 bg-[#2563EB]/10 py-2 px-4 rounded-lg border border-[#2563EB]/20">
                     
-                    <CheckCircle size={16} className="text-[#5B7FFF]" />{' '}
+                    <CheckCircle size={16} className="text-[#2563EB]" />{' '}
                     <span className="font-medium">Diagnose</span>
                   </motion.div>
                   <motion.div
@@ -218,17 +218,17 @@ export function CompetitiveEdge() {
                     transition={{
                       delay: 0.7
                     }}
-                    className="flex items-center justify-center gap-2 bg-[#5B7FFF]/10 py-2 px-4 rounded-lg border border-[#5B7FFF]/20">
+                    className="flex items-center justify-center gap-2 bg-[#2563EB]/10 py-2 px-4 rounded-lg border border-[#2563EB]/20">
                     
-                    <CheckCircle size={16} className="text-[#5B7FFF]" />{' '}
+                    <CheckCircle size={16} className="text-[#2563EB]" />{' '}
                     <span className="font-medium">Audit Trail</span>
                   </motion.div>
                 </div>
               </div>
 
               <FlowConnection
-                lineColor="bg-[#5B7FFF]"
-                textColor="text-[#5B7FFF]" />
+                lineColor="bg-[#2563EB]"
+                textColor="text-[#2563EB]" />
               
               <Node text="TOS System" />
             </div>
@@ -254,8 +254,8 @@ export function CompetitiveEdge() {
           }}
           className="mt-24 pt-12 border-t border-white/5 text-center flex flex-col sm:flex-row items-center justify-center gap-4 text-gray-400 text-lg max-w-3xl mx-auto">
           
-          <div className="w-12 h-12 rounded-lg bg-[#5B7FFF]/10 flex items-center justify-center shrink-0 border border-[#5B7FFF]/20">
-            <ShieldCheck className="text-[#5B7FFF]" size={24} />
+          <div className="w-12 h-12 rounded-lg bg-[#2563EB]/10 flex items-center justify-center shrink-0 border border-[#2563EB]/20">
+            <ShieldCheck className="text-[#2563EB]" size={24} />
           </div>
           <span className="font-medium">
             Only platform that catches discrepancies before they enter your

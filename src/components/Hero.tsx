@@ -50,9 +50,9 @@ function CountUpStat({ stat, label, icon: Icon, delay }: {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay, ease: 'easeOut' }}
-      className="flex items-center gap-2 md:gap-4 bg-white/5 backdrop-blur-md border border-[#5B7FFF]/20 rounded-lg p-2 pr-3 md:p-4 md:pr-8 shadow-[0_4px_20px_rgba(91,127,255,0.05)] hover:shadow-[0_4px_25px_rgba(91,127,255,0.1)] transition-shadow"
+      className="flex items-center gap-2 md:gap-4 bg-white/5 backdrop-blur-md border border-[#2563EB]/20 rounded-lg p-2 pr-3 md:p-4 md:pr-8 shadow-[0_4px_20px_rgba(37,99,235,0.05)] hover:shadow-[0_4px_25px_rgba(37,99,235,0.1)] transition-shadow"
     >
-      <div className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-[#5B7FFF]/20 flex items-center justify-center text-[#5B7FFF] shadow-[0_0_10px_rgba(91,127,255,0.2)] shrink-0">
+      <div className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-[#2563EB]/20 flex items-center justify-center text-[#2563EB] shadow-[0_0_10px_rgba(37,99,235,0.2)] shrink-0">
         <Icon className="w-3.5 h-3.5 md:w-5 md:h-5" />
       </div>
       <div>
@@ -120,8 +120,8 @@ export function Hero() {
             className="absolute top-0 bottom-0 w-[1px] z-[2]"
             style={{
               background:
-                'linear-gradient(to bottom, transparent, rgba(91,127,255,0.8), transparent)',
-              boxShadow: '0 0 20px 2px rgba(91,127,255,0.4)',
+                'linear-gradient(to bottom, transparent, rgba(37,99,235,0.8), transparent)',
+              boxShadow: '0 0 20px 2px rgba(37,99,235,0.4)',
             }}
             initial={{ left: '-10%', opacity: 0 }}
             animate={{ left: ['-10%', '110%'], opacity: 1 }}
@@ -144,7 +144,7 @@ export function Hero() {
           >
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-[1.05] tracking-tighter mb-6">
               AI-Powered <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5B7FFF] to-[#8AA6FF]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#8AA6FF]">
                 Container Intelligence
               </span>
             </h1>
@@ -168,7 +168,7 @@ export function Hero() {
           >
             <a
               href="#contact"
-              className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(91,127,255,0.3)] hover:shadow-[0_0_30px_rgba(91,127,255,0.5)]"
+              className="bg-[#2563EB] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]"
             >
               Request a Demo
               <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />

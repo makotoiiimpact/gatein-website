@@ -59,7 +59,7 @@ export const resources: Resource[] = [
 ]
 
 export const categoryColors: Record<string, string> = {
-  Technology: 'bg-[#5B7FFF]/10 text-[#5B7FFF] border-[#5B7FFF]/20',
+  Technology: 'bg-[#2563EB]/10 text-[#2563EB] border-[#2563EB]/20',
   Industry: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
   Guide: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
   'Case Study': 'bg-amber-500/10 text-amber-400 border-amber-500/20',

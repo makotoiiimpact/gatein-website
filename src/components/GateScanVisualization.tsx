@@ -108,12 +108,12 @@ export function GateScanVisualization() {
             height="32"
             patternUnits="userSpaceOnUse">
             
-            <circle cx="16" cy="16" r="1" fill="rgba(91,127,255,0.08)" />
+            <circle cx="16" cy="16" r="1" fill="rgba(37,99,235,0.08)" />
           </pattern>
           <linearGradient id="gs-scanFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#5B7FFF" stopOpacity="0" />
-            <stop offset="85%" stopColor="#5B7FFF" stopOpacity="0.15" />
-            <stop offset="100%" stopColor="#5B7FFF" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="#2563EB" stopOpacity="0" />
+            <stop offset="85%" stopColor="#2563EB" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="#2563EB" stopOpacity="0.4" />
           </linearGradient>
           <linearGradient id="gs-cabGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#3A4555" />
@@ -125,9 +125,9 @@ export function GateScanVisualization() {
             <stop offset="100%" stopColor="#2D3748" />
           </linearGradient>
           <linearGradient id="gs-windshield" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#5B7FFF" stopOpacity="0.15" />
+            <stop offset="0%" stopColor="#2563EB" stopOpacity="0.15" />
             <stop offset="50%" stopColor="#8AA6FF" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#5B7FFF" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="#2563EB" stopOpacity="0.1" />
           </linearGradient>
         </defs>
 
@@ -137,7 +137,7 @@ export function GateScanVisualization() {
 
         {/* Corner Brackets */}
         <g
-          stroke="#5B7FFF"
+          stroke="#2563EB"
           strokeWidth="1.5"
           opacity="0.25"
           fill="none"
@@ -221,14 +221,14 @@ export function GateScanVisualization() {
             stroke="#FFFFFF"
             strokeWidth="1" />
           
-          <circle cx="562" cy="80" r="2.5" fill="#5B7FFF" opacity="0.9" />
+          <circle cx="562" cy="80" r="2.5" fill="#2563EB" opacity="0.9" />
           {beamOpacity > 0 &&
           <line
             x1="562"
             y1="85"
             x2={containerCenterX}
             y2={containerCenterY}
-            stroke="#5B7FFF"
+            stroke="#2563EB"
             strokeWidth="0.8"
             opacity={beamOpacity * 0.3}
             strokeDasharray="6 4" />
@@ -380,7 +380,7 @@ export function GateScanVisualization() {
             <path
               d="M 68 258 L 102 192 L 152 192 L 152 258 Z"
               fill="url(#gs-windshield)"
-              stroke="#5B7FFF"
+              stroke="#2563EB"
               strokeWidth="0.5"
               opacity="0.6" />
             
@@ -493,7 +493,7 @@ export function GateScanVisualization() {
 
           {/* ━━━ BLUEPRINT TRUCK LAYER ━━━ */}
           <g opacity={blueprintOp}>
-            <g stroke="#5B7FFF" strokeWidth="1.5" fill="none">
+            <g stroke="#2563EB" strokeWidth="1.5" fill="none">
               <path d="M 30 395 L 30 260 L 65 260 L 100 185 L 160 185 L 160 395" />
               <path
                 d="M 68 258 L 102 192 L 152 192 L 152 258 Z"
@@ -570,7 +570,7 @@ export function GateScanVisualization() {
               <text
                 x="185"
                 y="175"
-                fill="#5B7FFF"
+                fill="#2563EB"
                 fontSize="10"
                 opacity="0.2"
                 style={{
@@ -601,7 +601,7 @@ export function GateScanVisualization() {
                 cy="395"
                 r="22"
                 fill="#0A0F1A"
-                stroke="#5B7FFF"
+                stroke="#2563EB"
                 strokeWidth="1.5" />
               
                 <circle
@@ -609,11 +609,11 @@ export function GateScanVisualization() {
                 cy="395"
                 r="14"
                 fill="none"
-                stroke="#5B7FFF"
+                stroke="#2563EB"
                 strokeWidth="0.5"
                 opacity="0.3" />
               
-                <circle cx={cx} cy="395" r="6" fill="#5B7FFF" opacity="0.3" />
+                <circle cx={cx} cy="395" r="6" fill="#2563EB" opacity="0.3" />
                 {[0, 60, 120, 180, 240, 300].map((angle) =>
               <line
                 key={`bt${i}-${angle}`}
@@ -621,7 +621,7 @@ export function GateScanVisualization() {
                 y1={395 + Math.sin(angle * Math.PI / 180) * 15}
                 x2={cx + Math.cos(angle * Math.PI / 180) * 21}
                 y2={395 + Math.sin(angle * Math.PI / 180) * 21}
-                stroke="#5B7FFF"
+                stroke="#2563EB"
                 strokeWidth="0.5"
                 opacity="0.2" />
 
@@ -645,7 +645,7 @@ export function GateScanVisualization() {
               y1={lerp(155, 355, scanProgress)}
               x2="575"
               y2={lerp(155, 355, scanProgress)}
-              stroke="#5B7FFF"
+              stroke="#2563EB"
               strokeWidth="2"
               opacity={0.8} />
             
@@ -664,7 +664,7 @@ export function GateScanVisualization() {
               y1={lerp(155, 355, scanProgress - 0.15)}
               x2="575"
               y2={lerp(155, 355, scanProgress - 0.15)}
-              stroke="#5B7FFF"
+              stroke="#2563EB"
               strokeWidth="1"
               opacity={0.3} />
 
@@ -716,7 +716,7 @@ export function GateScanVisualization() {
             <polyline
               points="200,255 185,255 185,300 200,300"
               fill="none"
-              stroke="#5B7FFF"
+              stroke="#2563EB"
               strokeWidth="1"
               opacity="0.4"
               strokeDasharray="3 3" />
@@ -815,14 +815,14 @@ export function GateScanVisualization() {
             stroke="#FFFFFF"
             strokeWidth="1" />
           
-          <circle cx="646" cy="80" r="2.5" fill="#5B7FFF" opacity="0.9" />
+          <circle cx="646" cy="80" r="2.5" fill="#2563EB" opacity="0.9" />
           {beamOpacity > 0 &&
           <line
             x1="646"
             y1="85"
             x2={containerCenterX}
             y2={containerCenterY}
-            stroke="#5B7FFF"
+            stroke="#2563EB"
             strokeWidth="0.8"
             opacity={beamOpacity * 0.3}
             strokeDasharray="6 4" />
@@ -834,21 +834,21 @@ export function GateScanVisualization() {
               cx="704"
               cy="120"
               r="3"
-              fill="#5B7FFF"
+              fill="#2563EB"
               opacity={beamOpacity * 0.8} />
             
               <circle
               cx="704"
               cy="140"
               r="3"
-              fill="#5B7FFF"
+              fill="#2563EB"
               opacity={beamOpacity * 0.6} />
             
               <circle
               cx="704"
               cy="160"
               r="3"
-              fill="#5B7FFF"
+              fill="#2563EB"
               opacity={beamOpacity * 0.4} />
             
             </g>
@@ -859,7 +859,7 @@ export function GateScanVisualization() {
         <text
           x="50"
           y="488"
-          fill="#5B7FFF"
+          fill="#2563EB"
           fontSize="11"
           opacity="0.4"
           style={{
@@ -871,7 +871,7 @@ export function GateScanVisualization() {
         <text
           x="1150"
           y="48"
-          fill="#5B7FFF"
+          fill="#2563EB"
           fontSize="11"
           opacity="0.3"
           textAnchor="end"
@@ -886,7 +886,7 @@ export function GateScanVisualization() {
         <text
           x="600"
           y="488"
-          fill={blueprintOp > 0.5 ? '#5B7FFF' : '#64748B'}
+          fill={blueprintOp > 0.5 ? '#2563EB' : '#64748B'}
           fontSize="10"
           opacity="0.4"
           textAnchor="middle"

@@ -73,7 +73,7 @@ export function Navbar() {
           </a>
         </div>
 
-        <a href="/#contact" onClick={(e) => scrollToSection(e, 'contact')} className="hidden md:inline-flex bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-5 py-2.5 rounded-md text-sm font-bold transition-colors cursor-pointer z-10">
+        <a href="/#contact" onClick={(e) => scrollToSection(e, 'contact')} className="hidden md:inline-flex bg-[#2563EB] hover:bg-[#4A6BEE] text-white px-5 py-2.5 rounded-md text-sm font-bold transition-colors cursor-pointer z-10">
           Request a Demo
         </a>
 
@@ -118,7 +118,7 @@ export function Navbar() {
           onClick={() => setMobileMenuOpen(false)}>
             Resources
           </a>
-          <a href="/#contact" onClick={(e) => { scrollToSection(e, 'contact'); setMobileMenuOpen(false); }} className="bg-[#5B7FFF] text-white px-5 py-3 rounded-md text-base font-bold w-full mt-2 block text-center">
+          <a href="/#contact" onClick={(e) => { scrollToSection(e, 'contact'); setMobileMenuOpen(false); }} className="bg-[#2563EB] text-white px-5 py-3 rounded-md text-base font-bold w-full mt-2 block text-center">
             Request a Demo
           </a>
         </div>

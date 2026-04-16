@@ -231,7 +231,7 @@ export function DroneScanVisualization() {
     } else {
       return (
         <g opacity={opacity} transform={`translate(${c.x}, ${C_Y})`}>
-          <g stroke="#5B7FFF" strokeWidth="1.5" fill="none">
+          <g stroke="#2563EB" strokeWidth="1.5" fill="none">
             <rect
               x="0"
               y="0"
@@ -283,7 +283,7 @@ export function DroneScanVisualization() {
             <text
               x="15"
               y="20"
-              fill="#5B7FFF"
+              fill="#2563EB"
               fontSize="10"
               opacity="0.2"
               style={{
@@ -312,12 +312,12 @@ export function DroneScanVisualization() {
             height="32"
             patternUnits="userSpaceOnUse">
             
-            <circle cx="16" cy="16" r="1" fill="rgba(91,127,255,0.08)" />
+            <circle cx="16" cy="16" r="1" fill="rgba(37,99,235,0.08)" />
           </pattern>
           <linearGradient id="ds-scanFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#5B7FFF" stopOpacity="0" />
-            <stop offset="85%" stopColor="#5B7FFF" stopOpacity="0.15" />
-            <stop offset="100%" stopColor="#5B7FFF" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="#2563EB" stopOpacity="0" />
+            <stop offset="85%" stopColor="#2563EB" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="#2563EB" stopOpacity="0.4" />
           </linearGradient>
           <linearGradient id="ds-containerGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#4A5568" />
@@ -325,8 +325,8 @@ export function DroneScanVisualization() {
             <stop offset="100%" stopColor="#2D3748" />
           </linearGradient>
           <linearGradient id="ds-beamGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#5B7FFF" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#5B7FFF" stopOpacity="0.05" />
+            <stop offset="0%" stopColor="#2563EB" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#2563EB" stopOpacity="0.05" />
           </linearGradient>
         </defs>
 
@@ -336,7 +336,7 @@ export function DroneScanVisualization() {
 
         {/* Corner Brackets */}
         <g
-          stroke="#5B7FFF"
+          stroke="#2563EB"
           strokeWidth="1.5"
           opacity="0.25"
           fill="none"
@@ -394,7 +394,7 @@ export function DroneScanVisualization() {
                 y1={lerp(C_Y, C_Y + C_HEIGHT, scanProgress)}
                 x2={c.x + C_WIDTH + 5}
                 y2={lerp(C_Y, C_Y + C_HEIGHT, scanProgress)}
-                stroke="#5B7FFF"
+                stroke="#2563EB"
                 strokeWidth="2"
                 opacity={0.8} />
               
@@ -413,7 +413,7 @@ export function DroneScanVisualization() {
                 y1={lerp(C_Y, C_Y + C_HEIGHT, scanProgress - 0.1)}
                 x2={c.x + C_WIDTH + 5}
                 y2={lerp(C_Y, C_Y + C_HEIGHT, scanProgress - 0.1)}
-                stroke="#5B7FFF"
+                stroke="#2563EB"
                 strokeWidth="1"
                 opacity={0.3} />
 
@@ -466,7 +466,7 @@ export function DroneScanVisualization() {
           <polyline
             points="470,330 455,330 455,370 470,370"
             fill="none"
-            stroke="#5B7FFF"
+            stroke="#2563EB"
             strokeWidth="1"
             opacity="0.4"
             strokeDasharray="3 3" />
@@ -529,7 +529,7 @@ export function DroneScanVisualization() {
               y1="15"
               x2="-180"
               y2={C_Y - droneY}
-              stroke="#5B7FFF"
+              stroke="#2563EB"
               strokeWidth="1"
               opacity="0.4"
               strokeDasharray="4 4" />
@@ -539,7 +539,7 @@ export function DroneScanVisualization() {
               y1="15"
               x2="180"
               y2={C_Y - droneY}
-              stroke="#5B7FFF"
+              stroke="#2563EB"
               strokeWidth="1"
               opacity="0.4"
               strokeDasharray="4 4" />
@@ -629,7 +629,7 @@ export function DroneScanVisualization() {
                 cy="0"
                 rx="25"
                 ry="2"
-                fill="#5B7FFF"
+                fill="#2563EB"
                 opacity="0.3" />
               
               <line
@@ -649,7 +649,7 @@ export function DroneScanVisualization() {
                 cy="0"
                 rx="25"
                 ry="2"
-                fill="#5B7FFF"
+                fill="#2563EB"
                 opacity="0.3" />
               
               <line
@@ -676,10 +676,10 @@ export function DroneScanVisualization() {
               cy="16"
               r="4"
               fill="#0A0F1A"
-              stroke="#5B7FFF"
+              stroke="#2563EB"
               strokeWidth="1" />
             
-            <circle cx="0" cy="16" r="1.5" fill="#5B7FFF" opacity="0.8">
+            <circle cx="0" cy="16" r="1.5" fill="#2563EB" opacity="0.8">
               <animate
                 attributeName="opacity"
                 values="0.4;1;0.4"
@@ -698,7 +698,7 @@ export function DroneScanVisualization() {
         <text
           x="50"
           y="488"
-          fill="#5B7FFF"
+          fill="#2563EB"
           fontSize="11"
           opacity="0.4"
           style={{
@@ -710,7 +710,7 @@ export function DroneScanVisualization() {
         <text
           x="1150"
           y="48"
-          fill="#5B7FFF"
+          fill="#2563EB"
           fontSize="11"
           opacity="0.3"
           textAnchor="end"
@@ -725,7 +725,7 @@ export function DroneScanVisualization() {
         <text
           x="600"
           y="488"
-          fill={blueprintOp > 0.5 ? '#5B7FFF' : '#64748B'}
+          fill={blueprintOp > 0.5 ? '#2563EB' : '#64748B'}
           fontSize="10"
           opacity="0.4"
           textAnchor="middle"

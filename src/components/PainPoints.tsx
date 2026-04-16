@@ -81,8 +81,8 @@ export function PainPoints() {
             viewport={{ once: true }}
             className="flex items-center gap-4 mb-8"
           >
-            <div className="w-12 h-[2px] bg-[#5B7FFF]" />
-            <span className="text-sm font-bold tracking-[0.2em] text-[#5B7FFF] uppercase font-mono">
+            <div className="w-12 h-[2px] bg-[#2563EB]" />
+            <span className="text-sm font-bold tracking-[0.2em] text-[#2563EB] uppercase font-mono">
               The Challenge
             </span>
           </motion.div>
@@ -158,7 +158,7 @@ export function PainPoints() {
                   <div className="flex-grow max-w-2xl">
                     <h3
                       className="text-2xl md:text-3xl font-bold mb-4 transition-colors duration-500"
-                      style={{ color: isActive ? '#5B7FFF' : '#0f172a' }}
+                      style={{ color: isActive ? '#2563EB' : '#0f172a' }}
                     >
                       {point.title}
                     </h3>
@@ -176,7 +176,7 @@ export function PainPoints() {
                   className="absolute bottom-0 left-0 h-[1px] transition-colors duration-500"
                   style={{
                     backgroundColor: isActive
-                      ? 'rgba(91,127,255,0.2)'
+                      ? 'rgba(37,99,235,0.2)'
                       : '#e2e8f0',
                   }}
                   initial={{ width: 0 }}

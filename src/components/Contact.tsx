@@ -74,7 +74,7 @@ export function Contact() {
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#5B7FFF] transition-colors"
+                      className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors"
                       placeholder="John Doe"
                     />
                   </div>
@@ -84,7 +84,7 @@ export function Contact() {
                       type="text"
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
-                      className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#5B7FFF] transition-colors"
+                      className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors"
                       placeholder="Logistics Corp"
                     />
                   </div>
@@ -97,7 +97,7 @@ export function Contact() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#5B7FFF] transition-colors"
+                      className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors"
                       placeholder="john@company.com"
                     />
                   </div>
@@ -106,7 +106,7 @@ export function Contact() {
                     <select
                       value={facilityType}
                       onChange={(e) => setFacilityType(e.target.value)}
-                      className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#5B7FFF] transition-colors appearance-none"
+                      className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors appearance-none"
                     >
                       <option value="">Select type...</option>
                       <option value="container-depot">Container Depot</option>
@@ -125,7 +125,7 @@ export function Contact() {
                   <select
                     value={helpType}
                     onChange={(e) => setHelpType(e.target.value)}
-                    className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#5B7FFF] transition-colors appearance-none"
+                    className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors appearance-none"
                   >
                     <option value="">Select one...</option>
                     <option value="schedule-demo">Schedule a demo</option>
@@ -140,14 +140,14 @@ export function Contact() {
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#5B7FFF] transition-colors resize-none"
+                    className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors resize-none"
                     placeholder="Tell us about your yard challenges..."
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={status === 'submitting'}
-                  className="w-full bg-[#5B7FFF] hover:bg-[#4A6BEE] disabled:opacity-60 text-white px-8 py-4 rounded-md text-lg font-bold transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-[#2563EB] hover:bg-[#4A6BEE] disabled:opacity-60 text-white px-8 py-4 rounded-md text-lg font-bold transition-all flex items-center justify-center gap-2"
                 >
                   {status === 'submitting' ? (
                     <>
@@ -176,7 +176,7 @@ export function Contact() {
               transition={{ delay: 0.1 }}
               className="bg-[#1E293B] p-8 rounded-lg border border-white/5 h-[calc(50%-12px)] flex flex-col justify-center"
             >
-              <div className="w-12 h-12 bg-[#5B7FFF]/10 rounded-lg flex items-center justify-center text-[#5B7FFF] mb-6 border border-[#5B7FFF]/20">
+              <div className="w-12 h-12 bg-[#2563EB]/10 rounded-lg flex items-center justify-center text-[#2563EB] mb-6 border border-[#2563EB]/20">
                 <Mail size={24} />
               </div>
               <h3 className="text-xl font-bold mb-2">Email us directly</h3>
@@ -195,19 +195,19 @@ export function Contact() {
               <h3 className="text-xl font-bold mb-8">What happens next?</h3>
               <ol className="space-y-4 text-base">
                 <li className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#5B7FFF]/20 text-[#5B7FFF] flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB]/20 text-[#2563EB] flex items-center justify-center text-xs font-bold shrink-0">1</span>
                   <span className="text-gray-300">Schedule 30 min discovery call</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#5B7FFF]/20 text-[#5B7FFF] flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB]/20 text-[#2563EB] flex items-center justify-center text-xs font-bold shrink-0">2</span>
                   <span className="text-gray-300">Receive customized ROI analysis</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#5B7FFF]/20 text-[#5B7FFF] flex items-center justify-center text-xs font-bold shrink-0">3</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB]/20 text-[#2563EB] flex items-center justify-center text-xs font-bold shrink-0">3</span>
                   <span className="text-gray-300">On-site proof of value demo</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#5B7FFF]/20 text-[#5B7FFF] flex items-center justify-center text-xs font-bold shrink-0">4</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2563EB]/20 text-[#2563EB] flex items-center justify-center text-xs font-bold shrink-0">4</span>
                   <span className="text-gray-300">Go live in weeks, not months</span>
                 </li>
               </ol>

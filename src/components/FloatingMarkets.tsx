@@ -272,7 +272,7 @@ export function FloatingMarkets() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
       `}</style>
 
       <section
@@ -325,7 +325,7 @@ export function FloatingMarkets() {
               fontWeight: 600,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: '#5B7FFF',
+              color: '#2563EB',
               marginBottom: isMobile ? 12 : 20,
             }}
           >
@@ -348,13 +348,13 @@ export function FloatingMarkets() {
               <>
                 <span style={{ whiteSpace: 'nowrap' }}>Precision built for the</span>
                 <br />
-                <span style={{ color: '#5B7FFF', whiteSpace: 'nowrap' }}>global supply chain.</span>
+                <span style={{ color: '#2563EB', whiteSpace: 'nowrap' }}>global supply chain.</span>
               </>
             )}
           </h2>
           <p
             style={{
-              fontFamily: "'Inter', sans-serif",
+              fontFamily: "'Space Grotesk', sans-serif",
               fontSize: isMobile ? 14 : 15,
               lineHeight: 1.65,
               color: '#64748B',

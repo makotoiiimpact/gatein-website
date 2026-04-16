@@ -7,7 +7,7 @@ const products = [
   title: 'Gate OCR',
   desc: 'AI-powered container code reading at the gate. 82% faster processing.',
   badge: 'LIVE',
-  badgeColor: 'bg-[#5B7FFF] text-white'
+  badgeColor: 'bg-[#2563EB] text-white'
 },
 {
   title: 'Yard Analytics',
@@ -69,7 +69,7 @@ export function Products() {
             transition={{
               delay: index * 0.1
             }}
-            className={`p-8 rounded-lg border ${index === 0 ? 'border-[#5B7FFF] shadow-lg bg-blue-50/30' : 'border-slate-200 bg-white'} relative flex flex-col h-full`}>
+            className={`p-8 rounded-lg border ${index === 0 ? 'border-[#2563EB] shadow-lg bg-blue-50/30' : 'border-slate-200 bg-white'} relative flex flex-col h-full`}>
             
               <div className="mb-6">
                 <span
@@ -96,7 +96,7 @@ export function Products() {
         </div>
 
         <div className="text-center">
-          <a href="#contact" className="bg-[#5B7FFF] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all inline-block">
+          <a href="#contact" className="bg-[#2563EB] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all inline-block">
             Request a Demo
           </a>
         </div>

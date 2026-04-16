@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/Navbar'
 import { Hero } from '@/components/Hero'
 import { PainPoints } from '@/components/PainPoints'
+import { DamageInspection } from '@/components/DamageInspection'
 import { Container3D } from '@/components/Container3D'
 import { Products } from '@/components/Products'
 import { HowItWorks } from '@/components/HowItWorks'
@@ -16,11 +17,12 @@ import { Footer } from '@/components/Footer'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0F172A] font-sans selection:bg-[#5B7FFF]/30">
+    <div className="min-h-screen bg-[#0F172A] font-sans selection:bg-[#2563EB]/30">
       <Navbar />
       <main>
         <Hero />
         <PainPoints />
+        <DamageInspection />
         <Container3D />
         <Products />
         <HowItWorks />

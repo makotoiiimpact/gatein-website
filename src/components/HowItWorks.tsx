@@ -58,7 +58,7 @@ export function HowItWorks() {
 
           {/* Animated Connecting Line */}
           <motion.div
-            className="hidden md:block absolute top-12 left-[10%] h-[1px] bg-[#5B7FFF] z-0 origin-left"
+            className="hidden md:block absolute top-12 left-[10%] h-[1px] bg-[#2563EB] z-0 origin-left"
             initial={{
               scaleX: 0
             }}
@@ -98,10 +98,10 @@ export function HowItWorks() {
               }}
               className="flex flex-col items-center text-center">
               
-                <div className="w-24 h-24 rounded-lg bg-[#1E293B] border border-slate-700 shadow-[0_0_0_1px_rgba(91,127,255,0.2)] flex items-center justify-center text-[#5B7FFF] mb-6 relative">
+                <div className="w-24 h-24 rounded-lg bg-[#1E293B] border border-slate-700 shadow-[0_0_0_1px_rgba(37,99,235,0.2)] flex items-center justify-center text-[#2563EB] mb-6 relative">
                   {step.icon}
                 </div>
-                <div className="text-[#5B7FFF] font-mono text-sm font-bold mb-2 tracking-widest">
+                <div className="text-[#2563EB] font-mono text-sm font-bold mb-2 tracking-widest">
                   STEP 0{index + 1}
                 </div>
                 <h3 className="text-xl font-bold mb-3">{step.title}</h3>

@@ -16,7 +16,7 @@ export function ResourcesPreview() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-[#5B7FFF] text-sm font-bold uppercase tracking-[0.2em] mb-4 block">
+          <span className="text-[#2563EB] text-sm font-bold uppercase tracking-[0.2em] mb-4 block">
             Resources
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
@@ -35,7 +35,7 @@ export function ResourcesPreview() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="bg-[#1E293B] border border-white/5 rounded-lg overflow-hidden hover:border-[#5B7FFF]/20 transition-colors group"
+              className="bg-[#1E293B] border border-white/5 rounded-lg overflow-hidden hover:border-[#2563EB]/20 transition-colors group"
             >
               <div className="p-8 flex flex-col h-full">
                 <div className="mb-4">
@@ -46,7 +46,7 @@ export function ResourcesPreview() {
                 <div className="text-xs text-gray-500 mb-3">
                   {resource.date} &middot; {resource.readTime}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#5B7FFF] transition-colors leading-snug">
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#2563EB] transition-colors leading-snug">
                   {resource.title}
                 </h3>
                 <p className="text-sm text-gray-400 leading-relaxed flex-grow">
@@ -60,7 +60,7 @@ export function ResourcesPreview() {
         <div className="text-center">
           <a
             href="/resources"
-            className="inline-flex items-center gap-2 text-[#5B7FFF] font-bold hover:underline text-lg"
+            className="inline-flex items-center gap-2 text-[#2563EB] font-bold hover:underline text-lg"
           >
             View All Resources &rarr;
           </a>
