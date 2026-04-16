@@ -28,7 +28,7 @@ const conditions = [
 export function AllWeather() {
   return (
     <section className="py-32 bg-white text-slate-900">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="px-6 md:px-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -75,7 +75,7 @@ export function AllWeather() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-slate-50 border border-slate-200 rounded-lg p-8 flex flex-col md:flex-row items-center justify-between gap-6"
+          className="max-w-7xl mx-auto bg-slate-50 border border-slate-200 rounded-lg p-8 flex flex-col md:flex-row items-center justify-between gap-6"
         >
           <div className="text-lg font-medium text-slate-700">
             Deployed in Oakland, USA and Koper, Europe. Bidding in Qatar.
