@@ -15,13 +15,13 @@ const conditions = [
     icon: <CloudRain className="text-blue-500" size={24} />,
     title: 'RAIN',
     desc: 'Wet weather, no degradation',
-    video: '/rain-scan.mp4',
+    video: '/assets/videos/rain.mp4',
   },
   {
     icon: <Moon className="text-indigo-400" size={24} />,
     title: 'NIGHT',
     desc: 'Complete darkness, infrared capable',
-    video: '/night-scan.mp4',
+    video: '/assets/videos/night.mp4',
   },
 ];
 
@@ -50,14 +50,14 @@ export function AllWeather() {
               transition={{ delay: index * 0.1 }}
               className="flex flex-col"
             >
-              <div className="w-full aspect-[4/3] rounded-lg mb-6 relative overflow-hidden bg-black">
+              <div className="w-full aspect-video rounded-lg mb-6 relative overflow-hidden bg-black">
                 <video
                   src={condition.video}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover object-center"
                 />
               </div>
               <div className="flex items-center gap-3 mb-2">
