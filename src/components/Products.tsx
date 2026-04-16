@@ -5,27 +5,19 @@ import { motion } from 'framer-motion';
 const products = [
 {
   title: 'Gate OCR',
-  desc: 'AI-powered container code reading at the gate. 82% faster processing.',
-  badge: 'LIVE',
-  badgeColor: 'bg-[#2563EB] text-white'
+  desc: 'AI-powered container code reading at the gate. 82% faster processing.'
 },
 {
   title: 'Yard Analytics',
-  desc: 'Real-time dashboards, detention tracking, and NLP queries.',
-  badge: 'BUILDING',
-  badgeColor: 'bg-amber-500 text-white'
+  desc: 'Real-time dashboards, detention tracking, and NLP queries.'
 },
 {
   title: 'Damage Detection',
-  desc: 'External + internal container damage assessment.',
-  badge: 'IN DEV',
-  badgeColor: 'bg-slate-200 text-slate-700'
+  desc: 'External + internal container damage assessment.'
 },
 {
   title: 'Vehicle Manager',
-  desc: 'Track human and autonomous vehicles across the facility.',
-  badge: 'ROADMAP',
-  badgeColor: 'bg-slate-100 text-slate-500'
+  desc: 'Track human and autonomous vehicles across the facility.'
 }];
 
 export function Products() {
@@ -47,7 +39,7 @@ export function Products() {
           className="mb-16">
           
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-            One platform. Four phases.
+            One platform. Four amazing products.
           </h2>
         </motion.div>
 
@@ -69,17 +61,10 @@ export function Products() {
             transition={{
               delay: index * 0.1
             }}
-            className={`p-8 rounded-lg border ${index === 0 ? 'border-[#2563EB] shadow-lg bg-blue-50/30' : 'border-slate-200 bg-white'} relative flex flex-col h-full`}>
-            
-              <div className="mb-6">
-                <span
-                className={`text-xs font-bold font-mono px-3 py-1 rounded-sm ${product.badgeColor}`}>
-                
-                  {product.badge}
-                </span>
-              </div>
-              <h3 className="text-2xl font-bold mb-3">{product.title}</h3>
-              <p className="text-slate-600 flex-grow">
+            className="group p-8 rounded-lg border border-slate-200 bg-white hover:border-dashed hover:border-[#2563EB] hover:bg-blue-50/30 hover:shadow-lg transition-[background-color,border-color,box-shadow] duration-300 relative flex flex-col items-center justify-center text-center min-h-[220px] cursor-default">
+
+              <h3 className="text-2xl font-bold">{product.title}</h3>
+              <p className="mt-3 text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {product.desc.split('82%').map((part, i, arr) =>
               <Fragment key={i}>
                     {part}
