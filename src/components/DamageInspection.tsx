@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { FileText, PenLine, Clock, Scan, Box, Database } from 'lucide-react'
+import { PenLine, Clock, Scan, Box, Database } from 'lucide-react'
 
 type DamageType = {
   label: string
@@ -17,13 +17,6 @@ const DAMAGE_TYPES: DamageType[] = [
   { label: 'Door damage',      images: ['7.jpeg', '8.jpeg'],            gradient: 'linear-gradient(135deg, #312E2A 0%, #6B5B47 100%)' },
   { label: 'Floor damage',     images: ['11.jpeg', '12.jpeg'],          gradient: 'linear-gradient(135deg, #2A2218 0%, #5A4530 100%)' },
   { label: 'Roof damage',      images: ['13.jpeg', '14.jpeg'],          gradient: 'linear-gradient(135deg, #1E293B 0%, #475569 100%)' },
-]
-
-const SURVEY_ROWS = [
-  { code: 'DTB', desc: 'Dent, top, bowed' },
-  { code: 'HBL', desc: 'Hole, bottom, left' },
-  { code: 'RST', desc: 'Rust, side, top' },
-  { code: 'CRP', desc: 'Corner post, dmg' },
 ]
 
 const DETECTION_ROWS = [
@@ -116,32 +109,59 @@ function DamageCard({
   )
 }
 
-function SurveyFormMock() {
+function SurveyFormDocument() {
   return (
-    <div className="relative bg-[#F5EFE2] text-[#1B1B1B] rounded-md p-5 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.5)] rotate-[-1.2deg] font-mono">
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#1B1B1B]/20">
-        <div>
-          <div className="text-[10px] uppercase tracking-[0.18em] text-[#1B1B1B]/60">
-            Container Survey Form
-          </div>
-          <div className="text-sm font-bold">Gate Audit — Manual Record</div>
-        </div>
-        <FileText className="w-5 h-5 opacity-40" />
+    <figure className="relative my-2">
+      <div
+        className="relative overflow-hidden"
+        style={{
+          transform: 'rotate(-3deg)',
+          borderRadius: 4,
+          boxShadow: '0 8px 30px rgba(0,0,0,0.15)',
+          height: 260,
+        }}
+      >
+        <img
+          src="/assets/damage/survey-form.png"
+          alt="IICL Container Survey Form sample"
+          loading="lazy"
+          className="block w-full h-auto"
+          style={{ filter: 'sepia(0.08) contrast(0.95)' }}
+        />
+        {/* Hand-annotation: red pen mark over a damage row */}
+        <svg
+          className="absolute pointer-events-none"
+          width="82"
+          height="38"
+          viewBox="0 0 82 38"
+          style={{ top: '44%', left: '26%', transform: 'rotate(-6deg)' }}
+          aria-hidden="true"
+        >
+          <ellipse
+            cx="41"
+            cy="19"
+            rx="36"
+            ry="14"
+            fill="none"
+            stroke="#DC2626"
+            strokeWidth="2.2"
+            strokeDasharray="5 3"
+            opacity="0.78"
+          />
+        </svg>
+        {/* Fade to section background at bottom edge */}
+        <div
+          className="absolute left-0 right-0 bottom-0 pointer-events-none"
+          style={{
+            height: 90,
+            background: 'linear-gradient(to bottom, transparent 0%, rgba(10,22,40,0.85) 70%, #0A1628 100%)',
+          }}
+        />
       </div>
-      <div className="space-y-2 text-[11px]">
-        {SURVEY_ROWS.map((r) => (
-          <div key={r.code} className="flex items-center gap-3 border-b border-dashed border-[#1B1B1B]/20 pb-1.5">
-            <span className="inline-flex w-3 h-3 border border-[#1B1B1B]/50 rounded-sm" />
-            <span className="font-bold tracking-wider">{r.code}</span>
-            <span className="text-[#1B1B1B]/70">{r.desc}</span>
-          </div>
-        ))}
-      </div>
-      <div className="mt-4 pt-3 border-t border-[#1B1B1B]/20 flex items-center gap-2 text-[10px] text-[#1B1B1B]/60">
-        <PenLine className="w-3.5 h-3.5" />
-        <span>Inspector signature required</span>
-      </div>
-    </div>
+      <figcaption className="mt-6 font-mono text-[10px] uppercase tracking-[0.14em] text-white/55 leading-relaxed">
+        IICL Container Survey Form — still filled by hand at most facilities
+      </figcaption>
+    </figure>
   )
 }
 
@@ -318,7 +338,7 @@ export function DamageInspection() {
               ))}
             </div>
 
-            <SurveyFormMock />
+            <SurveyFormDocument />
 
             <div className="grid grid-cols-2 gap-3 mt-8">
               <StatPill icon={Clock} tone="manual" label="Time per audit" value="4–6 min" />
