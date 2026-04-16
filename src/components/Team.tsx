@@ -20,12 +20,6 @@ const team = [
   role: 'CPO / COO',
   desc: 'Experience working in IT / Supply Chain engagements and Edge computing helping clients innovate. Working experience across EMEA, US and LATAM.',
   photo: '/assets/team/jordi.jpg',
-},
-{
-  name: 'Borut Grgic',
-  role: 'Chairman',
-  desc: 'Serial entrepreneur and shipowner. Decades of shipping experience. Stanford graduate.',
-  photo: null,
 }];
 
 function TeamCard({ member, index }: { member: typeof team[number]; index: number }) {
@@ -105,7 +99,7 @@ export function Team() {
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-24">
+        <div className="grid md:grid-cols-3 gap-8 mb-24">
           {team.map((member, index) =>
             <TeamCard key={index} member={member} index={index} />
           )}
