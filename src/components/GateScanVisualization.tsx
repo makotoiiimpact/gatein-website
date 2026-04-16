@@ -69,7 +69,17 @@ export function GateScanVisualization() {
   time >= 3800 && time < 7200 ?
   clamp(Math.min((time - 3800) / 200, 1, (7200 - time) / 400), 0, 1) :
   0;
-  // ── TYPEWRITER ──
+  // ── LOWER CAMERA BEAMS (staggered 400ms after upper) ──
+  const lowerBeamOpacity =
+  time >= 3200 && time < 6800 ?
+  clamp(Math.min((time - 3200) / 400, 1, (6800 - time) / 300), 0, 1) :
+  0;
+  // ── LICENSE PLATE BOX ──
+  const plateBoxOpacity =
+  time >= 4500 && time < 7200 ?
+  clamp(Math.min((time - 4500) / 200, 1, (7200 - time) / 400), 0, 1) :
+  0;
+  // ── TYPEWRITER (container code) ──
   const fullCode = 'EGHU 826260-6';
   let typedCode = '';
   if (time >= 4000 && time < 7200) {
@@ -80,6 +90,15 @@ export function GateScanVisualization() {
   }
   const showCursor =
   time >= 4000 && time < 5200 && Math.floor(time / 150) % 2 === 0;
+  // ── TYPEWRITER (license plate) ──
+  const fullPlate = 'TX · BRK-4821';
+  let typedPlate = '';
+  if (time >= 4700 && time < 7200) {
+    typedPlate = fullPlate.slice(
+      0,
+      Math.ceil(clamp((time - 4700) / 600, 0, 1) * fullPlate.length)
+    );
+  }
   // ── VALIDATION ──
   const valOpacity =
   time >= 5000 && time < 7200 ?
@@ -231,6 +250,48 @@ export function GateScanVisualization() {
             stroke="#2563EB"
             strokeWidth="0.8"
             opacity={beamOpacity * 0.3}
+            strokeDasharray="6 4" />
+
+          }
+
+          {/* ── LOWER CAMERA (bumper height, front-facing) ── */}
+          <line
+            x1="510"
+            y1="355"
+            x2="540"
+            y2="355"
+            stroke="#7B9FFF"
+            strokeWidth="1.5"
+            opacity="0.7" />
+
+          <ellipse
+            cx="555"
+            cy="355"
+            rx="18"
+            ry="9"
+            fill="#1A2035"
+            stroke="#FFFFFF"
+            strokeWidth="1.5"
+            opacity="0.9" />
+
+          <circle
+            cx="562"
+            cy="355"
+            r="5"
+            fill="#1A2035"
+            stroke="#FFFFFF"
+            strokeWidth="1" />
+
+          <circle cx="562" cy="355" r="2.5" fill="#2563EB" opacity="0.9" />
+          {lowerBeamOpacity > 0 &&
+          <line
+            x1="562"
+            y1="360"
+            x2={truckX + 28}
+            y2="380"
+            stroke="#2563EB"
+            strokeWidth="0.8"
+            opacity={lowerBeamOpacity * 0.3}
             strokeDasharray="6 4" />
 
           }
@@ -705,9 +766,47 @@ export function GateScanVisualization() {
               style={{
                 fontFamily: "'JetBrains Mono', monospace"
               }}>
-              
+
               {typedCode}
               {showCursor ? '▌' : ''}
+            </text>
+          </g>
+
+          {/* ── LICENSE PLATE BOX (lower cameras output) ── */}
+          <g opacity={plateBoxOpacity}>
+            <rect
+              x="35"
+              y="355"
+              width="130"
+              height="28"
+              fill="rgba(255,127,110,0.08)"
+              stroke="#FF7F6E"
+              strokeWidth="1"
+              strokeDasharray="4 3" />
+
+            <g
+              stroke="#FF7F6E"
+              strokeWidth="1.5"
+              fill="none"
+              strokeLinecap="round">
+
+              <polyline points="35,365 35,355 45,355" />
+              <polyline points="165,365 165,355 155,355" />
+              <polyline points="35,373 35,383 45,383" />
+              <polyline points="165,373 165,383 155,383" />
+            </g>
+            <text
+              x="45"
+              y="374"
+              fill="#FFFFFF"
+              fontSize="13"
+              fontWeight="700"
+              letterSpacing="1.5"
+              style={{
+                fontFamily: "'JetBrains Mono', monospace"
+              }}>
+
+              {typedPlate}
             </text>
           </g>
 
@@ -836,22 +935,64 @@ export function GateScanVisualization() {
               r="3"
               fill="#2563EB"
               opacity={beamOpacity * 0.8} />
-            
+
               <circle
               cx="704"
               cy="140"
               r="3"
               fill="#2563EB"
               opacity={beamOpacity * 0.6} />
-            
+
               <circle
               cx="704"
               cy="160"
               r="3"
               fill="#2563EB"
               opacity={beamOpacity * 0.4} />
-            
+
             </g>
+          }
+
+          {/* ── LOWER CAMERA (bumper height, rear-facing) ── */}
+          <line
+            x1="698"
+            y1="355"
+            x2="668"
+            y2="355"
+            stroke="#7B9FFF"
+            strokeWidth="1.5"
+            opacity="0.7" />
+
+          <ellipse
+            cx="653"
+            cy="355"
+            rx="18"
+            ry="9"
+            fill="#1A2035"
+            stroke="#FFFFFF"
+            strokeWidth="1.5"
+            opacity="0.9" />
+
+          <circle
+            cx="646"
+            cy="355"
+            r="5"
+            fill="#1A2035"
+            stroke="#FFFFFF"
+            strokeWidth="1" />
+
+          <circle cx="646" cy="355" r="2.5" fill="#2563EB" opacity="0.9" />
+          {lowerBeamOpacity > 0 &&
+          <line
+            x1="646"
+            y1="360"
+            x2={truckX + 580}
+            y2="380"
+            stroke="#2563EB"
+            strokeWidth="0.8"
+            opacity={lowerBeamOpacity * 0.3}
+            strokeDasharray="6 4" />
+
           }
         </g>
 
