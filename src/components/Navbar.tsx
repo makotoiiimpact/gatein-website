@@ -29,14 +29,20 @@ export function Navbar() {
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0F172A]/90 backdrop-blur-md py-4 border-b border-white/10' : 'bg-transparent py-6'}`}>
       
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
-        <a href="/" className="flex items-center gap-2 cursor-pointer z-10">
+        <a href="/" className="flex items-center gap-2 cursor-pointer z-10 group">
           <img
             src="/GateIn_AI_Brand_Icon.png"
             alt="GateIn AI"
             className="w-8 h-8 rounded-sm" />
 
-          <span className="text-xl font-bold tracking-tight text-white">
-            GateIn AI
+          <span className="text-xl font-bold tracking-tight text-white" aria-label="GateIn AI">
+            <span className="logo-fill-wrap" aria-hidden="true">
+              <span className="logo-fill-base">G</span>
+              <span className="logo-fill-overlay">
+                <span className="logo-fill-overlay-inner">G</span>
+              </span>
+            </span>
+            <span aria-hidden="true">ateIn AI</span>
           </span>
         </a>
 
@@ -73,7 +79,7 @@ export function Navbar() {
           </a>
         </div>
 
-        <a href="/#contact" onClick={(e) => scrollToSection(e, 'contact')} className="hidden md:inline-flex bg-[#2563EB] hover:bg-[#4A6BEE] text-white px-5 py-2.5 rounded-md text-sm font-bold transition-colors cursor-pointer z-10">
+        <a href="/#contact" onClick={(e) => scrollToSection(e, 'contact')} className="cta-glow hidden md:inline-flex bg-[#2563EB] hover:bg-[#4A6BEE] text-white px-5 py-2.5 rounded-md text-sm font-bold cursor-pointer z-10">
           Request a Demo
         </a>
 
@@ -118,7 +124,7 @@ export function Navbar() {
           onClick={() => setMobileMenuOpen(false)}>
             Resources
           </a>
-          <a href="/#contact" onClick={(e) => { scrollToSection(e, 'contact'); setMobileMenuOpen(false); }} className="bg-[#2563EB] text-white px-5 py-3 rounded-md text-base font-bold w-full mt-2 block text-center">
+          <a href="/#contact" onClick={(e) => { scrollToSection(e, 'contact'); setMobileMenuOpen(false); }} className="cta-glow bg-[#2563EB] text-white px-5 py-3 rounded-md text-base font-bold w-full mt-2 block text-center">
             Request a Demo
           </a>
         </div>

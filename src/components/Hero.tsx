@@ -168,7 +168,7 @@ export function Hero() {
           >
             <a
               href="#contact"
-              className="bg-[#2563EB] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold transition-all flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]"
+              className="cta-glow bg-[#2563EB] hover:bg-[#4A6BEE] text-white px-8 py-4 rounded-md text-lg font-bold flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(37,99,235,0.3)]"
             >
               Request a Demo
               <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />

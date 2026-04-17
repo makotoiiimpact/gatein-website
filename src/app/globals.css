@@ -22,3 +22,46 @@
     backface-visibility: hidden;
   }
 }
+
+@layer components {
+  /* CTA glow: subtle scale + blue radial glow on hover */
+  .cta-glow {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  }
+  .cta-glow:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.4), 0 0 40px rgba(37, 99, 235, 0.2);
+  }
+
+  /* Liquid-fill G animation used by the Navbar logo */
+  .logo-fill-wrap {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+  }
+  .logo-fill-base {
+    display: inline-block;
+  }
+  .logo-fill-overlay {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+    height: 0%;
+    transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    color: #2563EB;
+  }
+  .group:hover .logo-fill-overlay,
+  .group:focus-visible .logo-fill-overlay,
+  .logo-fill-wrap:hover .logo-fill-overlay {
+    height: 100%;
+  }
+  .logo-fill-overlay-inner {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    white-space: nowrap;
+  }
+}

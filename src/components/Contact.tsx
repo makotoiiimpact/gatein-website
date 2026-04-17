@@ -147,7 +147,7 @@ export function Contact() {
                 <button
                   type="submit"
                   disabled={status === 'submitting'}
-                  className="w-full bg-[#2563EB] hover:bg-[#4A6BEE] disabled:opacity-60 text-white px-8 py-4 rounded-md text-lg font-bold transition-all flex items-center justify-center gap-2"
+                  className="cta-glow w-full bg-[#2563EB] hover:bg-[#4A6BEE] disabled:opacity-60 text-white px-8 py-4 rounded-md text-lg font-bold flex items-center justify-center gap-2"
                 >
                   {status === 'submitting' ? (
                     <>
