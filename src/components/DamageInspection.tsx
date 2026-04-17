@@ -72,8 +72,6 @@ function DamageCard({
     }
   }, [images.length, staggerIndex])
 
-  const currentFile = images[activeIdx] ?? ''
-
   return (
     <div
       className="relative rounded-lg overflow-hidden aspect-[4/3]"
@@ -101,9 +99,6 @@ function DamageCard({
       />
       <span className="absolute bottom-2.5 left-3 right-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/95">
         {label}
-      </span>
-      <span className="absolute top-2.5 left-3 font-mono text-[9px] uppercase tracking-[0.1em] text-white/70 bg-black/30 px-1.5 py-0.5 rounded-sm backdrop-blur-[2px]">
-        {currentFile}
       </span>
     </div>
   )
