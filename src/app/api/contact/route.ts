@@ -1,5 +1,34 @@
 import { NextResponse } from 'next/server'
 
+// ─── Rate limit ─── In-memory token bucket keyed by IP.
+// 3 submissions per hour per IP. This is per-lambda instance, not global — good enough
+// for baseline spam defense on Vercel; graduate to Upstash/KV if abuse persists.
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000 // 1 hour
+const RATE_LIMIT_MAX = 3
+type Bucket = { count: number; windowStart: number }
+const buckets = new Map<string, Bucket>()
+
+function rateLimitHit(key: string): { limited: true; retryAfterSec: number } | { limited: false } {
+  const now = Date.now()
+  const b = buckets.get(key)
+  if (!b || now - b.windowStart > RATE_LIMIT_WINDOW_MS) {
+    buckets.set(key, { count: 1, windowStart: now })
+    return { limited: false }
+  }
+  if (b.count >= RATE_LIMIT_MAX) {
+    const retryAfterMs = RATE_LIMIT_WINDOW_MS - (now - b.windowStart)
+    return { limited: true, retryAfterSec: Math.max(1, Math.ceil(retryAfterMs / 1000)) }
+  }
+  b.count += 1
+  return { limited: false }
+}
+
+function clientIp(req: Request): string {
+  const xff = req.headers.get('x-forwarded-for')
+  if (xff) return xff.split(',')[0].trim()
+  return req.headers.get('x-real-ip') || 'unknown'
+}
+
 // RFC 5322 pragmatic regex — good enough for server-side validation.
 // Rejects obvious malformed input without trying to parse every esoteric valid address.
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -78,6 +107,16 @@ function validate(body: unknown): { ok: true; data: {
 }
 
 export async function POST(request: Request) {
+  // Rate limit first — cheaper than parsing JSON for an abusive client.
+  const ip = clientIp(request)
+  const rl = rateLimitHit(ip)
+  if (rl.limited) {
+    return NextResponse.json(
+      { error: 'Too many submissions. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfterSec) } },
+    )
+  }
+
   let body: unknown
   try {
     body = await request.json()
