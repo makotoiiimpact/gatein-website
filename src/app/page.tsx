@@ -2,6 +2,7 @@ import { Navbar } from '@/components/Navbar'
 import { Hero } from '@/components/Hero'
 import { PainPoints } from '@/components/PainPoints'
 import { DamageInspection } from '@/components/DamageInspection'
+import { DamageScanSequence } from '@/components/DamageScanSequence'
 import { Container3D } from '@/components/Container3D'
 import { Products } from '@/components/Products'
 import { HowItWorks } from '@/components/HowItWorks'
@@ -23,6 +24,7 @@ export default function Home() {
         <Hero />
         <PainPoints />
         <DamageInspection />
+        <DamageScanSequence />
         <Container3D />
         <Products />
         <HowItWorks />
