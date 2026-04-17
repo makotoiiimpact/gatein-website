@@ -391,7 +391,7 @@ export function Container3D() {
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight font-sans">
             Automated scan. Bounded detections. Digital record.
           </h2>
-          <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed font-sans">
+          <p className="text-base md:text-lg text-gray-400 mx-auto leading-relaxed font-sans">
             A complete AI vision system in a single edge deployment. Cameras quickly sweep inside and
             out of the containers. The model returns damage classes, bounding boxes, and confidence
             scores — written to the yard system in real time.

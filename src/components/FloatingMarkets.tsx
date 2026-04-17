@@ -13,12 +13,14 @@ const MARKETS = [
     name: 'Intermodal Terminals',
     color: '#6366F1',
     tags: ['Rail OCR', 'Chassis Tracking', 'Cross-dock Flow'],
-    src: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=440&h=330&fit=crop&auto=format',
+    // Pexels — container yard with stacked intermodal containers; free commercial use
+    src: 'https://images.pexels.com/photos/1427541/pexels-photo-1427541.jpeg?auto=compress&cs=tinysrgb&w=880&h=660&fit=crop',
   },
   {
     name: 'Warehouse & DC Yards',
     color: '#475569',
     tags: ['Dock Scheduling', 'Trailer Tracking', 'WMS Integration'],
+    // TODO(image): needs an aerial / exterior DC yard shot with trailers + dock doors — current image is an interior aisle
     src: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=390&h=520&fit=crop&auto=format',
   },
   {
@@ -358,12 +360,15 @@ export function FloatingMarkets() {
               fontSize: isMobile ? 14 : 15,
               lineHeight: 1.65,
               color: '#64748B',
-              maxWidth: 400,
+              maxWidth: isMobile ? 400 : 560,
               margin: '0 auto',
             }}
           >
-            From container depots to distribution centers, our AI-native platform
-            adapts to your unique yard management challenges.
+            Purpose-built AI for every link in the logistics chain. From port terminals to
+            distribution centers, our computer vision platform learns the rhythms of your yard —
+            reading container codes, tracking chassis, flagging damage, and feeding every movement
+            into your existing systems. One platform, trained on the realities of global supply
+            chain operations.
           </p>
         </div>
 
