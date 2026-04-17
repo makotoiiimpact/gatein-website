@@ -2,8 +2,12 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Calendar, CheckCircle2, Loader2 } from 'lucide-react';
+import { Mail, CheckCircle2, Loader2 } from 'lucide-react';
 import posthog from 'posthog-js';
+
+// Mirror of server limits — keeps UX and API in sync.
+const MAX = { name: 100, company: 200, email: 254, message: 4000 };
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function Contact() {
   const [name, setName] = useState('');
@@ -12,25 +16,39 @@ export function Contact() {
   const [facilityType, setFacilityType] = useState('');
   const [helpType, setHelpType] = useState('');
   const [message, setMessage] = useState('');
+  // Honeypot — if a bot fills this hidden field, drop the submission silently.
+  const [website, setWebsite] = useState('');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErrorMessage('');
+
+    // Client-side validation — server revalidates (source of truth)
+    if (!name.trim()) return setErrorMessage('Please enter your name.');
+    if (!EMAIL_RE.test(email.trim())) return setErrorMessage('Please enter a valid email address.');
+    if (message.length > MAX.message) return setErrorMessage('Message too long.');
+
     setStatus('submitting');
 
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, company, email, facilityType, helpType, message }),
+        body: JSON.stringify({ name, company, email, facilityType, helpType, message, website }),
       });
 
-      if (!res.ok) throw new Error('Submission failed');
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || 'Submission failed');
+      }
 
       setStatus('success');
       posthog.capture('demo_requested', { company, facilityType });
-    } catch {
+    } catch (err) {
       setStatus('error');
+      setErrorMessage(err instanceof Error ? err.message : 'Submission failed');
     }
   }
 
@@ -65,13 +83,32 @@ export function Contact() {
                 <p className="text-gray-400">We&apos;ll be in touch within 24 hours.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">Name</label>
+              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+                {/* Honeypot — hidden from humans + assistive tech, trip-wire for bots. */}
+                <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, overflow: 'hidden' }}>
+                  <label>
+                    Website (leave blank)
                     <input
                       type="text"
+                      name="website"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="contact-name" className="block text-sm font-medium text-gray-400 mb-2">Name</label>
+                    <input
+                      id="contact-name"
+                      name="name"
+                      type="text"
                       required
+                      maxLength={MAX.name}
+                      autoComplete="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors"
@@ -79,9 +116,13 @@ export function Contact() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">Company</label>
+                    <label htmlFor="contact-company" className="block text-sm font-medium text-gray-400 mb-2">Company</label>
                     <input
+                      id="contact-company"
+                      name="company"
                       type="text"
+                      maxLength={MAX.company}
+                      autoComplete="organization"
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors"
@@ -91,10 +132,15 @@ export function Contact() {
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">Email</label>
+                    <label htmlFor="contact-email" className="block text-sm font-medium text-gray-400 mb-2">Email</label>
                     <input
+                      id="contact-email"
+                      name="email"
                       type="email"
                       required
+                      maxLength={MAX.email}
+                      autoComplete="email"
+                      inputMode="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors"
@@ -102,8 +148,10 @@ export function Contact() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-2">Facility Type</label>
+                    <label htmlFor="contact-facility" className="block text-sm font-medium text-gray-400 mb-2">Facility Type</label>
                     <select
+                      id="contact-facility"
+                      name="facilityType"
                       value={facilityType}
                       onChange={(e) => setFacilityType(e.target.value)}
                       className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors appearance-none"
@@ -121,8 +169,10 @@ export function Contact() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">How can we help?</label>
+                  <label htmlFor="contact-help" className="block text-sm font-medium text-gray-400 mb-2">How can we help?</label>
                   <select
+                    id="contact-help"
+                    name="helpType"
                     value={helpType}
                     onChange={(e) => setHelpType(e.target.value)}
                     className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors appearance-none"
@@ -135,9 +185,12 @@ export function Contact() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Message</label>
+                  <label htmlFor="contact-message" className="block text-sm font-medium text-gray-400 mb-2">Message</label>
                   <textarea
+                    id="contact-message"
+                    name="message"
                     rows={4}
+                    maxLength={MAX.message}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     className="w-full bg-[#0F172A] border border-white/10 rounded-md px-4 py-3 text-white focus:outline-none focus:border-[#2563EB] transition-colors resize-none"
@@ -160,9 +213,12 @@ export function Contact() {
                 </button>
                 <p className="text-xs text-gray-500 text-center">By submitting, you agree to receive communications from GateIn AI.</p>
                 {status === 'error' && (
-                  <p className="text-red-400 text-sm text-center">
-                    Something went wrong. Please try again or email us directly.
+                  <p role="alert" className="text-red-400 text-sm text-center">
+                    {errorMessage || 'Something went wrong. Please try again or email us directly.'}
                   </p>
+                )}
+                {errorMessage && status !== 'error' && (
+                  <p role="alert" className="text-red-400 text-sm text-center">{errorMessage}</p>
                 )}
               </form>
             )}
