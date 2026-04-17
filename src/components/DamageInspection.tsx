@@ -111,7 +111,7 @@ function SurveyFormDocument() {
       >
         <img
           src="/assets/damage/survey-form.png"
-          alt="IICL Container Survey Form sample"
+          alt="Paper container inspection survey form — the handwritten record inspectors fill out at the gate today"
           loading="lazy"
           className="block w-full h-auto"
           style={{ filter: 'sepia(0.08) contrast(0.95)' }}

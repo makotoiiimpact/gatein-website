@@ -61,7 +61,7 @@ function TeamCard({ member, index }: { member: typeof team[number]; index: numbe
       {member.photo ? (
         <motion.img
           src={member.photo}
-          alt={member.name}
+          alt={`${member.name}, ${member.role} at GateIn AI`}
           className="w-24 h-24 rounded-full mx-auto mb-6 object-cover object-top ring-2 ring-transparent transition-all duration-300"
           whileHover={{ scale: 1.08 }}
         />

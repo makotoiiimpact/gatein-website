@@ -8,36 +8,42 @@ const MARKETS = [
     color: '#3B82F6',
     tags: ['Container OCR', 'Damage Detection', 'Inventory Accuracy'],
     src: '/shipping-containers-stacked-port.jpg',
+    alt: 'Shipping containers stacked at a port depot',
   },
   {
     name: 'Intermodal Terminals',
     color: '#6366F1',
     tags: ['Rail OCR', 'Chassis Tracking', 'Cross-dock Flow'],
     src: 'https://images.pexels.com/photos/753331/pexels-photo-753331.jpeg?auto=compress&cs=tinysrgb&w=2400',
+    alt: 'Intermodal container terminal at night with stacked cargo containers',
   },
   {
     name: 'Warehouse & DC Yards',
     color: '#475569',
     tags: ['Dock Scheduling', 'Trailer Tracking', 'WMS Integration'],
     src: 'https://images.pexels.com/photos/1427107/pexels-photo-1427107.jpeg?auto=compress&cs=tinysrgb&w=2400',
+    alt: 'Aerial view of a distribution center yard with rows of shipping containers',
   },
   {
     name: 'Third-Party Logistics (3PL)',
     color: '#0D9488',
     tags: ['Multi-tenant', 'Customer Portals', 'SLA Tracking'],
     src: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=460&h=340&fit=crop&auto=format',
+    alt: 'Container vessel docked at a 3PL port terminal with gantry cranes',
   },
   {
     name: 'Refrigerated & Cold Storage',
     color: '#0EA5E9',
     tags: ['Reefer Priority', 'Cold Chain', 'FSMA Compliance'],
     src: '/coldstoragecontainer.png',
+    alt: 'Refrigerated reefer container stack at a cold-chain storage facility',
   },
   {
     name: 'Manufacturing Facilities',
     color: '#8B5CF6',
     tags: ['JIT Delivery', 'Vendor Managed', 'ERP Integration'],
     src: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=480&h=370&fit=crop&auto=format',
+    alt: 'Industrial manufacturing facility with loading bays and production equipment',
   },
 ]
 
@@ -102,7 +108,7 @@ function FloatingCard({ market, config, sectionRef, index }: {
     >
       <img
         src={market.src}
-        alt={market.name}
+        alt={market.alt}
         loading="lazy"
         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
       />
@@ -117,7 +123,7 @@ function FloatingCard({ market, config, sectionRef, index }: {
           padding: '16px 18px',
         }}
       >
-        <div
+        <h3
           style={{
             color: '#fff',
             fontFamily: "'JetBrains Mono', monospace",
@@ -126,11 +132,12 @@ function FloatingCard({ market, config, sectionRef, index }: {
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
             textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+            margin: 0,
             marginBottom: 8,
           }}
         >
           {market.name}
-        </div>
+        </h3>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
           {market.tags.map((tag) => (
             <span
@@ -205,7 +212,7 @@ function MobileCard({ market, speed, sectionRef, index }: {
     >
       <img
         src={market.src}
-        alt={market.name}
+        alt={market.alt}
         loading="lazy"
         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
       />
@@ -220,7 +227,7 @@ function MobileCard({ market, speed, sectionRef, index }: {
           padding: '10px 12px',
         }}
       >
-        <div
+        <h3
           style={{
             color: '#fff',
             fontFamily: "'JetBrains Mono', monospace",
@@ -228,11 +235,12 @@ function MobileCard({ market, speed, sectionRef, index }: {
             fontWeight: 600,
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
+            margin: 0,
             marginBottom: 5,
           }}
         >
           {market.name}
-        </div>
+        </h3>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
           {market.tags.map((tag) => (
             <span
