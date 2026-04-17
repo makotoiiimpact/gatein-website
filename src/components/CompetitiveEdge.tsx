@@ -28,7 +28,7 @@ const FlowConnection = ({
 
 
 
-}: {lineColor: string;textColor: string;label?: string;icon?: any;isError?: boolean;}) =>
+}: {lineColor: string;textColor: string;label?: string;icon?: React.ElementType;isError?: boolean;}) =>
 <div className="flex flex-col items-center my-1 relative z-0">
     <div className={`w-[2px] h-10 ${lineColor}`} />
     <ArrowDown size={20} className={`-mt-2 ${textColor}`} />
