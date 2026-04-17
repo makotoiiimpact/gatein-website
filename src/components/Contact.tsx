@@ -230,7 +230,7 @@ export function Contact() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-[#1E293B] p-8 rounded-lg border border-white/5 h-[calc(50%-12px)] flex flex-col justify-center"
+              className="bg-[#1E293B] p-8 rounded-lg border border-white/5 h-auto lg:h-[calc(50%-12px)] flex flex-col justify-center"
             >
               <div className="w-12 h-12 bg-[#2563EB]/10 rounded-lg flex items-center justify-center text-[#2563EB] mb-6 border border-[#2563EB]/20">
                 <Mail size={24} />
@@ -246,7 +246,7 @@ export function Contact() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-[#1E293B] p-8 rounded-lg border border-white/5 h-[calc(50%-12px)] flex flex-col justify-start"
+              className="bg-[#1E293B] p-8 rounded-lg border border-white/5 h-auto lg:h-[calc(50%-12px)] flex flex-col justify-start"
             >
               <h3 className="text-xl font-bold mb-8">What happens next?</h3>
               <ol className="space-y-4 text-base">
