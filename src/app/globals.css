@@ -23,6 +23,22 @@
   }
 }
 
+@layer base {
+  /* Keyboard focus ring — applies to every interactive element by default.
+     Works on dark backgrounds (blue ring + offset), overridable per-component via focus-visible:* utilities. */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [role='button']:focus-visible,
+  [tabindex]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #0F172A, 0 0 0 4px #2563EB;
+    border-radius: 4px;
+  }
+}
+
 @layer components {
   /* CTA glow: subtle scale + blue radial glow on hover */
   .cta-glow {

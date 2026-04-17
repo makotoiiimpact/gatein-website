@@ -10,18 +10,21 @@ const conditions = [
     title: 'DAY',
     desc: 'Clear conditions, full accuracy',
     video: '/day-scan.mp4',
+    ariaLabel: 'Container scanning demonstration in clear daylight conditions',
   },
   {
     icon: <CloudRain className="text-blue-500" size={24} />,
     title: 'RAIN',
     desc: 'Wet weather, no degradation',
     video: '/assets/videos/rain.mp4',
+    ariaLabel: 'Container scanning demonstration in wet weather conditions',
   },
   {
     icon: <Moon className="text-indigo-400" size={24} />,
     title: 'NIGHT',
     desc: 'Complete darkness, infrared capable',
     video: '/assets/videos/night.mp4',
+    ariaLabel: 'Container scanning demonstration in darkness with infrared',
   },
 ];
 
@@ -57,6 +60,7 @@ export function AllWeather() {
                   loop
                   muted
                   playsInline
+                  aria-label={condition.ariaLabel}
                   className="absolute inset-0 w-full h-full object-cover object-center"
                 />
               </div>
