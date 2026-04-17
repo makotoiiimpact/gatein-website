@@ -146,8 +146,8 @@ function SurveyFormDocument() {
           }}
         />
       </div>
-      <figcaption className="mt-6 font-mono text-[10px] uppercase tracking-[0.14em] text-white/55 leading-relaxed">
-        IICL Container Survey Form — still filled by hand at most facilities
+      <figcaption className="mt-6 font-mono text-sm md:text-base text-white/70 leading-relaxed">
+        Container Survey Form — still filled by hand at most facilities
       </figcaption>
     </figure>
   )
@@ -161,12 +161,17 @@ function StatPill({ icon: Icon, label, value, tone }: {
 }) {
   const ring = tone === 'manual' ? 'border-white/10 bg-white/5' : 'border-[#2563EB]/30 bg-[#2563EB]/5'
   const accent = tone === 'manual' ? 'text-[#FF6B6B]' : 'text-[#2563EB]'
+  const iconBg = tone === 'manual' ? 'bg-[#FF6B6B]/10' : 'bg-[#2563EB]/15'
   return (
-    <div className={`flex items-center gap-3 rounded-lg border ${ring} px-4 py-3`}>
-      <Icon className={`w-4 h-4 ${accent}`} />
-      <div>
-        <div className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/50">{label}</div>
-        <div className="text-white font-semibold text-sm">{value}</div>
+    <div className={`flex items-center gap-5 rounded-xl border ${ring} px-6 py-5 md:px-7 md:py-6`}>
+      <div className={`shrink-0 w-12 h-12 rounded-lg flex items-center justify-center ${iconBg}`}>
+        <Icon className={`w-6 h-6 ${accent}`} />
+      </div>
+      <div className="min-w-0">
+        <div className="font-mono text-xs md:text-sm uppercase tracking-[0.16em] text-white/55 mb-1">
+          {label}
+        </div>
+        <div className="text-white font-bold text-xl md:text-2xl leading-tight">{value}</div>
       </div>
     </div>
   )
@@ -192,9 +197,6 @@ export function DamageInspection() {
           viewport={{ once: true }}
           className="text-center mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/15 bg-white/[0.03] text-white/70 font-mono text-[11px] uppercase tracking-[0.18em] mb-6">
-            How damage is done today
-          </div>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-5 max-w-3xl mx-auto">
             From paper forms to pixel-perfect detection.
           </h2>
@@ -212,11 +214,11 @@ export function DamageInspection() {
           className="relative rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-12 flex flex-col"
         >
           <div className="flex items-center mb-6">
-            <Eyebrow tone="manual">Before · Manual</Eyebrow>
+            <Eyebrow tone="manual">How damage is done today · Manual</Eyebrow>
           </div>
 
           <h3 className="text-2xl md:text-3xl font-semibold mb-3">Clipboards, codes, and best-guess visibility.</h3>
-          <p className="text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-3xl">
+          <p className="text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-5xl">
             Inspectors walk the container, eyeball the damage, and mark handwritten codes on a paper form.
             Photos live on someone&apos;s phone. The record is a faxable scan.
           </p>
@@ -235,7 +237,7 @@ export function DamageInspection() {
 
           <SurveyFormDocument />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-auto pt-10 max-w-2xl">
+          <div className="grid grid-cols-2 gap-4 mt-auto pt-10">
             <StatPill icon={Clock} tone="manual" label="Time per audit" value="~30 min" />
             <StatPill icon={PenLine} tone="manual" label="Record type" value="Handwritten" />
           </div>

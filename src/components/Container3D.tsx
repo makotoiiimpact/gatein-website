@@ -293,6 +293,23 @@ export function Container3D() {
     [0, 1, 1, 0]
   );
   const sideBoxOp = useTransform(progress, [0.15, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
+
+  // ── Scroll-driven grid scan (Act 1 pre-roll) ──
+  // Cyan scanning square sweeps the front panel before the code detection box lands.
+  const scanOp = useTransform(progress, [0.0, 0.03, 0.16, 0.2], [0, 1, 1, 0]);
+  // Cell index 0..19 on a 5 × 4 grid (cols × rows), left-to-right then top-to-bottom.
+  const scanIdx = useTransform(progress, [0.0, 0.18], [0, 19.999]);
+  const scanLeftPct = useTransform(scanIdx, (v: number) => {
+    const i = Math.max(0, Math.min(19, Math.floor(v)));
+    return `${(i % 5) * 20}%`;
+  });
+  const scanTopPct = useTransform(scanIdx, (v: number) => {
+    const i = Math.max(0, Math.min(19, Math.floor(v)));
+    return `${Math.floor(i / 5) * 25}%`;
+  });
+  // Extra damage bounding boxes (appear after the scan sweep + before Act 1 fades)
+  const damageBox1Op = useTransform(progress, [0.16, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
+  const damageBox2Op = useTransform(progress, [0.2, 0.24, 0.3, 0.35], [0, 1, 1, 0]);
   // ==========================================
   // 3D TRANSFORMS
   // ==========================================
@@ -367,15 +384,17 @@ export function Container3D() {
           style={{
             opacity: headerOp
           }}>
-          
-          <p className="text-[#2563EB] font-semibold text-xs uppercase tracking-[0.25em] mb-3 font-sans">
-            Industrial Precision Architecture
-          </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight font-sans">
-            See What's Inside
+
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 text-[#2563EB] font-mono text-xs md:text-sm uppercase tracking-[0.2em] mb-5">
+            After · GateIn AI
+          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight font-sans">
+            Automated scan. Bounded detections. Digital record.
           </h2>
-          <p className="text-base md:text-lg text-gray-400 max-w-lg mx-auto leading-relaxed font-sans">
-            A complete AI vision system in a single edge deployment.
+          <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed font-sans">
+            A complete AI vision system in a single edge deployment. Cameras quickly sweep inside and
+            out of the containers. The model returns damage classes, bounding boxes, and confidence
+            scores — written to the yard system in real time.
           </p>
         </motion.div>
 
@@ -526,13 +545,42 @@ export function Container3D() {
                     '0 4px 30px rgba(0,0,0,0.5)'
                   )}>
                   
+                  {/* Grid scan overlay (pre-Act 1: cyan sweeper) */}
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ opacity: scanOp }}
+                  >
+                    {/* Faint grid overlay */}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        backgroundImage:
+                          'linear-gradient(rgba(6,182,212,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.18) 1px, transparent 1px)',
+                        backgroundSize: '20% 25%',
+                      }}
+                    />
+                    {/* Cyan scanning cell */}
+                    <motion.div
+                      className="absolute"
+                      style={{
+                        left: scanLeftPct,
+                        top: scanTopPct,
+                        width: '20%',
+                        height: '25%',
+                        border: '2px solid #06B6D4',
+                        background: 'rgba(6,182,212,0.22)',
+                        boxShadow: '0 0 12px rgba(6,182,212,0.6)',
+                      }}
+                    />
+                  </motion.div>
+
                   {/* Act 1: Front Bounding Box & Code */}
                   <motion.div
                     style={{
                       opacity: frontBoxOp
                     }}
                     className="absolute top-4 right-4">
-                    
+
                     <div className="absolute -inset-3 border-2 border-[#FF7F6E] bg-[#FF7F6E]/10" />
                     <div className="relative text-white font-mono text-sm font-bold tracking-wider bg-[#0A0F1A]/90 p-2.5 border border-[#FF7F6E]/30 whitespace-nowrap translate-x-[110%]">
                       EGHU 826260-6
@@ -541,6 +589,43 @@ export function Container3D() {
                       </div>
                     </div>
                   </motion.div>
+
+                  {/* Damage bounding box: amber (rust) on upper-left quadrant */}
+                  <motion.div
+                    className="absolute pointer-events-none"
+                    style={{
+                      opacity: damageBox1Op,
+                      left: '8%',
+                      top: '18%',
+                      width: '22%',
+                      height: '30%',
+                      border: '2px dashed #F59E0B',
+                      background: 'rgba(245,158,11,0.12)',
+                    }}
+                  >
+                    <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
+                      RST-11 · 96.1%
+                    </div>
+                  </motion.div>
+
+                  {/* Damage bounding box: blue (hole) on lower-middle */}
+                  <motion.div
+                    className="absolute pointer-events-none"
+                    style={{
+                      opacity: damageBox2Op,
+                      left: '40%',
+                      top: '55%',
+                      width: '18%',
+                      height: '26%',
+                      border: '2px dashed #2563EB',
+                      background: 'rgba(37,99,235,0.12)',
+                    }}
+                  >
+                    <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#2563EB]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#2563EB] whitespace-nowrap">
+                      HBL-02 · 94.8%
+                    </div>
+                  </motion.div>
+
                   {/* Door details */}
                   <div className="absolute right-7 top-[10%] bottom-[10%] flex flex-col justify-between">
                     <div className="w-[3px] h-14 rounded-full bg-white/10" />
