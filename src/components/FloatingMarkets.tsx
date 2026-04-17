@@ -13,15 +13,13 @@ const MARKETS = [
     name: 'Intermodal Terminals',
     color: '#6366F1',
     tags: ['Rail OCR', 'Chassis Tracking', 'Cross-dock Flow'],
-    // Pexels — container yard with stacked intermodal containers; free commercial use
-    src: 'https://images.pexels.com/photos/1427541/pexels-photo-1427541.jpeg?auto=compress&cs=tinysrgb&w=880&h=660&fit=crop',
+    src: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=2400&auto=format&fit=crop',
   },
   {
     name: 'Warehouse & DC Yards',
     color: '#475569',
     tags: ['Dock Scheduling', 'Trailer Tracking', 'WMS Integration'],
-    // TODO(image): needs an aerial / exterior DC yard shot with trailers + dock doors — current image is an interior aisle
-    src: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=390&h=520&fit=crop&auto=format',
+    src: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2400&auto=format&fit=crop',
   },
   {
     name: 'Third-Party Logistics (3PL)',
