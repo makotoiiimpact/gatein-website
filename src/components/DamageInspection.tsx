@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { PenLine, Clock, Scan, Box, Database } from 'lucide-react'
+import { PenLine, Clock, Scan, Database } from 'lucide-react'
 
 type DamageType = {
   label: string
@@ -33,7 +33,7 @@ function Eyebrow({ children, tone }: { children: React.ReactNode; tone: 'manual'
       : 'text-[#2563EB] bg-[#2563EB]/10 border-[#2563EB]/30'
   return (
     <span
-      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[11px] font-mono uppercase tracking-[0.18em] ${cls}`}
+      className={`inline-flex items-center gap-2 px-5 py-2 rounded-full border text-sm font-mono uppercase tracking-[0.2em] ${cls}`}
     >
       {children}
     </span>
@@ -313,11 +313,10 @@ export function DamageInspection() {
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="relative rounded-2xl border border-white/10 bg-white/[0.02] p-8"
+            className="relative rounded-2xl border border-white/10 bg-white/[0.02] p-8 flex flex-col"
           >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center mb-6">
               <Eyebrow tone="manual">Before · Manual</Eyebrow>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-white/30">Ref: UBICACIONES.xlsx</span>
             </div>
 
             <h3 className="text-xl font-semibold mb-2">Clipboards, codes, and best-guess visibility.</h3>
@@ -340,7 +339,7 @@ export function DamageInspection() {
 
             <SurveyFormDocument />
 
-            <div className="grid grid-cols-2 gap-3 mt-8">
+            <div className="grid grid-cols-2 gap-3 mt-auto pt-8">
               <StatPill icon={Clock} tone="manual" label="Time per audit" value="4–6 min" />
               <StatPill icon={PenLine} tone="manual" label="Record type" value="Handwritten" />
             </div>
@@ -352,11 +351,10 @@ export function DamageInspection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15 }}
-            className="relative rounded-2xl border border-[#2563EB]/25 bg-gradient-to-br from-[#2563EB]/[0.06] to-transparent p-8"
+            className="relative rounded-2xl border border-[#2563EB]/25 bg-gradient-to-br from-[#2563EB]/[0.06] to-transparent p-8 flex flex-col"
           >
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center mb-6">
               <Eyebrow tone="ai">After · GateIn AI</Eyebrow>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-white/40">Container Inspector V4</span>
             </div>
 
             <h3 className="text-xl font-semibold mb-2">Automated scan. Bounded detections. Digital record.</h3>
@@ -367,14 +365,9 @@ export function DamageInspection() {
 
             <ContainerDetectionMock />
 
-            <div className="grid grid-cols-2 gap-3 mt-8">
+            <div className="grid grid-cols-2 gap-3 mt-auto pt-8">
               <StatPill icon={Scan}     tone="ai" label="Time per audit"  value="< 30 sec" />
               <StatPill icon={Database} tone="ai" label="Record type"     value="Digital evidence" />
-            </div>
-
-            <div className="flex items-center gap-2 mt-6 text-[11px] font-mono uppercase tracking-wider text-white/40">
-              <Box className="w-3.5 h-3.5" />
-              Every container. Every side. Every pass.
             </div>
           </motion.div>
         </div>
