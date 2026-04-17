@@ -7,7 +7,7 @@ const MARKETS = [
     name: 'Container Depots',
     color: '#3B82F6',
     tags: ['Container OCR', 'Damage Detection', 'Inventory Accuracy'],
-    src: '/shipping-containers-stacked-port.jpg',
+    src: '/shipping-containers-stacked-port.webp',
     alt: 'Shipping containers stacked at a port depot',
   },
   {
@@ -35,7 +35,7 @@ const MARKETS = [
     name: 'Refrigerated & Cold Storage',
     color: '#0EA5E9',
     tags: ['Reefer Priority', 'Cold Chain', 'FSMA Compliance'],
-    src: '/coldstoragecontainer.png',
+    src: '/coldstoragecontainer.webp',
     alt: 'Refrigerated reefer container stack at a cold-chain storage facility',
   },
   {
