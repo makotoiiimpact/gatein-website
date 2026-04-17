@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 type Product = {
@@ -13,40 +13,26 @@ const products: Product[] = [
   {
     title: 'Gate OCR',
     desc: 'AI-powered container code reading at the gate. 82% faster processing.',
-    // Atmospheric container/metal close-up for the gate read
-    bg: '/assets/damage/5.jpeg',
+    bg: '/assets/images/product-cards/gate-ocr-bg.png',
   },
   {
     title: 'Yard Analytics',
     desc: 'Real-time dashboards, detention tracking, and NLP queries.',
-    // Aerial of a busy container yard — matches analytics / overview framing
-    bg: 'https://images.pexels.com/photos/1427107/pexels-photo-1427107.jpeg?auto=compress&cs=tinysrgb&w=2400',
+    bg: '/assets/images/product-cards/yard-analytics-bg.png',
   },
   {
     title: 'Damage Detection',
     desc: 'External + internal container damage assessment.',
-    // Real damage photo — rust/corrosion close-up
-    bg: '/assets/damage/3.jpeg',
+    bg: '/assets/images/product-cards/damage-detection-bg.png',
   },
   {
     title: 'Vehicle Manager',
     desc: 'Track human and autonomous vehicles across the facility.',
-    // Night port vessel / vehicle movement at scale
-    bg: 'https://images.pexels.com/photos/753331/pexels-photo-753331.jpeg?auto=compress&cs=tinysrgb&w=2400',
+    bg: '/assets/images/product-cards/vehicle-manager-bg.png',
   },
 ]
 
-function ProductCard({
-  product,
-  index,
-  onActivate,
-  isActive,
-}: {
-  product: Product
-  index: number
-  onActivate: (title: string | null) => void
-  isActive: boolean
-}) {
+function ProductCard({ product, index }: { product: Product; index: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState({ x: -9999, y: -9999 })
   const [isHovering, setIsHovering] = useState(false)
@@ -57,19 +43,6 @@ function ProductCard({
     setPos({ x: e.clientX - r.left, y: e.clientY - r.top })
   }
 
-  const handleEnter = () => {
-    setIsHovering(true)
-    onActivate(product.title)
-  }
-  const handleLeave = () => {
-    setIsHovering(false)
-    onActivate(null)
-  }
-  // Tap toggle for touch devices (mouseleave fires unreliably there)
-  const handleClick = () => {
-    onActivate(isActive ? null : product.title)
-  }
-
   return (
     <motion.div
       ref={ref}
@@ -78,12 +51,38 @@ function ProductCard({
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
       onMouseMove={handleMove}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-      onClick={handleClick}
-      className="group relative p-8 rounded-lg border border-slate-200 bg-white flex flex-col h-full cursor-default transition-[transform,box-shadow,border-color,background-color] duration-300 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] hover:border-dashed hover:border-[#2563EB]"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+      onClick={() => setIsHovering((v) => !v)}
+      className="group relative p-8 rounded-lg border border-slate-200 bg-white flex flex-col h-full cursor-default overflow-hidden transition-[transform,box-shadow,border-color,background-color] duration-300 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] hover:border-dashed hover:border-[#2563EB]"
     >
-      {/* Cursor-following radial border glow (mask-composite trick) */}
+      {/* Hover background image — fades IN at 25% opacity behind text, 400ms ease */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `url(${product.bg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: isHovering ? 0.25 : 0,
+          transition: 'opacity 400ms ease',
+          zIndex: 0,
+        }}
+      />
+      {/* Subtle light wash so text stays legible on top of the photo */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.15) 100%)',
+          opacity: isHovering ? 1 : 0,
+          transition: 'opacity 400ms ease',
+          zIndex: 1,
+        }}
+      />
+
+      {/* Cursor-following radial border glow (mask-composite trick) — sits above bg */}
       <div
         aria-hidden="true"
         className="absolute inset-0 rounded-lg pointer-events-none transition-opacity duration-300"
@@ -95,6 +94,7 @@ function ProductCard({
             'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
+          zIndex: 2,
         }}
       />
       {/* Soft inner glow */}
@@ -104,16 +104,17 @@ function ProductCard({
         style={{
           opacity: isHovering ? 1 : 0,
           background: `radial-gradient(500px circle at ${pos.x}px ${pos.y}px, rgba(37,99,235,0.08), rgba(37,99,235,0) 45%)`,
+          zIndex: 2,
         }}
       />
 
-      <h3 className="relative text-2xl font-bold mb-3">{product.title}</h3>
-      <p className="relative text-slate-600 flex-grow">
+      <h3 className="relative z-10 text-2xl font-bold mb-3">{product.title}</h3>
+      <p className="relative z-10 text-slate-700 flex-grow">
         {product.desc.split('82%').map((part, i, arr) => (
           <Fragment key={i}>
             {part}
             {i < arr.length - 1 && (
-              <span className="font-mono font-medium text-slate-800">82%</span>
+              <span className="font-mono font-medium text-slate-900">82%</span>
             )}
           </Fragment>
         ))}
@@ -123,65 +124,9 @@ function ProductCard({
 }
 
 export function Products() {
-  const [activeCard, setActiveCard] = useState<string | null>(null)
-  const sectionRef = useRef<HTMLElement>(null)
-  const activeProduct = products.find((p) => p.title === activeCard)
-
-  // Tap outside any card (on touch devices) clears the active background.
-  useEffect(() => {
-    if (!activeCard) return
-    const handleDocumentPointer = (e: PointerEvent) => {
-      const section = sectionRef.current
-      if (!section || !(e.target instanceof Node)) return
-      // If pointer lands outside the section entirely, clear.
-      if (!section.contains(e.target)) {
-        setActiveCard(null)
-        return
-      }
-      // Inside section: clear only if tap landed outside any card.
-      const card = (e.target as Element).closest('[data-product-card]')
-      if (!card) setActiveCard(null)
-    }
-    document.addEventListener('pointerdown', handleDocumentPointer)
-    return () => document.removeEventListener('pointerdown', handleDocumentPointer)
-  }, [activeCard])
-
   return (
-    <section
-      ref={sectionRef}
-      id="products"
-      className="relative py-32 bg-white text-slate-900 overflow-hidden"
-    >
-      {/* Ambient hover background — swaps image per active card, 22% opacity + blur, 600ms crossfade */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          opacity: activeProduct ? 0.22 : 0,
-          transition: 'opacity 0.6s ease',
-        }}
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: activeProduct ? `url(${activeProduct.bg})` : 'none',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'blur(2px)',
-            transform: 'scale(1.02)', // hide blur edge bleed
-          }}
-        />
-        {/* Readability wash — keeps the cards clearly on top */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.55) 100%)',
-          }}
-        />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-6">
+    <section id="products" className="py-32 bg-white text-slate-900">
+      <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -195,14 +140,7 @@ export function Products() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {products.map((product, index) => (
-            <div key={product.title} data-product-card>
-              <ProductCard
-                product={product}
-                index={index}
-                onActivate={setActiveCard}
-                isActive={activeCard === product.title}
-              />
-            </div>
+            <ProductCard key={product.title} product={product} index={index} />
           ))}
         </div>
 
