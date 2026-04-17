@@ -355,18 +355,18 @@ export function FloatingMarkets() {
           <div
             style={{
               fontFamily: "'Space Grotesk', sans-serif",
-              fontSize: isMobile ? 28 : 30,
-              lineHeight: 1.45,
+              fontSize: isMobile ? 16 : 20,
+              lineHeight: 1.55,
               color: '#64748B',
-              maxWidth: isMobile ? 720 : 1040,
+              maxWidth: isMobile ? 420 : 640,
               margin: '0 auto',
             }}
           >
-            <p style={{ marginBottom: isMobile ? 18 : 24 }}>
+            <p style={{ marginBottom: isMobile ? 12 : 16 }}>
               Purpose-built AI for every link in the logistics chain. From port terminals to
               distribution centers, our computer vision platform learns the rhythms of your yard.
             </p>
-            <p style={{ marginBottom: isMobile ? 18 : 24 }}>
+            <p style={{ marginBottom: isMobile ? 12 : 16 }}>
               Reading container codes, tracking chassis, flagging damage, and feeding every movement
               into your existing systems.
             </p>
