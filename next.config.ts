@@ -33,6 +33,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Pin the tracing root to this project so Next doesn't fall back to a parent
+  // package-lock.json it finds higher up in the filesystem.
+  outputFileTracingRoot: __dirname,
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
