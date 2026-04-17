@@ -338,7 +338,7 @@ export function FloatingMarkets() {
               lineHeight: 1.1,
               color: '#0A1628',
               letterSpacing: '-0.02em',
-              margin: '0 auto 16px',
+              margin: `0 auto ${isMobile ? 54 : 90}px`,
               textAlign: 'center',
             }}
           >
