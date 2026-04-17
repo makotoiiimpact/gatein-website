@@ -154,23 +154,23 @@ export function Products() {
           transition: 'opacity 500ms ease',
         }}
       >
-        {/* Image layer at low opacity so the section reads as a subtle backdrop, not a wallpaper */}
+        {/* Image layer — a touch more visible but still reads as a backdrop, not a wallpaper */}
         <div
           className="absolute inset-0"
           style={{
             backgroundImage: activeProduct ? `url(${activeProduct.bg})` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: 0.22,
+            opacity: 0.37,
             transition: 'background-image 500ms ease',
           }}
         />
-        {/* Dark overlay to keep the H2 + cards readable on top of any image */}
+        {/* Readability wash — nudged lighter now that the image is more present */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.58) 100%)',
+              'linear-gradient(180deg, rgba(255,255,255,0.57) 0%, rgba(255,255,255,0.43) 100%)',
           }}
         />
       </div>
