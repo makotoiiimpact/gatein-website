@@ -27,7 +27,15 @@ export async function POST(request: Request) {
         }),
       })
     } else {
-      console.log('Contact form submission:', { name, company, email, fleetSize, message })
+      // No FORMSPREE_FORM_ID configured — submission would be lost.
+      // Using warn so the noise surfaces in production logs as a config gap.
+      console.warn('Contact form submission dropped — FORMSPREE_FORM_ID not set.', {
+        name,
+        company,
+        email,
+        fleetSize,
+        message,
+      })
     }
 
     return NextResponse.json({ success: true })
