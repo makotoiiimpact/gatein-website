@@ -30,19 +30,17 @@ export function Navbar() {
       
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
         <a href="/" className="flex items-center gap-2 cursor-pointer z-10 group">
-          <img
-            src="/GateIn_AI_Brand_Icon.png"
-            alt="GateIn AI"
-            className="w-8 h-8 rounded-sm" />
+          <span className="logo-icon relative inline-block w-8 h-8 rounded-sm overflow-hidden">
+            <img
+              src="/GateIn_AI_Brand_Icon.png"
+              alt="GateIn AI"
+              className="block w-8 h-8"
+            />
+            <span aria-hidden="true" className="logo-icon-fill" />
+          </span>
 
-          <span className="text-xl font-bold tracking-tight text-white" aria-label="GateIn AI">
-            <span className="logo-fill-wrap" aria-hidden="true">
-              <span className="logo-fill-base">G</span>
-              <span className="logo-fill-overlay">
-                <span className="logo-fill-overlay-inner">G</span>
-              </span>
-            </span>
-            <span aria-hidden="true">ateIn AI</span>
+          <span className="text-xl font-bold tracking-tight text-white">
+            GateIn AI
           </span>
         </a>
 

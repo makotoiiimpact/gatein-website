@@ -33,35 +33,29 @@
     box-shadow: 0 0 20px rgba(37, 99, 235, 0.4), 0 0 40px rgba(37, 99, 235, 0.2);
   }
 
-  /* Liquid-fill G animation used by the Navbar logo */
-  .logo-fill-wrap {
-    position: relative;
-    display: inline-block;
-    line-height: 1;
-  }
-  .logo-fill-base {
-    display: inline-block;
-  }
-  .logo-fill-overlay {
+  /* Liquid-fill on the GateIn icon: blue rises from bottom on hover,
+     masked to the logo shape via the PNG itself. */
+  .logo-icon-fill {
     position: absolute;
     left: 0;
-    bottom: 0;
     right: 0;
-    overflow: hidden;
-    height: 0%;
-    transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-    color: #2563EB;
-  }
-  .group:hover .logo-fill-overlay,
-  .group:focus-visible .logo-fill-overlay,
-  .logo-fill-wrap:hover .logo-fill-overlay {
-    height: 100%;
-  }
-  .logo-fill-overlay-inner {
-    position: absolute;
-    left: 0;
     bottom: 0;
-    white-space: nowrap;
+    height: 0%;
+    background-color: #2563EB;
+    pointer-events: none;
+    transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-mask-image: url('/GateIn_AI_Brand_Icon.png');
+            mask-image: url('/GateIn_AI_Brand_Icon.png');
+    -webkit-mask-size: 100% auto;
+            mask-size: 100% auto;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-position: left bottom;
+            mask-position: left bottom;
+  }
+  .group:hover .logo-icon-fill,
+  .group:focus-visible .logo-icon-fill,
+  .logo-icon:hover .logo-icon-fill {
+    height: 100%;
   }
 }
