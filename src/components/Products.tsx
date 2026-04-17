@@ -6,34 +6,24 @@ import { motion } from 'framer-motion'
 type Product = {
   title: string
   desc: string
-  badge: string
-  badgeColor: string
 }
 
 const products: Product[] = [
   {
     title: 'Gate OCR',
     desc: 'AI-powered container code reading at the gate. 82% faster processing.',
-    badge: 'LIVE',
-    badgeColor: 'bg-[#2563EB] text-white',
   },
   {
     title: 'Yard Analytics',
     desc: 'Real-time dashboards, detention tracking, and NLP queries.',
-    badge: 'BUILDING',
-    badgeColor: 'bg-amber-500 text-white',
   },
   {
     title: 'Damage Detection',
     desc: 'External + internal container damage assessment.',
-    badge: 'IN DEV',
-    badgeColor: 'bg-slate-200 text-slate-700',
   },
   {
     title: 'Vehicle Manager',
     desc: 'Track human and autonomous vehicles across the facility.',
-    badge: 'ROADMAP',
-    badgeColor: 'bg-slate-100 text-slate-500',
   },
 ]
 
@@ -84,13 +74,6 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         }}
       />
 
-      <div className="relative mb-6">
-        <span
-          className={`text-xs font-bold font-mono px-3 py-1 rounded-sm ${product.badgeColor}`}
-        >
-          {product.badge}
-        </span>
-      </div>
       <h3 className="relative text-2xl font-bold mb-3">{product.title}</h3>
       <p className="relative text-slate-600 flex-grow">
         {product.desc.split('82%').map((part, i, arr) => (
