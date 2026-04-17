@@ -13,13 +13,13 @@ const MARKETS = [
     name: 'Intermodal Terminals',
     color: '#6366F1',
     tags: ['Rail OCR', 'Chassis Tracking', 'Cross-dock Flow'],
-    src: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=2400&auto=format&fit=crop',
+    src: 'https://images.pexels.com/photos/753331/pexels-photo-753331.jpeg?auto=compress&cs=tinysrgb&w=2400',
   },
   {
     name: 'Warehouse & DC Yards',
     color: '#475569',
     tags: ['Dock Scheduling', 'Trailer Tracking', 'WMS Integration'],
-    src: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2400&auto=format&fit=crop',
+    src: 'https://images.pexels.com/photos/1427107/pexels-photo-1427107.jpeg?auto=compress&cs=tinysrgb&w=2400',
   },
   {
     name: 'Third-Party Logistics (3PL)',
