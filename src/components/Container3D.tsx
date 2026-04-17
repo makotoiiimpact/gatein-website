@@ -391,11 +391,18 @@ export function Container3D() {
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight font-sans">
             Automated scan. Bounded detections. Digital record.
           </h2>
-          <p className="text-base md:text-lg text-gray-400 mx-auto leading-relaxed font-sans">
-            A complete AI vision system in a single edge deployment. Cameras quickly sweep inside and
-            out of the containers. The model returns damage classes, bounding boxes, and confidence
-            scores — written to the yard system in real time.
-          </p>
+          <div className="text-base md:text-lg text-gray-400 mx-auto leading-relaxed font-sans space-y-3">
+            <p>
+              A complete AI vision system in a single edge deployment. Cameras quickly sweep inside
+              and out of the containers.
+            </p>
+            <p>
+              The model returns damage classes, bounding boxes, and confidence scores.
+            </p>
+            <p>
+              Written to the yard system in real time.
+            </p>
+          </div>
         </motion.div>
 
         {/* Act Labels (Bottom Center) */}
