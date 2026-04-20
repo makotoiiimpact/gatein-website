@@ -2,27 +2,40 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-const team = [
+import { Linkedin } from 'lucide-react';
+
+type TeamMember = {
+  name: string;
+  role: string;
+  desc: string;
+  photo: string | null;
+  linkedin?: string;
+};
+
+const team: TeamMember[] = [
 {
   name: 'Bernardo Mendez',
   role: 'CEO',
   desc: 'Electrical engineer with an MBA & 18 years of Product Management experience. Product and engineering leader in Energy, Robotics, and Autonomous Vehicles.',
   photo: '/assets/team/bernardo.jpg',
+  linkedin: 'https://www.linkedin.com/in/bernardomendezarista/',
 },
-{
-  name: 'Michael Pivtoraiko',
-  role: 'CTO',
-  desc: 'Expert in Computer Vision and AI recognition. Co-founder of a logistics and automation startup. Carnegie Mellon PhD in AI and Robotics.',
-  photo: null,
-},
+// Removed pre-launch per client request — Apr 20 2026
+// {
+//   name: 'Michael Pivtoraiko',
+//   role: 'CTO',
+//   desc: 'Expert in Computer Vision and AI recognition. Co-founder of a logistics and automation startup. Carnegie Mellon PhD in AI and Robotics.',
+//   photo: null,
+// },
 {
   name: 'Jordi Goni',
   role: 'CPO / COO',
   desc: 'Experience working in IT / Supply Chain engagements and Edge computing helping clients innovate. Working experience across EMEA, US and LATAM.',
   photo: '/assets/team/jordi.jpg',
+  linkedin: 'https://www.linkedin.com/in/jordi-goni/',
 }];
 
-function TeamCard({ member, index }: { member: typeof team[number]; index: number }) {
+function TeamCard({ member, index }: { member: TeamMember; index: number }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -80,6 +93,17 @@ function TeamCard({ member, index }: { member: typeof team[number]; index: numbe
       <p className="text-slate-600 text-sm leading-relaxed">
         {member.desc}
       </p>
+      {member.linkedin && (
+        <a
+          href={member.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${member.name} on LinkedIn`}
+          className="mt-5 inline-flex items-center justify-center p-3 text-slate-400 hover:text-[#0A66C2] transition-colors"
+        >
+          <Linkedin className="h-5 w-5" />
+        </a>
+      )}
     </motion.div>
   );
 }
@@ -99,7 +123,7 @@ export function Team() {
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-24">
+        <div className="grid md:grid-cols-2 gap-8 mb-24 max-w-4xl mx-auto">
           {team.map((member, index) =>
             <TeamCard key={index} member={member} index={index} />
           )}
@@ -107,23 +131,13 @@ export function Team() {
 
         <div className="border-t border-slate-200 pt-16">
           <div className="text-center text-sm font-semibold text-slate-400 uppercase tracking-wider mb-8 font-mono">
-            Backed by & Partnered with
+            Partnered with
           </div>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-50 grayscale">
-            <div className="font-bold text-xl">YASKAWA</div>
-            <div className="font-bold text-xl">Google</div>
-            <div className="font-bold text-xl">McKinsey</div>
-            <div className="font-bold text-xl">Eaton</div>
-            <div className="font-bold text-xl">ISEE</div>
-            <div className="font-bold text-xl">Forterra</div>
-            <div className="font-bold text-xl">NavTrac</div>
-            <div className="font-bold text-xl">amazon</div>
-          </div>
-          <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 mt-10">
+          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-16">
             <img
               src="/nvidia-inception-program-badge-rgb-for-screen.png"
               alt="NVIDIA Inception Program"
-              className="h-20 object-contain"
+              className="h-12 object-contain"
             />
             <a
               href="https://startup.google.com/"
@@ -135,7 +149,7 @@ export function Team() {
               <img
                 src="/assets/logos/google-for-startups.png"
                 alt="Google for Startups"
-                className="h-16 object-contain"
+                className="h-10 object-contain"
               />
             </a>
           </div>
