@@ -137,7 +137,7 @@ export function Team() {
             <img
               src="/nvidia-inception-program-badge-rgb-for-screen.png"
               alt="NVIDIA Inception Program"
-              className="h-12 object-contain"
+              className="h-24 object-contain"
             />
             <a
               href="https://startup.google.com/"
