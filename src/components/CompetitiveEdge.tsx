@@ -109,15 +109,9 @@ export function CompetitiveEdge() {
                 label="No diagnostics"
                 icon={XCircle}
                 isError />
-              
-              <Node text="TOS System" isMuted />
-              <FlowConnection
-                lineColor="bg-slate-700"
-                textColor="text-slate-700"
-                label="No audit trail"
-                icon={XCircle}
-                isError />
-              
+
+              <Node text="Terminal Operating System" isMuted />
+              {/* Orphan FlowConnection ("No audit trail") removed per client feedback Apr 26 2026 */}
             </div>
           </motion.div>
 
@@ -229,8 +223,8 @@ export function CompetitiveEdge() {
               <FlowConnection
                 lineColor="bg-[#2563EB]"
                 textColor="text-[#2563EB]" />
-              
-              <Node text="TOS System" />
+
+              <Node text="Terminal Operating System" />
             </div>
           </motion.div>
         </div>

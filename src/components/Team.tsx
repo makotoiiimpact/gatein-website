@@ -33,6 +33,19 @@ const team: TeamMember[] = [
   desc: 'Experience working in IT / Supply Chain engagements and Edge computing helping clients innovate. Working experience across EMEA, US and LATAM.',
   photo: '/assets/team/jordi.jpg',
   linkedin: 'https://www.linkedin.com/in/jordi-goni/',
+},
+// Anton and Evan — headshots + bios pending from Bernardo
+{
+  name: 'Anton',
+  role: 'TBD',
+  desc: '',
+  photo: null,
+},
+{
+  name: 'Evan',
+  role: 'TBD',
+  desc: '',
+  photo: null,
 }];
 
 function TeamCard({ member, index }: { member: TeamMember; index: number }) {
@@ -149,7 +162,20 @@ export function Team() {
               <img
                 src="/assets/logos/google-for-startups.png"
                 alt="Google for Startups"
-                className="h-10 object-contain"
+                className="h-20 object-contain"
+              />
+            </a>
+            <a
+              href="https://www.ai2incubator.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="AI2 Incubator"
+              className="inline-flex"
+            >
+              <img
+                src="/ai2-incubator-black.png"
+                alt="AI2 Incubator"
+                className="h-20 object-contain"
               />
             </a>
           </div>

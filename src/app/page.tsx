@@ -11,7 +11,8 @@ import { AllWeather } from '@/components/AllWeather'
 import { CompetitiveEdge } from '@/components/CompetitiveEdge'
 import { FloatingMarkets } from '@/components/FloatingMarkets'
 import { Team } from '@/components/Team'
-import { ResourcesPreview } from '@/components/ResourcesPreview'
+// Hidden per client feedback Apr 26 2026
+// import { ResourcesPreview } from '@/components/ResourcesPreview'
 import { Contact } from '@/components/Contact'
 import { Footer } from '@/components/Footer'
 
@@ -32,7 +33,8 @@ export default function Home() {
         <CompetitiveEdge />
         <FloatingMarkets />
         <Team />
-        <ResourcesPreview />
+        {/* Hidden per client feedback Apr 26 2026 */}
+        {/* <ResourcesPreview /> */}
         <Contact />
       </main>
       <Footer />

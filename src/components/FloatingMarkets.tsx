@@ -322,7 +322,7 @@ export function FloatingMarkets() {
             maxWidth: isMobile ? '100%' : 'none',
             width: 'auto',
             padding: isMobile ? '0 0 32px' : '40px 60px',
-            background: isMobile ? 'none' : 'radial-gradient(ellipse at center, rgba(248,250,252,0.95) 0%, rgba(248,250,252,0.8) 60%, transparent 80%)',
+            background: isMobile ? 'none' : 'radial-gradient(ellipse at center, rgba(248,250,252,0.98) 0%, rgba(248,250,252,0.95) 60%, rgba(248,250,252,0.85) 85%, rgba(248,250,252,0.7) 100%)',
             borderRadius: 24,
           }}
         >

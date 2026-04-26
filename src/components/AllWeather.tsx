@@ -82,7 +82,7 @@ export function AllWeather() {
           className="max-w-7xl mx-auto bg-slate-50 border border-slate-200 rounded-lg p-8 flex flex-col md:flex-row items-center justify-between gap-6"
         >
           <div className="text-lg font-medium text-slate-700">
-            Deployed in Oakland, USA and Koper, Europe. Bidding in Qatar.
+            Global deployments across California, Slovenia, and Mexico.
           </div>
           <a href="#contact" className="cta-glow bg-[#2563EB] hover:bg-[#4A6BEE] text-white px-8 py-3 rounded-md text-lg font-bold whitespace-nowrap">
             Request a Demo

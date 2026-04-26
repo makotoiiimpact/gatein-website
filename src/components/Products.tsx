@@ -27,7 +27,7 @@ const products: Product[] = [
   },
   {
     title: 'Vehicle Manager',
-    desc: 'Track human and autonomous vehicles across the facility.',
+    desc: 'Track human-operated and autonomous vehicles across the facility.',
     bg: '/assets/images/product-cards/container_people.webp',
   },
 ]

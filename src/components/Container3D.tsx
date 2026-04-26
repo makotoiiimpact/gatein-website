@@ -500,7 +500,7 @@ export function Container3D() {
                     <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_5px_#22C55E] animate-pulse" />
                   </div>
                   <div className="text-[11px] font-bold text-gray-400 tracking-wider">
-                    NVIDIA JETSON
+                    EDGE PROCESSING UNIT
                   </div>
                 </div>
                 <svg

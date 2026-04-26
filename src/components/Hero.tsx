@@ -228,7 +228,8 @@ export function Hero() {
         </AnimatePresence>
       </motion.div>
 
-      {/* Trusted By Bar */}
+      {/* Removed per client feedback Apr 26 2026 — will re-add with real customer logos later */}
+      {/*
       <div className="absolute bottom-0 left-0 w-full border-t border-white/10 bg-[#0F172A]/80 backdrop-blur-md py-6 z-30">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <span className="text-xs font-semibold text-gray-400 uppercase tracking-[0.2em]">
@@ -243,6 +244,7 @@ export function Hero() {
           </div>
         </div>
       </div>
+      */}
     </section>
   );
 }
