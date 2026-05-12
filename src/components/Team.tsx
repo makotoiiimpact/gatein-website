@@ -34,18 +34,18 @@ const team: TeamMember[] = [
   photo: '/assets/team/jordi.jpg',
   linkedin: 'https://www.linkedin.com/in/jordi-goni/',
 },
-// Anton and Evan — headshots + bios pending from Bernardo
+// LinkedIn URLs pending from Bernardo
 {
   name: 'Anton',
-  role: 'TBD',
-  desc: '',
-  photo: null,
+  role: 'Computer Vision Engineer',
+  desc: 'Computer vision engineer building models that hold up in production. Previously at a YC-backed high-throughput screening startup. Applied math, USC summa cum laude.',
+  photo: '/assets/team/anton.jpg',
 },
 {
-  name: 'Evan',
-  role: 'TBD',
-  desc: '',
-  photo: null,
+  name: 'Evan Cooke',
+  role: 'Software Engineer',
+  desc: 'Software engineer focused on data-driven AI. CS & Engineering at the University of Iowa. Builds computer vision pipelines and reliable production backends.',
+  photo: '/assets/team/evan.jpg',
 }];
 
 function TeamCard({ member, index }: { member: TeamMember; index: number }) {
