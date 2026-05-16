@@ -1,15 +1,16 @@
 'use client'
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { motion, useMotionValue, useTransform, useMotionValueEvent } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 // Container dimensions
 const W = 440;
 const H = 180;
 const D = 180;
 const T = 7; // panel thickness
 // Corrugation textures
+// 90deg → vertical ridges (real ISO containers corrugate top-to-bottom on the walls)
 const corrugationSide = `repeating-linear-gradient(
-  0deg,
+  90deg,
   rgba(255,255,255,0.09) 0px,
   rgba(255,255,255,0.04) 1px,
   rgba(200,210,230,0.03) 2px,
@@ -87,113 +88,18 @@ bg: string)
 }
 export function Container3D() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [isLocked, setIsLocked] = useState(false);
-  const [animationDone, setAnimationDone] = useState(false);
-  const touchStartY = useRef(0);
-  const progressRef = useRef(0);
-  const progress = useMotionValue(0);
-  const TOTAL_DELTA = 800;
 
-  // Detect when section top reaches viewport top — engage scroll lock
-  useEffect(() => {
-    if (isLocked) return;
-    const section = sectionRef.current;
-    if (!section) return;
+  // Scroll-position-driven (no scroll hijacking). The <section> is a tall scroll
+  // track; the visual is sticky-pinned inside it and scrubs 0→1 as the user
+  // scrolls through the track. Normal page scrolling always works in every
+  // input mode (wheel, trackpad, keyboard) — the user is never trapped and can
+  // always scroll straight past the section.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end end'],
+  });
+  const progress = scrollYProgress;
 
-    const handleScroll = () => {
-      const rect = section.getBoundingClientRect();
-      // Forward: section top has reached viewport top
-      if (!animationDone && rect.top <= 0 && rect.bottom > 0) {
-        window.scrollTo(0, section.offsetTop);
-        setIsLocked(true);
-      }
-      // Reverse: scrolling back up into a completed section
-      if (animationDone && rect.top >= -10 && rect.top <= 10) {
-        window.scrollTo(0, section.offsetTop);
-        progressRef.current = 1;
-        progress.set(1);
-        setAnimationDone(false);
-        setIsLocked(true);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isLocked, animationDone, progress]);
-
-  // Lock body scroll with overflow hidden (no position:fixed — avoids scroll reset issues)
-  useEffect(() => {
-    if (isLocked) {
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-    };
-  }, [isLocked]);
-
-  // Wheel handler (desktop)
-  useEffect(() => {
-    if (!isLocked) return;
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      const delta = e.deltaY / TOTAL_DELTA;
-      const next = Math.max(0, Math.min(1, progressRef.current + delta));
-      progressRef.current = next;
-      progress.set(next);
-      if (next >= 1) {
-        const section = sectionRef.current;
-        if (section) {
-          setAnimationDone(true);
-          setIsLocked(false);
-          window.scrollTo(0, section.offsetTop + section.offsetHeight);
-        }
-      }
-      if (next <= 0 && e.deltaY < 0) {
-        setAnimationDone(false);
-        setIsLocked(false);
-      }
-    };
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    return () => window.removeEventListener('wheel', handleWheel);
-  }, [isLocked, progress]);
-
-  // Touch handlers — attach to section element directly for iOS Safari compatibility
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!isLocked || !section) return;
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartY.current = e.touches[0].clientY;
-    };
-    const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      const touchDelta = touchStartY.current - e.touches[0].clientY;
-      touchStartY.current = e.touches[0].clientY;
-      const delta = touchDelta / TOTAL_DELTA;
-      const next = Math.max(0, Math.min(1, progressRef.current + delta));
-      progressRef.current = next;
-      progress.set(next);
-      if (next >= 1) {
-        setAnimationDone(true);
-        setIsLocked(false);
-        window.scrollTo(0, section.offsetTop + section.offsetHeight);
-      }
-      if (next <= 0 && touchDelta < 0) {
-        setAnimationDone(false);
-        setIsLocked(false);
-      }
-    };
-    section.addEventListener('touchstart', handleTouchStart, { passive: true });
-    section.addEventListener('touchmove', handleTouchMove, { passive: false });
-    return () => {
-      section.removeEventListener('touchstart', handleTouchStart);
-      section.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, [isLocked, progress]);
   // ==========================================
   // NARRATIVE TIMELINE MAPPINGS
   // ==========================================
@@ -219,6 +125,13 @@ export function Container3D() {
   const cardY = useTransform(progress, [0.65, 0.75], [0, 300]);
   const cardScale = useTransform(progress, [0.65, 0.75], [1, 0.3]);
   const cardOp = useTransform(progress, [0.45, 0.5, 0.65, 0.75], [0, 1, 1, 0]);
+  // Act 2: sequential damage-label reveal — one zone at a time so the callouts
+  // never pile up unreadably (the interior box is too short to stack three).
+  // Windows are nested inside the parent cardOp stable band (0.5→0.65, before
+  // the 0.65 flyaway) and staggered so at most a brief 2-label crossfade occurs.
+  const floorLabelOp = useTransform(progress, [0.500, 0.515, 0.555, 0.570], [0, 1, 1, 0]);
+  const wallLabelOp = useTransform(progress, [0.560, 0.575, 0.610, 0.625], [0, 1, 1, 0]);
+  const ceilLabelOp = useTransform(progress, [0.615, 0.630, 0.660, 0.670], [0, 1, 1, 0]);
   // Labels & Headers Opacity
   const headerOp = useTransform(progress, [0, 0.05], [1, 0]);
   const act1Op = useTransform(progress, [0.02, 0.05, 0.3, 0.35], [0, 1, 1, 0]);
@@ -349,8 +262,8 @@ export function Container3D() {
   const EDGE_MID = '#1E2D42';
   const EDGE_LIGHT = '#263E58';
   return (
-    <section ref={sectionRef} className="relative h-screen bg-[#0A0F1A]" style={{ touchAction: isLocked ? 'none' : 'auto' }}>
-      <div className="h-full w-full overflow-hidden flex flex-col items-center justify-center relative">
+    <section ref={sectionRef} className="relative h-[300vh] bg-[#0A0F1A]">
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         {/* Background Dot Grid */}
         <div
           className="absolute inset-0 opacity-30 pointer-events-none z-0"
@@ -494,12 +407,12 @@ export function Container3D() {
               }}>
               
               <div className="relative">
-                <div className="w-40 h-14 rounded bg-gradient-to-b from-gray-700 to-gray-900 border border-gray-600 shadow-2xl flex items-center justify-between px-4">
-                  <div className="flex gap-1.5">
+                <div className="w-56 h-14 rounded bg-gradient-to-b from-gray-700 to-gray-900 border border-gray-600 shadow-2xl flex items-center gap-3 px-4">
+                  <div className="flex gap-1.5 shrink-0">
                     <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_5px_#22C55E]" />
                     <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_5px_#22C55E] animate-pulse" />
                   </div>
-                  <div className="text-[11px] font-bold text-gray-400 tracking-wider">
+                  <div className="text-[11px] font-bold text-gray-400 tracking-wide whitespace-nowrap">
                     EDGE PROCESSING UNIT
                   </div>
                 </div>
@@ -838,8 +751,8 @@ export function Container3D() {
                   }}
                   className="absolute inset-0 preserve-3d">
                   
-                  {/* Floor Damage */}
-                  <div className="absolute bottom-4 left-20">
+                  {/* Floor Damage — revealed first */}
+                  <motion.div className="absolute bottom-4 left-20" style={{ opacity: floorLabelOp }}>
                     <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />
                     <svg
                       className="absolute bottom-full left-1/2 -translate-x-1/2"
@@ -869,10 +782,10 @@ export function Container3D() {
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
 
-                  {/* Wall Puncture */}
-                  <div className="absolute top-1/2 left-4 -translate-y-1/2">
+                  {/* Wall Puncture — revealed second */}
+                  <motion.div className="absolute top-1/2 left-4 -translate-y-1/2" style={{ opacity: wallLabelOp }}>
                     <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />
                     <svg
                       className="absolute left-full top-1/2 -translate-y-1/2"
@@ -902,10 +815,10 @@ export function Container3D() {
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
 
-                  {/* Ceiling Corrosion */}
-                  <div className="absolute top-4 right-24">
+                  {/* Ceiling Corrosion — revealed third */}
+                  <motion.div className="absolute top-4 right-24" style={{ opacity: ceilLabelOp }}>
                     <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />
                     <svg
                       className="absolute top-full left-1/2 -translate-x-1/2"
@@ -935,7 +848,7 @@ export function Container3D() {
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 </motion.div>
               </motion.div>
 
