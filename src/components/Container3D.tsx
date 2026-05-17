@@ -461,9 +461,6 @@ export function Container3D() {
                     '0 4px 30px rgba(0,0,0,0.5)'
                   )}>
 
-                  {/* Twin-door front face hardware (beneath AI overlays) */}
-                  <ContainerDoorFace />
-
                   {/* Grid scan overlay (pre-Act 1: cyan sweeper) */}
                   <motion.div
                     className="absolute inset-0 pointer-events-none"
@@ -502,10 +499,7 @@ export function Container3D() {
 
                     <div className="absolute -inset-3 border-2 border-[#FF7F6E] bg-[#FF7F6E]/10" />
                     <div className="relative text-white font-mono text-sm font-bold tracking-wider bg-[#0A0F1A]/90 p-2.5 border border-[#FF7F6E]/30 whitespace-nowrap translate-x-[110%]">
-                      EGHU 826260-6
-                      <div className="text-[#22C55E] text-xs mt-1">
-                        ✓ VALIDATED
-                      </div>
+                      Dent damage · 95.3%
                     </div>
                   </motion.div>
 
@@ -523,7 +517,7 @@ export function Container3D() {
                     }}
                   >
                     <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
-                      RST-11 · 96.1%
+                      Rust · 96.1%
                     </div>
                   </motion.div>
 
@@ -541,7 +535,7 @@ export function Container3D() {
                     }}
                   >
                     <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#2563EB]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#2563EB] whitespace-nowrap">
-                      HBL-02 · 94.8%
+                      Panel Hole · 94.8%
                     </div>
                   </motion.div>
 
@@ -621,7 +615,14 @@ export function Container3D() {
                     corrugationSide,
                     '0 4px 30px rgba(0,0,0,0.6)'
                   )}>
-                  
+
+                  {/* Door-end hardware lives on this narrow end (the real
+                      container's door end) — NOT on the corrugated long sides
+                      (FRONT/BACK) or the solid RIGHT end. If the preview shows
+                      the visible door end is actually the RIGHT face, move this
+                      <ContainerDoorFace /> to the RIGHT panel — straight swap. */}
+                  <ContainerDoorFace />
+
                   {/* Act 1: Side Bounding Box & Code */}
                   <motion.div
                     style={{
@@ -775,6 +776,17 @@ export function Container3D() {
                           SCORE: 92
                         </span>
                       </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Floor damage — compact plain-language AI detection tag
+                      (matches the Phase-1 dashed-box detection style). Anchored
+                      opposite the verbose FLOOR DAMAGE callout to avoid overlap;
+                      final position is a preview-review call. */}
+                  <motion.div className="absolute bottom-4 right-12" style={{ opacity: floorLabelOp }}>
+                    <div className="absolute -inset-1 border border-dashed border-[#F59E0B] bg-[#F59E0B]/10" />
+                    <div className="relative bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
+                      Floor damage · 92%
                     </div>
                   </motion.div>
 
