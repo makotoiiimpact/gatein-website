@@ -551,6 +551,48 @@ export function Container3D() {
                     </div>
                   </motion.div>
 
+                  {/* Floor damage (verbose) — Issue 11 r2: relocated INTO the
+                      FRONT panel face (sibling of Rust/Panel Hole/Dent) so it
+                      sits on the visible container and moves with it, instead
+                      of floating from the non-exploding interior plane. Same
+                      compact dashed-box pattern as the other detections;
+                      lower (floor) region; Phase-2 opacity (floorLabelOp). */}
+                  <motion.div
+                    className="absolute pointer-events-none"
+                    style={{
+                      opacity: floorLabelOp,
+                      left: '10%',
+                      top: '70%',
+                      width: '26%',
+                      height: '22%',
+                      border: '2px dashed #F59E0B',
+                      background: 'rgba(245,158,11,0.12)',
+                    }}
+                  >
+                    <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
+                      Floor damage · CRITICAL · 92%
+                    </div>
+                  </motion.div>
+
+                  {/* Floor damage (compact tag) — same relocation, lower-right
+                      of the floor region; Phase-2 opacity (floorTagOp). */}
+                  <motion.div
+                    className="absolute pointer-events-none"
+                    style={{
+                      opacity: floorTagOp,
+                      left: '58%',
+                      top: '74%',
+                      width: '22%',
+                      height: '18%',
+                      border: '2px dashed #F59E0B',
+                      background: 'rgba(245,158,11,0.12)',
+                    }}
+                  >
+                    <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
+                      Floor damage · 92%
+                    </div>
+                  </motion.div>
+
                 </div>
                 <div
                   className="absolute backface-hidden"
@@ -758,50 +800,6 @@ export function Container3D() {
                   }}
                   className="absolute inset-0 preserve-3d">
                   
-                  {/* Floor Damage — revealed first */}
-                  <motion.div className="absolute bottom-4 left-20" style={{ opacity: floorLabelOp }}>
-                    <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />
-                    <svg
-                      className="absolute bottom-full left-1/2 -translate-x-1/2"
-                      width="2"
-                      height="30">
-                      
-                      <line
-                        x1="1"
-                        y1="0"
-                        x2="1"
-                        y2="30"
-                        stroke="#FBBF24"
-                        strokeWidth="1"
-                        strokeDasharray="2 2" />
-                      
-                    </svg>
-                    <div className="absolute bottom-[calc(100%+30px)] left-1/2 -translate-x-1/2 bg-[#0A0F1A]/95 border border-[#FBBF24]/30 p-3 rounded shadow-lg whitespace-nowrap">
-                      <div className="text-[#FBBF24] font-mono text-xs font-bold mb-1">
-                        FLOOR DAMAGE (ROT/BREAK)
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-red-500/20 text-red-400 text-[11px] px-1.5 py-0.5 rounded font-bold">
-                          CRITICAL
-                        </span>
-                        <span className="text-gray-400 text-[11px] font-mono">
-                          SCORE: 92
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Floor damage — compact plain-language AI detection tag
-                      (matches the Phase-1 dashed-box detection style). Anchored
-                      opposite the verbose FLOOR DAMAGE callout to avoid overlap;
-                      final position is a preview-review call. */}
-                  <motion.div className="absolute bottom-4 left-1/2 -translate-x-1/2" style={{ opacity: floorTagOp }}>
-                    <div className="absolute -inset-1 border border-dashed border-[#F59E0B] bg-[#F59E0B]/10" />
-                    <div className="relative bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
-                      Floor damage · 92%
-                    </div>
-                  </motion.div>
-
                   {/* Wall Puncture — revealed second */}
                   <motion.div className="absolute top-1/2 left-4 -translate-y-1/2" style={{ opacity: wallLabelOp }}>
                     <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />

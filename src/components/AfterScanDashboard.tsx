@@ -155,7 +155,6 @@ const card = (delayMs: number, inView: boolean) => ({
 // Interleaved L-R-L-R cascade (120ms between sides, 240ms down a column).
 const LEFT_DELAYS = [0, 240, 480, 720]
 const RIGHT_DELAYS = [120, 360, 600, 840]
-const STATS_START = 1240
 const STAT_STAGGER = 100
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
@@ -171,6 +170,12 @@ export function AfterScanDashboard() {
   // section — not 1px-into-viewport while still scrolling the Container3D pin
   // above (which played the once:true animation off-screen → static end state).
   const inView = useInView(sectionRef, { once: true, amount: 0.3 })
+  // Issue 13: the stat row is at the very bottom of this tall section, so the
+  // section-level trigger fired (top 30% visible) while the stat row was still
+  // below the fold — its fade-in + count-up ran off-screen → static end state.
+  // Dedicated trigger so the stat row animates when IT is ~30% in view.
+  const statsRef = useRef<HTMLDivElement>(null)
+  const statsInView = useInView(statsRef, { once: true, amount: 0.3 })
   return (
     <section ref={sectionRef} className="bg-[#0A0F1A] text-slate-100 py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6">
@@ -226,16 +231,16 @@ export function AfterScanDashboard() {
         </div>
 
         {/* Stat row */}
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div ref={statsRef} className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
-              {...card(STATS_START + i * STAT_STAGGER, inView)}
+              {...card(i * STAT_STAGGER, statsInView)}
               className={`rounded-2xl p-6 ${s.cardClass}`}
             >
               <div className={`text-4xl font-extrabold ${s.numClass}`}>
                 {s.parts.map((p, idx) =>
-                  'n' in p ? <CountUp key={idx} to={p.n} active={inView} /> : <span key={idx}>{p.t}</span>
+                  'n' in p ? <CountUp key={idx} to={p.n} active={statsInView} /> : <span key={idx}>{p.t}</span>
                 )}
               </div>
               <div className="mt-2 text-sm text-slate-400">{s.label}</div>
