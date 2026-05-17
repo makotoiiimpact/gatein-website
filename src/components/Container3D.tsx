@@ -91,25 +91,27 @@ bg: string)
 // Twin-door shipping-container front: centre seam, 4 vertical locking rods
 // (2 per door) with mid handles + cam keepers, and hinge plates on the outer
 // edges. Decorative only (pointer-events-none) so AI overlays stay interactive.
-// Metal = light grey/silver; door face keeps the existing body shade (no new
-// colour introduced per spec).
-const ROD_METAL =
-  'linear-gradient(90deg, rgba(120,130,150,0.55) 0%, rgba(210,220,235,0.85) 45%, rgba(150,160,178,0.65) 60%, rgba(90,100,118,0.5) 100%)';
-const ROD_LEFTS = [13, 37, 63, 87]; // % from face left — 2 rods per door panel
+// Matte industrial metal (no specular). Hinge plates ~13% darker than the body
+// shade for contrast — no new hue introduced (per spec). Perf: box-shadow only
+// on the handles; none on rods/keepers/hinges; no filters.
+const ROD_METAL = 'linear-gradient(90deg,#888,#ccc,#888)';
+const HINGE_DARK = '#243348'; // ~13% darker than FRONT_BG #2A3D58
+const ROD_LEFTS = [12, 38, 62, 88]; // % from face left — 2 rods per door panel
 
 function LockingRod({ leftPct }: { leftPct: number }) {
   return (
-    <div className="absolute" style={{ left: `${leftPct}%`, top: '5%', bottom: '5%', width: 6, transform: 'translateX(-50%)' }}>
-      {/* rod shaft */}
-      <div className="absolute inset-0 rounded-full" style={{ background: ROD_METAL, boxShadow: '0 0 2px rgba(0,0,0,0.5)' }} />
-      {/* specular highlight */}
-      <div className="absolute inset-y-0 left-[1px] w-px" style={{ background: 'rgba(255,255,255,0.45)' }} />
+    <div className="absolute" style={{ left: `${leftPct}%`, top: '7%', bottom: '7%', width: 4, transform: 'translateX(-50%)' }}>
+      {/* rod shaft — matte metal, no specular, no shadow */}
+      <div className="absolute inset-0 rounded-full" style={{ background: ROD_METAL }} />
       {/* cam keeper — top */}
-      <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 rounded-[1px]" style={{ width: 11, height: 9, background: 'linear-gradient(180deg,#9aa4b6,#5a6678)' }} />
+      <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 rounded-[1px]" style={{ width: 6, height: 6, background: ROD_METAL }} />
       {/* cam keeper — bottom */}
-      <div className="absolute -bottom-[6px] left-1/2 -translate-x-1/2 rounded-[1px]" style={{ width: 11, height: 9, background: 'linear-gradient(180deg,#5a6678,#9aa4b6)' }} />
-      {/* mid-height handle */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[2px]" style={{ width: 20, height: 9, background: 'linear-gradient(180deg,#aab4c6,#4f5a6e)', boxShadow: '0 1px 2px rgba(0,0,0,0.45)' }} />
+      <div className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 rounded-[1px]" style={{ width: 6, height: 6, background: ROD_METAL }} />
+      {/* mid-rod handle (~55% height) — the only element with a shadow */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[1px]"
+        style={{ top: '55%', width: 8, height: 12, background: ROD_METAL, boxShadow: '0 1px 2px rgba(0,0,0,0.4)' }}
+      />
     </div>
   );
 }
@@ -121,15 +123,11 @@ function HingePlate({ side, vPos }: { side: 'left' | 'right'; vPos: 'top' | 'bot
       style={{
         [side]: '1.5%',
         [vPos]: '12%',
-        width: 10,
-        height: 24,
-        background: 'linear-gradient(90deg,#6b7689,#9aa4b6,#5a6678)',
-        boxShadow: '0 0 2px rgba(0,0,0,0.5)',
+        width: 6,
+        height: 18,
+        background: HINGE_DARK,
       } as React.CSSProperties}
-    >
-      <div className="absolute left-1/2 top-[3px] -translate-x-1/2 rounded-full" style={{ width: 3, height: 3, background: 'rgba(0,0,0,0.5)' }} />
-      <div className="absolute left-1/2 bottom-[3px] -translate-x-1/2 rounded-full" style={{ width: 3, height: 3, background: 'rgba(0,0,0,0.5)' }} />
-    </div>
+    />
   );
 }
 
@@ -139,7 +137,7 @@ function ContainerDoorFace() {
       {/* centre seam splitting the face into two equal door panels */}
       <div
         className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2"
-        style={{ width: 3, background: 'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(0,0,0,0.5) 50%, rgba(255,255,255,0.05))' }}
+        style={{ width: 2, background: 'rgba(0,0,0,0.45)', boxShadow: 'inset 1px 0 0 rgba(255,255,255,0.04)' }}
       />
       {/* faint door-panel inset borders */}
       <div className="absolute inset-y-[3%] left-[2%] right-[51%] rounded-[1px]" style={{ boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)' }} />
