@@ -193,11 +193,21 @@ export function Container3D() {
   const floorLabelOp = useTransform(progress, [0.500, 0.515, 0.555, 0.570], [0, 1, 1, 0]);
   const wallLabelOp = useTransform(progress, [0.560, 0.575, 0.610, 0.625], [0, 1, 1, 0]);
   const ceilLabelOp = useTransform(progress, [0.615, 0.630, 0.660, 0.670], [0, 1, 1, 0]);
+  // Issue 9: the compact "Floor damage · 92%" tag gets its OWN wide window
+  // (the narrow floorLabelOp made it a ~6vh blink, and it's further gated by
+  // the flyaway parent). Visible across the bulk of the interior view, fading
+  // before the 0.65 flyaway. Not reusing floorLabelOp (shared w/ verbose call).
+  const floorTagOp = useTransform(progress, [0.42, 0.50, 0.62, 0.66], [0, 1, 1, 0]);
   // Labels & Headers Opacity
-  const headerOp = useTransform(progress, [0, 0.06, 0.12], [1, 1, 0]);
+  // Issue 7 (round 2): heading is now STATIC at full opacity — the
+  // scroll-driven headerOp fade caused repeated "permanently faded" reports
+  // (fragile pinned-progress mapping). Readable header > the fade gesture.
   const act1Op = useTransform(progress, [0.02, 0.05, 0.3, 0.35], [0, 1, 1, 0]);
   const act2Op = useTransform(progress, [0.35, 0.4, 0.65, 0.7], [0, 1, 1, 0]);
-  const act3Op = useTransform(progress, [0.7, 0.75, 0.95, 1], [0, 1, 1, 1]);
+  // Issue 10: widened so the Phase-3 caption is reliably on-screen for the
+  // entire back third of the pin (not just ≥0.75, which the fragile
+  // late-progress mapping was blowing past). Holds full opacity to release.
+  const act3Op = useTransform(progress, [0.66, 0.72, 1, 1], [0, 1, 1, 1]);
   // Bounding Boxes Act 1
   const frontBoxOp = useTransform(
     progress,
@@ -290,12 +300,9 @@ export function Container3D() {
           SYSTEM ACTIVE
         </div>
 
-        {/* Header (Fades out) */}
+        {/* Header (static — full opacity, no scroll fade) */}
         <motion.div
-          className="absolute top-16 md:top-24 left-0 w-full text-center z-50 px-6"
-          style={{
-            opacity: headerOp
-          }}>
+          className="absolute top-16 md:top-24 left-0 w-full text-center z-50 px-6">
 
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 text-[#2563EB] font-mono text-xs md:text-sm uppercase tracking-[0.2em] mb-5">
             After · GateIn AI
@@ -303,7 +310,7 @@ export function Container3D() {
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight font-sans">
             Automated scan. Bounded detections. Digital record.
           </h2>
-          <div className="text-base md:text-lg text-gray-400 mx-auto leading-relaxed font-sans space-y-3">
+          <div className="text-base md:text-lg text-gray-300 mx-auto leading-relaxed font-sans space-y-3">
             <p>
               A complete AI vision system in a single edge deployment. Cameras quickly sweep inside
               and out of the containers.
@@ -783,7 +790,7 @@ export function Container3D() {
                       (matches the Phase-1 dashed-box detection style). Anchored
                       opposite the verbose FLOOR DAMAGE callout to avoid overlap;
                       final position is a preview-review call. */}
-                  <motion.div className="absolute bottom-4 right-12" style={{ opacity: floorLabelOp }}>
+                  <motion.div className="absolute bottom-4 right-12" style={{ opacity: floorTagOp }}>
                     <div className="absolute -inset-1 border border-dashed border-[#F59E0B] bg-[#F59E0B]/10" />
                     <div className="relative bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
                       Floor damage · 92%
