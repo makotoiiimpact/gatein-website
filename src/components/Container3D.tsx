@@ -197,11 +197,12 @@ export function Container3D() {
   const floorLabelOp = useTransform(progress, [0.450, 0.485, 0.555, 0.580], [0, 1, 1, 0]);
   const wallLabelOp = useTransform(progress, [0.550, 0.585, 0.640, 0.665], [0, 1, 1, 0]);
   const ceilLabelOp = useTransform(progress, [0.635, 0.665, 0.710, 0.730], [0, 1, 1, 0]);
-  // Issue 9: the compact "Floor damage · 92%" tag gets its OWN wide window
-  // (the narrow floorLabelOp made it a ~6vh blink, and it's further gated by
-  // the flyaway parent). Visible across the bulk of the interior view, fading
-  // before the 0.65 flyaway. Not reusing floorLabelOp (shared w/ verbose call).
-  const floorTagOp = useTransform(progress, [0.42, 0.50, 0.62, 0.66], [0, 1, 1, 0]);
+  // Issue 9/11: compact "Floor damage · 92%" tag. Own window, and it now
+  // fully fades by 0.62 — strictly BEFORE the 0.65 flyaway (cardX/cardY/
+  // cardScale) — so it's never flung off into empty space to the lower-right
+  // as the damage-zone parent transitions out. Lives entirely within the
+  // stable interior-view band.
+  const floorTagOp = useTransform(progress, [0.42, 0.48, 0.58, 0.62], [0, 1, 1, 0]);
   // Labels & Headers Opacity
   // Issue 7 (round 2): heading is now STATIC at full opacity — the
   // scroll-driven headerOp fade caused repeated "permanently faded" reports
@@ -794,7 +795,7 @@ export function Container3D() {
                       (matches the Phase-1 dashed-box detection style). Anchored
                       opposite the verbose FLOOR DAMAGE callout to avoid overlap;
                       final position is a preview-review call. */}
-                  <motion.div className="absolute bottom-4 right-12" style={{ opacity: floorTagOp }}>
+                  <motion.div className="absolute bottom-4 left-1/2 -translate-x-1/2" style={{ opacity: floorTagOp }}>
                     <div className="absolute -inset-1 border border-dashed border-[#F59E0B] bg-[#F59E0B]/10" />
                     <div className="relative bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
                       Floor damage · 92%

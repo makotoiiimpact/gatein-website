@@ -125,33 +125,30 @@ function StatusDot({ status }: { status: Status }) {
 }
 
 /** Counts a whole integer 0 → target over 1500ms (easeOutCubic), once on view. */
-function CountUp({ to }: { to: number }) {
-  const ref = useRef<HTMLSpanElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.6 })
+function CountUp({ to, active }: { to: number; active: boolean }) {
   const [n, setN] = useState(0)
 
   useEffect(() => {
-    if (!inView) return
+    if (!active) return
     let raf = 0
-    const start = performance.now()
+    const startTs = performance.now()
     const dur = 1500
     const tick = (now: number) => {
-      const p = Math.min((now - start) / dur, 1)
+      const p = Math.min((now - startTs) / dur, 1)
       const eased = 1 - Math.pow(1 - p, 3)
       setN(Math.round(eased * to))
       if (p < 1) raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [inView, to])
+  }, [active, to])
 
-  return <span ref={ref}>{n}</span>
+  return <span>{n}</span>
 }
 
-const card = (delayMs: number) => ({
+const card = (delayMs: number, inView: boolean) => ({
   initial: { opacity: 0, y: 20, scale: 0.95 },
-  whileInView: { opacity: 1, y: 0, scale: 1 },
-  viewport: { once: true },
+  animate: inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.95 },
   transition: { duration: 0.4, ease: 'easeOut' as const, delay: delayMs / 1000 },
 })
 
@@ -168,8 +165,14 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 )
 
 export function AfterScanDashboard() {
+  const sectionRef = useRef<HTMLElement>(null)
+  // Single section-level trigger: fires when the dashboard is ~30% in view,
+  // so the staggered entrance + count-up run when the user actually sees the
+  // section — not 1px-into-viewport while still scrolling the Container3D pin
+  // above (which played the once:true animation off-screen → static end state).
+  const inView = useInView(sectionRef, { once: true, amount: 0.3 })
   return (
-    <section className="bg-[#0A0F1A] text-slate-100 py-24 md:py-32">
+    <section ref={sectionRef} className="bg-[#0A0F1A] text-slate-100 py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6">
         {/* Two columns — 8 cards */}
         <div className="grid md:grid-cols-2 gap-6 lg:gap-10">
@@ -180,7 +183,7 @@ export function AfterScanDashboard() {
               {containerData.map((row, i) => (
                 <motion.div
                   key={row.title}
-                  {...card(LEFT_DELAYS[i])}
+                  {...card(LEFT_DELAYS[i], inView)}
                   className={`rounded-lg p-4 ${row.cardClass}`}
                 >
                   <div className="flex items-start justify-between gap-4">
@@ -206,7 +209,7 @@ export function AfterScanDashboard() {
               {systems.map((sys, i) => (
                 <motion.div
                   key={sys.name}
-                  {...card(RIGHT_DELAYS[i])}
+                  {...card(RIGHT_DELAYS[i], inView)}
                   className="rounded-lg border border-slate-800 bg-slate-900/50 p-4"
                 >
                   <div className="flex items-start gap-3">
@@ -227,12 +230,12 @@ export function AfterScanDashboard() {
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
-              {...card(STATS_START + i * STAT_STAGGER)}
+              {...card(STATS_START + i * STAT_STAGGER, inView)}
               className={`rounded-2xl p-6 ${s.cardClass}`}
             >
               <div className={`text-4xl font-extrabold ${s.numClass}`}>
                 {s.parts.map((p, idx) =>
-                  'n' in p ? <CountUp key={idx} to={p.n} /> : <span key={idx}>{p.t}</span>
+                  'n' in p ? <CountUp key={idx} to={p.n} active={inView} /> : <span key={idx}>{p.t}</span>
                 )}
               </div>
               <div className="mt-2 text-sm text-slate-400">{s.label}</div>
