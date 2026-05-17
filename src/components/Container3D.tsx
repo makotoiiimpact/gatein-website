@@ -341,7 +341,7 @@ export function Container3D() {
             }}
             className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap text-[#22C55E]">
             
-            Phase 3: AI Analysis & Reporting
+            Phase 3: Distribution Centre Dashboard
           </motion.div>
         </div>
 
