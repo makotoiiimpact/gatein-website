@@ -186,13 +186,17 @@ export function Container3D() {
   const cardY = useTransform(progress, [0.65, 0.75], [0, 300]);
   const cardScale = useTransform(progress, [0.65, 0.75], [1, 0.3]);
   const cardOp = useTransform(progress, [0.45, 0.5, 0.65, 0.75], [0, 1, 1, 0]);
-  // Act 2: sequential damage-label reveal — one zone at a time so the callouts
-  // never pile up unreadably (the interior box is too short to stack three).
-  // Windows are nested inside the parent cardOp stable band (0.5→0.65, before
-  // the 0.65 flyaway) and staggered so at most a brief 2-label crossfade occurs.
-  const floorLabelOp = useTransform(progress, [0.500, 0.515, 0.555, 0.570], [0, 1, 1, 0]);
-  const wallLabelOp = useTransform(progress, [0.560, 0.575, 0.610, 0.625], [0, 1, 1, 0]);
-  const ceilLabelOp = useTransform(progress, [0.615, 0.630, 0.660, 0.670], [0, 1, 1, 0]);
+  // Act 2: WIDENED sequential damage-label reveal. Each callout now has a
+  // sustained hold (~0.05–0.07 progress ≈ 7–10vh of the pin) instead of the
+  // old ~0.04 blink — readable for a real beat, not a flash. STILL staggered
+  // (cross-fade between consecutive, never 3 stacked) because the interior box
+  // is too short to pile three callouts — they can't all use one wide band
+  // like floorTagOp without recreating the unreadable overlap the sequential
+  // reveal was built to fix. Real fix = re-architect Phase-2 reveals off
+  // scroll-gating onto time/intersection triggers (deferred, post-launch).
+  const floorLabelOp = useTransform(progress, [0.450, 0.485, 0.555, 0.580], [0, 1, 1, 0]);
+  const wallLabelOp = useTransform(progress, [0.550, 0.585, 0.640, 0.665], [0, 1, 1, 0]);
+  const ceilLabelOp = useTransform(progress, [0.635, 0.665, 0.710, 0.730], [0, 1, 1, 0]);
   // Issue 9: the compact "Floor damage · 92%" tag gets its OWN wide window
   // (the narrow floorLabelOp made it a ~6vh blink, and it's further gated by
   // the flyaway parent). Visible across the bulk of the interior view, fading
