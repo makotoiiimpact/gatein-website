@@ -197,22 +197,19 @@ export function Container3D() {
   const floorLabelOp = useTransform(progress, [0.450, 0.485, 0.555, 0.580], [0, 1, 1, 0]);
   const wallLabelOp = useTransform(progress, [0.550, 0.585, 0.640, 0.665], [0, 1, 1, 0]);
   const ceilLabelOp = useTransform(progress, [0.635, 0.665, 0.710, 0.730], [0, 1, 1, 0]);
-  // Issue 9/11: compact "Floor damage · 92%" tag. Own window, and it now
-  // fully fades by 0.62 — strictly BEFORE the 0.65 flyaway (cardX/cardY/
-  // cardScale) — so it's never flung off into empty space to the lower-right
-  // as the damage-zone parent transitions out. Lives entirely within the
-  // stable interior-view band.
-  const floorTagOp = useTransform(progress, [0.42, 0.48, 0.58, 0.62], [0, 1, 1, 0]);
+  // (Issue 11b: the standalone compact "Floor damage · 92%" tag + its
+  // floorTagOp were removed — only the verbose "Floor damage · CRITICAL ·
+  // 92%" label remains, relocated onto the BOTTOM/floor panel.)
   // Labels & Headers Opacity
   // Issue 7 (round 2): heading is now STATIC at full opacity — the
   // scroll-driven headerOp fade caused repeated "permanently faded" reports
   // (fragile pinned-progress mapping). Readable header > the fade gesture.
-  const act1Op = useTransform(progress, [0.02, 0.05, 0.3, 0.35], [0, 1, 1, 0]);
-  const act2Op = useTransform(progress, [0.35, 0.4, 0.65, 0.7], [0, 1, 1, 0]);
-  // Issue 10: widened so the Phase-3 caption is reliably on-screen for the
-  // entire back third of the pin (not just ≥0.75, which the fragile
-  // late-progress mapping was blowing past). Holds full opacity to release.
-  const act3Op = useTransform(progress, [0.66, 0.72, 1, 1], [0, 1, 1, 1]);
+  // Issue C: clean, non-overlapping caption cross-fades — each phase fades
+  // fully to 0 as the next reaches 1, so Phase 2 never lingers under Phase 3.
+  const act1Op = useTransform(progress, [0.02, 0.05, 0.30, 0.36], [0, 1, 1, 0]);
+  const act2Op = useTransform(progress, [0.34, 0.40, 0.56, 0.62], [0, 1, 1, 0]);
+  // Phase 3 rises as Phase 2 hits 0 (~0.62) and holds full to pin release.
+  const act3Op = useTransform(progress, [0.60, 0.66, 1, 1], [0, 1, 1, 1]);
   // Bounding Boxes Act 1
   const frontBoxOp = useTransform(
     progress,
@@ -440,7 +437,7 @@ export function Container3D() {
                   
                 </svg>
                 <div className="absolute bottom-[calc(100%+40px)] left-1/2 -translate-x-1/2 bg-[#0A0F1A]/90 border border-[#FBBF24]/30 px-3 py-1.5 rounded text-[#FBBF24] font-mono text-sm whitespace-nowrap">
-                  Processing: 3 damage zones
+                  Processing: 4 damage zones
                 </div>
               </div>
             </motion.div>
@@ -548,48 +545,6 @@ export function Container3D() {
                   >
                     <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#2563EB]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#2563EB] whitespace-nowrap">
                       Panel Hole · 94.8%
-                    </div>
-                  </motion.div>
-
-                  {/* Floor damage (verbose) — Issue 11 r2: relocated INTO the
-                      FRONT panel face (sibling of Rust/Panel Hole/Dent) so it
-                      sits on the visible container and moves with it, instead
-                      of floating from the non-exploding interior plane. Same
-                      compact dashed-box pattern as the other detections;
-                      lower (floor) region; Phase-2 opacity (floorLabelOp). */}
-                  <motion.div
-                    className="absolute pointer-events-none"
-                    style={{
-                      opacity: floorLabelOp,
-                      left: '10%',
-                      top: '70%',
-                      width: '26%',
-                      height: '22%',
-                      border: '2px dashed #F59E0B',
-                      background: 'rgba(245,158,11,0.12)',
-                    }}
-                  >
-                    <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
-                      Floor damage · CRITICAL · 92%
-                    </div>
-                  </motion.div>
-
-                  {/* Floor damage (compact tag) — same relocation, lower-right
-                      of the floor region; Phase-2 opacity (floorTagOp). */}
-                  <motion.div
-                    className="absolute pointer-events-none"
-                    style={{
-                      opacity: floorTagOp,
-                      left: '58%',
-                      top: '74%',
-                      width: '22%',
-                      height: '18%',
-                      border: '2px dashed #F59E0B',
-                      background: 'rgba(245,158,11,0.12)',
-                    }}
-                  >
-                    <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
-                      Floor damage · 92%
                     </div>
                   </motion.div>
 
@@ -765,6 +720,29 @@ export function Container3D() {
                   <div className="absolute inset-x-6 top-[25%] h-px bg-white/4" />
                   <div className="absolute inset-x-6 top-[50%] h-px bg-white/4" />
                   <div className="absolute inset-x-6 top-[75%] h-px bg-white/4" />
+
+                  {/* Floor damage — Issue 11 r3: lives on the BOTTOM (floor)
+                      panel face, the surface that lays flat post-explode
+                      beneath the Edge Processing Unit. Centred so the EPU
+                      partially overlaps it (floor damage seen around/through
+                      the EPU). Phase-2 opacity (floorLabelOp) — appears as the
+                      panel flattens, gone well before pin end. */}
+                  <motion.div
+                    className="absolute pointer-events-none"
+                    style={{
+                      opacity: floorLabelOp,
+                      left: '30%',
+                      top: '34%',
+                      width: '40%',
+                      height: '32%',
+                      border: '2px dashed #F59E0B',
+                      background: 'rgba(245,158,11,0.12)',
+                    }}
+                  >
+                    <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
+                      Floor damage · CRITICAL · 92%
+                    </div>
+                  </motion.div>
                 </div>
               </motion.div>
 

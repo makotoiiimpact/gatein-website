@@ -177,7 +177,7 @@ export function AfterScanDashboard() {
   const statsRef = useRef<HTMLDivElement>(null)
   const statsInView = useInView(statsRef, { once: true, amount: 0.3 })
   return (
-    <section ref={sectionRef} className="bg-[#0A0F1A] text-slate-100 py-24 md:py-32">
+    <section ref={sectionRef} className="bg-[#0A0F1A] text-slate-100 pt-10 pb-24 md:pt-14 md:pb-32">
       <div className="max-w-7xl mx-auto px-6">
         {/* Two columns — 8 cards */}
         <div className="grid md:grid-cols-2 gap-6 lg:gap-10">
