@@ -273,6 +273,131 @@ export function Container3D() {
   const EDGE_MID = '#1E2D42';
   const EDGE_LIGHT = '#263E58';
   return (
+    <>
+      {/* ===== MOBILE (<md): static, non-pinned fallback ===== */}
+      {/* The desktop scene is a 240vh scroll-pinned 3D animation whose
+          floating annotations are pixel-calibrated for a 1.8–2× stage; it
+          cannot reflow to a ~375px viewport without a full rebuild. Mobile
+          instead gets a normal-flow readable header followed by a clearly
+          separated static "scanned container" carrying the four key bounded
+          detections. bg matches the desktop section so the handoff into
+          AfterScanDashboard stays seamless. */}
+      <section className="md:hidden bg-[#0A0F1A] px-6 py-16">
+        <div className="mx-auto max-w-md text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 text-[#2563EB] font-mono text-xs uppercase tracking-[0.2em] mb-5">
+            After · GateIn AI
+          </div>
+          <h2 className="text-3xl font-extrabold text-white mb-4 tracking-tight font-sans">
+            Automated scan. Bounded detections. Digital record.
+          </h2>
+          <div className="text-base text-gray-300 leading-relaxed font-sans space-y-3">
+            <p>
+              A complete AI vision system in a single edge deployment. Cameras
+              quickly sweep inside and out of the containers.
+            </p>
+            <p>
+              The model returns damage classes, bounding boxes, and confidence
+              scores.
+            </p>
+            <p>Written to the yard system in real time.</p>
+          </div>
+        </div>
+
+        {/* Static scanned-container visual — clear separation below the copy */}
+        <div className="mx-auto mt-12 max-w-sm">
+          <div
+            className="relative w-full overflow-hidden border border-white/10"
+            style={{
+              aspectRatio: '3 / 2',
+              ...panelFace(FRONT_BG, corrugationSide, '0 4px 30px rgba(0,0,0,0.5)'),
+            }}
+          >
+            {/* faint scan grid */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage:
+                  'linear-gradient(rgba(37,99,235,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.10) 1px, transparent 1px)',
+                backgroundSize: '14% 20%',
+              }}
+            />
+            {/* Dent — coral */}
+            <div
+              className="absolute"
+              style={{
+                left: '8%',
+                top: '12%',
+                width: '36%',
+                height: '26%',
+                border: '2px dashed #FF7F6E',
+                background: 'rgba(255,127,110,0.12)',
+              }}
+            >
+              <span className="absolute left-0 top-0 bg-[#0A0F1A]/90 border border-[#FF7F6E]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#FF7F6E]">
+                Dent · 95%
+              </span>
+            </div>
+            {/* Rust — amber */}
+            <div
+              className="absolute"
+              style={{
+                left: '56%',
+                top: '15%',
+                width: '32%',
+                height: '30%',
+                border: '2px dashed #F59E0B',
+                background: 'rgba(245,158,11,0.12)',
+              }}
+            >
+              <span className="absolute left-0 top-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B]">
+                Rust · 96%
+              </span>
+            </div>
+            {/* Panel Hole — blue */}
+            <div
+              className="absolute"
+              style={{
+                left: '14%',
+                top: '52%',
+                width: '32%',
+                height: '30%',
+                border: '2px dashed #2563EB',
+                background: 'rgba(37,99,235,0.12)',
+              }}
+            >
+              <span className="absolute left-0 top-0 bg-[#0A0F1A]/90 border border-[#2563EB]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#2563EB]">
+                Panel Hole · 95%
+              </span>
+            </div>
+            {/* Floor — amber / critical */}
+            <div
+              className="absolute"
+              style={{
+                left: '54%',
+                top: '56%',
+                width: '34%',
+                height: '28%',
+                border: '2px dashed #F59E0B',
+                background: 'rgba(245,158,11,0.12)',
+              }}
+            >
+              <span className="absolute left-0 top-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B]">
+                Floor · CRITICAL
+              </span>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center justify-center gap-2 text-[#22C55E] font-mono text-[11px] font-bold tracking-widest">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
+            </span>
+            SCAN COMPLETE · 4 DETECTIONS
+          </div>
+        </div>
+      </section>
+
+      {/* ===== DESKTOP / TABLET (≥md): existing pinned scroll-driven 3D scene ===== */}
+      <div className="hidden md:block">
     <section ref={sectionRef} className="relative h-[240vh] bg-[#0A0F1A]">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         {/* Background Dot Grid */}
@@ -893,6 +1018,8 @@ export function Container3D() {
         </motion.div>
 
       </div>
-    </section>);
+    </section>
+      </div>
+    </>);
 
 }
