@@ -3,6 +3,7 @@ import { Hero } from '@/components/Hero'
 import { PainPoints } from '@/components/PainPoints'
 import { DamageInspection } from '@/components/DamageInspection'
 import { Container3D } from '@/components/Container3D'
+import { JourneyMapHighlight } from '@/components/JourneyMapHighlight'
 import { Products } from '@/components/Products'
 import { HowItWorks } from '@/components/HowItWorks'
 import { GateScanVisualization } from '@/components/GateScanVisualization'
@@ -25,6 +26,7 @@ export default function Home() {
         <PainPoints />
         <DamageInspection />
         <Container3D />
+        <JourneyMapHighlight />
         <Products />
         <HowItWorks />
         <GateScanVisualization />

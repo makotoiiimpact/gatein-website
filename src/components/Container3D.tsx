@@ -86,6 +86,75 @@ bg: string)
     transform: 'rotateY(90deg)'
   };
 }
+
+// ── Front (door) face hardware ───────────────────────────────────────────────
+// Twin-door shipping-container front: centre seam, 4 vertical locking rods
+// (2 per door) with mid handles + cam keepers, and hinge plates on the outer
+// edges. Decorative only (pointer-events-none) so AI overlays stay interactive.
+// Metal = light grey/silver; door face keeps the existing body shade (no new
+// colour introduced per spec).
+const ROD_METAL =
+  'linear-gradient(90deg, rgba(120,130,150,0.55) 0%, rgba(210,220,235,0.85) 45%, rgba(150,160,178,0.65) 60%, rgba(90,100,118,0.5) 100%)';
+const ROD_LEFTS = [13, 37, 63, 87]; // % from face left — 2 rods per door panel
+
+function LockingRod({ leftPct }: { leftPct: number }) {
+  return (
+    <div className="absolute" style={{ left: `${leftPct}%`, top: '5%', bottom: '5%', width: 6, transform: 'translateX(-50%)' }}>
+      {/* rod shaft */}
+      <div className="absolute inset-0 rounded-full" style={{ background: ROD_METAL, boxShadow: '0 0 2px rgba(0,0,0,0.5)' }} />
+      {/* specular highlight */}
+      <div className="absolute inset-y-0 left-[1px] w-px" style={{ background: 'rgba(255,255,255,0.45)' }} />
+      {/* cam keeper — top */}
+      <div className="absolute -top-[6px] left-1/2 -translate-x-1/2 rounded-[1px]" style={{ width: 11, height: 9, background: 'linear-gradient(180deg,#9aa4b6,#5a6678)' }} />
+      {/* cam keeper — bottom */}
+      <div className="absolute -bottom-[6px] left-1/2 -translate-x-1/2 rounded-[1px]" style={{ width: 11, height: 9, background: 'linear-gradient(180deg,#5a6678,#9aa4b6)' }} />
+      {/* mid-height handle */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[2px]" style={{ width: 20, height: 9, background: 'linear-gradient(180deg,#aab4c6,#4f5a6e)', boxShadow: '0 1px 2px rgba(0,0,0,0.45)' }} />
+    </div>
+  );
+}
+
+function HingePlate({ side, vPos }: { side: 'left' | 'right'; vPos: 'top' | 'bottom' }) {
+  return (
+    <div
+      className="absolute rounded-[1px]"
+      style={{
+        [side]: '1.5%',
+        [vPos]: '12%',
+        width: 10,
+        height: 24,
+        background: 'linear-gradient(90deg,#6b7689,#9aa4b6,#5a6678)',
+        boxShadow: '0 0 2px rgba(0,0,0,0.5)',
+      } as React.CSSProperties}
+    >
+      <div className="absolute left-1/2 top-[3px] -translate-x-1/2 rounded-full" style={{ width: 3, height: 3, background: 'rgba(0,0,0,0.5)' }} />
+      <div className="absolute left-1/2 bottom-[3px] -translate-x-1/2 rounded-full" style={{ width: 3, height: 3, background: 'rgba(0,0,0,0.5)' }} />
+    </div>
+  );
+}
+
+function ContainerDoorFace() {
+  return (
+    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+      {/* centre seam splitting the face into two equal door panels */}
+      <div
+        className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2"
+        style={{ width: 3, background: 'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(0,0,0,0.5) 50%, rgba(255,255,255,0.05))' }}
+      />
+      {/* faint door-panel inset borders */}
+      <div className="absolute inset-y-[3%] left-[2%] right-[51%] rounded-[1px]" style={{ boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)' }} />
+      <div className="absolute inset-y-[3%] left-[51%] right-[2%] rounded-[1px]" style={{ boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)' }} />
+      {ROD_LEFTS.map((l) => (
+        <LockingRod key={l} leftPct={l} />
+      ))}
+      <HingePlate side="left" vPos="top" />
+      <HingePlate side="left" vPos="bottom" />
+      <HingePlate side="right" vPos="top" />
+      <HingePlate side="right" vPos="bottom" />
+    </div>
+  );
+}
+
 export function Container3D() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -464,7 +533,10 @@ export function Container3D() {
                     corrugationSide,
                     '0 4px 30px rgba(0,0,0,0.5)'
                   )}>
-                  
+
+                  {/* Twin-door front face hardware (beneath AI overlays) */}
+                  <ContainerDoorFace />
+
                   {/* Grid scan overlay (pre-Act 1: cyan sweeper) */}
                   <motion.div
                     className="absolute inset-0 pointer-events-none"
@@ -546,11 +618,6 @@ export function Container3D() {
                     </div>
                   </motion.div>
 
-                  {/* Door details */}
-                  <div className="absolute right-7 top-[10%] bottom-[10%] flex flex-col justify-between">
-                    <div className="w-[3px] h-14 rounded-full bg-white/10" />
-                    <div className="w-[3px] h-14 rounded-full bg-white/10" />
-                  </div>
                 </div>
                 <div
                   className="absolute backface-hidden"
