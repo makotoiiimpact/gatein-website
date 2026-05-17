@@ -231,7 +231,7 @@ function MobileCard({ market, speed, sectionRef, index }: {
           style={{
             color: '#fff',
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 9,
+            fontSize: 13,
             fontWeight: 600,
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
@@ -247,7 +247,7 @@ function MobileCard({ market, speed, sectionRef, index }: {
               key={tag}
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 7,
+                fontSize: 9,
                 fontWeight: 500,
                 color: 'rgba(255,255,255,0.85)',
                 background: 'rgba(255,255,255,0.12)',
