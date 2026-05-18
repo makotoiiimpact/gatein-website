@@ -24,10 +24,12 @@ export default function Home() {
       <main>
         <Hero />
         <PainPoints />
+        {/* Bernardo round 2 feedback #1: surface solutions immediately
+            after the challenges section. */}
+        <Products />
         <DamageInspection />
         <Container3D />
         <AfterScanDashboard />
-        <Products />
         <HowItWorks />
         <GateScanVisualization />
         <DroneScanVisualization />
