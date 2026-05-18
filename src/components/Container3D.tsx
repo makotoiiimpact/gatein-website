@@ -198,16 +198,16 @@ export function Container3D() {
   // Bounding Boxes Act 1
   const frontBoxOp = useTransform(
     progress,
-    [0.05, 0.1, 0.3, 0.35],
+    [0.19, 0.25, 0.3, 0.35],
     [0, 1, 1, 0]
   );
-  const sideBoxOp = useTransform(progress, [0.15, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
+  const sideBoxOp = useTransform(progress, [0.22, 0.26, 0.3, 0.35], [0, 1, 1, 0]);
 
   // ── Scroll-driven grid scan (Act 1 pre-roll) ──
   // Cyan scanning square sweeps the front panel before the code detection box lands.
-  const scanOp = useTransform(progress, [0.0, 0.03, 0.16, 0.2], [0, 1, 1, 0]);
+  const scanOp = useTransform(progress, [0.0, 0.03, 0.17, 0.21], [0, 1, 1, 0]);
   // Cell index 0..19 on a 5 × 4 grid (cols × rows), left-to-right then top-to-bottom.
-  const scanIdx = useTransform(progress, [0.0, 0.18], [0, 19.999]);
+  const scanIdx = useTransform(progress, [0.02, 0.16], [0, 19.999]);
   const scanLeftPct = useTransform(scanIdx, (v: number) => {
     const i = Math.max(0, Math.min(19, Math.floor(v)));
     return `${(i % 5) * 20}%`;
@@ -217,8 +217,8 @@ export function Container3D() {
     return `${Math.floor(i / 5) * 25}%`;
   });
   // Extra damage bounding boxes (appear after the scan sweep + before Act 1 fades)
-  const damageBox1Op = useTransform(progress, [0.16, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
-  const damageBox2Op = useTransform(progress, [0.2, 0.24, 0.3, 0.35], [0, 1, 1, 0]);
+  const damageBox1Op = useTransform(progress, [0.23, 0.27, 0.3, 0.35], [0, 1, 1, 0]);
+  const damageBox2Op = useTransform(progress, [0.25, 0.29, 0.3, 0.35], [0, 1, 1, 0]);
   // ==========================================
   // 3D TRANSFORMS
   // ==========================================
@@ -465,7 +465,7 @@ export function Container3D() {
                       className="absolute inset-0"
                       style={{
                         backgroundImage:
-                          'linear-gradient(rgba(6,182,212,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.18) 1px, transparent 1px)',
+                          'linear-gradient(rgba(6,182,212,0.30) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.30) 1px, transparent 1px)',
                         backgroundSize: '20% 25%',
                       }}
                     />
@@ -478,8 +478,8 @@ export function Container3D() {
                         width: '20%',
                         height: '25%',
                         border: '2px solid #06B6D4',
-                        background: 'rgba(6,182,212,0.22)',
-                        boxShadow: '0 0 12px rgba(6,182,212,0.6)',
+                        background: 'rgba(6,182,212,0.32)',
+                        boxShadow: '0 0 16px rgba(6,182,212,0.75)',
                       }}
                     />
                   </motion.div>
