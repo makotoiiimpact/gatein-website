@@ -181,25 +181,10 @@ export function Container3D() {
     ['0 0 20px 2px rgba(37,99,235,0.5)', '0 0 20px 2px rgba(251,191,36,0.5)']
   );
   const blueprintOp = useTransform(progress, [0.35, 0.45], [0, 1]);
-  // Damage Cards Flyaway (Transition 2 -> 3)
-  const cardX = useTransform(progress, [0.65, 0.75], [0, 200]);
-  const cardY = useTransform(progress, [0.65, 0.75], [0, 300]);
-  const cardScale = useTransform(progress, [0.65, 0.75], [1, 0.3]);
-  const cardOp = useTransform(progress, [0.45, 0.5, 0.65, 0.75], [0, 1, 1, 0]);
-  // Act 2: WIDENED sequential damage-label reveal. Each callout now has a
-  // sustained hold (~0.05–0.07 progress ≈ 7–10vh of the pin) instead of the
-  // old ~0.04 blink — readable for a real beat, not a flash. STILL staggered
-  // (cross-fade between consecutive, never 3 stacked) because the interior box
-  // is too short to pile three callouts — they can't all use one wide band
-  // like floorTagOp without recreating the unreadable overlap the sequential
-  // reveal was built to fix. Real fix = re-architect Phase-2 reveals off
-  // scroll-gating onto time/intersection triggers (deferred, post-launch).
-  const floorLabelOp = useTransform(progress, [0.450, 0.485, 0.555, 0.580], [0, 1, 1, 0]);
-  const wallLabelOp = useTransform(progress, [0.550, 0.585, 0.640, 0.665], [0, 1, 1, 0]);
-  const ceilLabelOp = useTransform(progress, [0.635, 0.665, 0.710, 0.730], [0, 1, 1, 0]);
-  // (Issue 11b: the standalone compact "Floor damage · 92%" tag + its
-  // floorTagOp were removed — only the verbose "Floor damage · CRITICAL ·
-  // 92%" label remains, relocated onto the BOTTOM/floor panel.)
+  // Phase-2 interior damage callouts (Floor / Wall Puncture / Ceiling
+  // Corrosion) and their fly-away transforms (cardX/Y/Scale/Op) were removed
+  // pre-launch — they never rendered reliably. The interior view itself stays
+  // (bare blueprint sweep). Final detected set is the 3 front-face labels.
   // Labels & Headers Opacity
   // Issue 7 (round 2): heading is now STATIC at full opacity — the
   // scroll-driven headerOp fade caused repeated "permanently faded" reports
@@ -273,131 +258,6 @@ export function Container3D() {
   const EDGE_MID = '#1E2D42';
   const EDGE_LIGHT = '#263E58';
   return (
-    <>
-      {/* ===== MOBILE (<md): static, non-pinned fallback ===== */}
-      {/* The desktop scene is a 240vh scroll-pinned 3D animation whose
-          floating annotations are pixel-calibrated for a 1.8–2× stage; it
-          cannot reflow to a ~375px viewport without a full rebuild. Mobile
-          instead gets a normal-flow readable header followed by a clearly
-          separated static "scanned container" carrying the four key bounded
-          detections. bg matches the desktop section so the handoff into
-          AfterScanDashboard stays seamless. */}
-      <section className="md:hidden bg-[#0A0F1A] px-6 py-16">
-        <div className="mx-auto max-w-md text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 text-[#2563EB] font-mono text-xs uppercase tracking-[0.2em] mb-5">
-            After · GateIn AI
-          </div>
-          <h2 className="text-3xl font-extrabold text-white mb-4 tracking-tight font-sans">
-            Automated scan. Bounded detections. Digital record.
-          </h2>
-          <div className="text-base text-gray-300 leading-relaxed font-sans space-y-3">
-            <p>
-              A complete AI vision system in a single edge deployment. Cameras
-              quickly sweep inside and out of the containers.
-            </p>
-            <p>
-              The model returns damage classes, bounding boxes, and confidence
-              scores.
-            </p>
-            <p>Written to the yard system in real time.</p>
-          </div>
-        </div>
-
-        {/* Static scanned-container visual — clear separation below the copy */}
-        <div className="mx-auto mt-12 max-w-sm">
-          <div
-            className="relative w-full overflow-hidden border border-white/10"
-            style={{
-              aspectRatio: '3 / 2',
-              ...panelFace(FRONT_BG, corrugationSide, '0 4px 30px rgba(0,0,0,0.5)'),
-            }}
-          >
-            {/* faint scan grid */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                backgroundImage:
-                  'linear-gradient(rgba(37,99,235,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.10) 1px, transparent 1px)',
-                backgroundSize: '14% 20%',
-              }}
-            />
-            {/* Dent — coral */}
-            <div
-              className="absolute"
-              style={{
-                left: '8%',
-                top: '12%',
-                width: '36%',
-                height: '26%',
-                border: '2px dashed #FF7F6E',
-                background: 'rgba(255,127,110,0.12)',
-              }}
-            >
-              <span className="absolute left-0 top-0 bg-[#0A0F1A]/90 border border-[#FF7F6E]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#FF7F6E]">
-                Dent · 95%
-              </span>
-            </div>
-            {/* Rust — amber */}
-            <div
-              className="absolute"
-              style={{
-                left: '56%',
-                top: '15%',
-                width: '32%',
-                height: '30%',
-                border: '2px dashed #F59E0B',
-                background: 'rgba(245,158,11,0.12)',
-              }}
-            >
-              <span className="absolute left-0 top-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B]">
-                Rust · 96%
-              </span>
-            </div>
-            {/* Panel Hole — blue */}
-            <div
-              className="absolute"
-              style={{
-                left: '14%',
-                top: '52%',
-                width: '32%',
-                height: '30%',
-                border: '2px dashed #2563EB',
-                background: 'rgba(37,99,235,0.12)',
-              }}
-            >
-              <span className="absolute left-0 top-0 bg-[#0A0F1A]/90 border border-[#2563EB]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#2563EB]">
-                Panel Hole · 95%
-              </span>
-            </div>
-            {/* Floor — amber / critical */}
-            <div
-              className="absolute"
-              style={{
-                left: '54%',
-                top: '56%',
-                width: '34%',
-                height: '28%',
-                border: '2px dashed #F59E0B',
-                background: 'rgba(245,158,11,0.12)',
-              }}
-            >
-              <span className="absolute left-0 top-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B]">
-                Floor · CRITICAL
-              </span>
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-center gap-2 text-[#22C55E] font-mono text-[11px] font-bold tracking-widest">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
-            </span>
-            SCAN COMPLETE · 4 DETECTIONS
-          </div>
-        </div>
-      </section>
-
-      {/* ===== DESKTOP / TABLET (≥md): existing pinned scroll-driven 3D scene ===== */}
-      <div className="hidden md:block">
     <section ref={sectionRef} className="relative h-[240vh] bg-[#0A0F1A]">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         {/* Background Dot Grid */}
@@ -429,15 +289,15 @@ export function Container3D() {
 
         {/* Header (static — full opacity, no scroll fade) */}
         <motion.div
-          className="absolute top-16 md:top-24 left-0 w-full text-center z-50 px-6">
+          className="absolute top-20 md:top-24 left-0 w-full text-center z-50 px-6">
 
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 text-[#2563EB] font-mono text-xs md:text-sm uppercase tracking-[0.2em] mb-5">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-5 sm:py-2 rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 text-[#2563EB] font-mono text-[10px] sm:text-xs md:text-sm uppercase tracking-[0.2em] mb-3 sm:mb-5">
             After · GateIn AI
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight font-sans">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white mb-3 sm:mb-4 tracking-tight font-sans max-w-xs sm:max-w-none mx-auto">
             Automated scan. Bounded detections. Digital record.
           </h2>
-          <div className="text-base md:text-lg text-gray-300 mx-auto leading-relaxed font-sans space-y-3">
+          <div className="text-xs sm:text-base md:text-lg text-gray-300 max-w-md mx-auto leading-relaxed font-sans space-y-2 sm:space-y-3">
             <p>
               A complete AI vision system in a single edge deployment. Cameras quickly sweep inside
               and out of the containers.
@@ -489,7 +349,7 @@ export function Container3D() {
           }}>
           
           {/* Responsive scale wrapper */}
-          <div className="scale-[0.65] sm:scale-[0.85] md:scale-100 lg:scale-[1.8] xl:scale-[2] transition-transform">
+          <div className="mt-[30vh] sm:mt-[16vh] md:mt-0 scale-[0.5] sm:scale-[0.7] md:scale-100 lg:scale-[1.8] xl:scale-[2] transition-transform">
             {/* ====== FLOATING: AI Vision Camera (Act 1) ====== */}
             <motion.div
               className="absolute z-20"
@@ -562,7 +422,7 @@ export function Container3D() {
                   
                 </svg>
                 <div className="absolute bottom-[calc(100%+40px)] left-1/2 -translate-x-1/2 bg-[#0A0F1A]/90 border border-[#FBBF24]/30 px-3 py-1.5 rounded text-[#FBBF24] font-mono text-sm whitespace-nowrap">
-                  Processing: 4 damage zones
+                  Processing: 3 damage zones
                 </div>
               </div>
             </motion.div>
@@ -845,29 +705,6 @@ export function Container3D() {
                   <div className="absolute inset-x-6 top-[25%] h-px bg-white/4" />
                   <div className="absolute inset-x-6 top-[50%] h-px bg-white/4" />
                   <div className="absolute inset-x-6 top-[75%] h-px bg-white/4" />
-
-                  {/* Floor damage — Issue 11 r3: lives on the BOTTOM (floor)
-                      panel face, the surface that lays flat post-explode
-                      beneath the Edge Processing Unit. Centred so the EPU
-                      partially overlaps it (floor damage seen around/through
-                      the EPU). Phase-2 opacity (floorLabelOp) — appears as the
-                      panel flattens, gone well before pin end. */}
-                  <motion.div
-                    className="absolute pointer-events-none"
-                    style={{
-                      opacity: floorLabelOp,
-                      left: '30%',
-                      top: '34%',
-                      width: '40%',
-                      height: '32%',
-                      border: '2px dashed #F59E0B',
-                      background: 'rgba(245,158,11,0.12)',
-                    }}
-                  >
-                    <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
-                      Floor damage · CRITICAL · 92%
-                    </div>
-                  </motion.div>
                 </div>
               </motion.div>
 
@@ -893,82 +730,6 @@ export function Container3D() {
                   }} />
                 
 
-                {/* Act 2: Damage Zones (Fly away in Act 3) */}
-                <motion.div
-                  style={{
-                    x: cardX,
-                    y: cardY,
-                    scale: cardScale,
-                    opacity: cardOp
-                  }}
-                  className="absolute inset-0 preserve-3d">
-                  
-                  {/* Wall Puncture — revealed second */}
-                  <motion.div className="absolute top-1/2 left-4 -translate-y-1/2" style={{ opacity: wallLabelOp }}>
-                    <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />
-                    <svg
-                      className="absolute left-full top-1/2 -translate-y-1/2"
-                      width="30"
-                      height="2">
-                      
-                      <line
-                        x1="0"
-                        y1="1"
-                        x2="30"
-                        y2="1"
-                        stroke="#FBBF24"
-                        strokeWidth="1"
-                        strokeDasharray="2 2" />
-                      
-                    </svg>
-                    <div className="absolute left-[calc(100%+30px)] top-1/2 -translate-y-1/2 bg-[#0A0F1A]/95 border border-[#FBBF24]/30 p-3 rounded shadow-lg whitespace-nowrap">
-                      <div className="text-[#FBBF24] font-mono text-xs font-bold mb-1">
-                        WALL PUNCTURE
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-orange-500/20 text-orange-400 text-[11px] px-1.5 py-0.5 rounded font-bold">
-                          HIGH
-                        </span>
-                        <span className="text-gray-400 text-[11px] font-mono">
-                          SCORE: 79
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Ceiling Corrosion — revealed third */}
-                  <motion.div className="absolute top-4 right-24" style={{ opacity: ceilLabelOp }}>
-                    <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />
-                    <svg
-                      className="absolute top-full left-1/2 -translate-x-1/2"
-                      width="2"
-                      height="40">
-                      
-                      <line
-                        x1="1"
-                        y1="0"
-                        x2="1"
-                        y2="40"
-                        stroke="#FBBF24"
-                        strokeWidth="1"
-                        strokeDasharray="2 2" />
-                      
-                    </svg>
-                    <div className="absolute top-[calc(100%+40px)] left-1/2 -translate-x-1/2 bg-[#0A0F1A]/95 border border-[#FBBF24]/30 p-3 rounded shadow-lg whitespace-nowrap">
-                      <div className="text-[#FBBF24] font-mono text-xs font-bold mb-1">
-                        CORROSION / RUST
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-yellow-500/20 text-yellow-400 text-[11px] px-1.5 py-0.5 rounded font-bold">
-                          MODERATE
-                        </span>
-                        <span className="text-gray-400 text-[11px] font-mono">
-                          SCORE: 63
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-                </motion.div>
               </motion.div>
 
               {/* ====== SWEEPING SCAN LINES ====== */}
@@ -1018,8 +779,6 @@ export function Container3D() {
         </motion.div>
 
       </div>
-    </section>
-      </div>
-    </>);
+    </section>);
 
 }
