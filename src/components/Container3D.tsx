@@ -349,7 +349,7 @@ export function Container3D() {
           }}>
           
           {/* Responsive scale wrapper */}
-          <div className="mt-[30vh] sm:mt-[16vh] md:mt-0 scale-[0.5] sm:scale-[0.7] md:scale-100 lg:scale-[1.8] xl:scale-[2] transition-transform">
+          <div className="mt-[30vh] sm:mt-[16vh] md:mt-[8vh] scale-[0.5] sm:scale-[0.7] md:scale-100 lg:scale-[1.8] xl:scale-[2] transition-transform">
             {/* ====== FLOATING: AI Vision Camera (Act 1) ====== */}
             <motion.div
               className="absolute z-20"
