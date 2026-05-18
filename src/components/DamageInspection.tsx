@@ -171,7 +171,7 @@ function StatPill({ icon: Icon, label, value, tone }: {
         <div className="font-mono text-xs md:text-sm uppercase tracking-[0.16em] text-white/55 mb-1">
           {label}
         </div>
-        <div className="text-white font-bold text-xl md:text-2xl leading-tight">{value}</div>
+        <div className="text-white font-bold text-lg sm:text-xl md:text-2xl leading-tight break-words">{value}</div>
       </div>
     </div>
   )
@@ -237,7 +237,7 @@ export function DamageInspection() {
 
           <SurveyFormDocument />
 
-          <div className="grid grid-cols-2 gap-4 mt-auto pt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto pt-10">
             <StatPill icon={Clock} tone="manual" label="Time per audit" value="~30 min" />
             <StatPill icon={PenLine} tone="manual" label="Record type" value="Handwritten" />
           </div>

@@ -104,7 +104,7 @@ function TeamCard({ member, index }: { member: TeamMember; index: number }) {
       <div className="text-[#2563EB] font-bold text-sm mb-4">
         {member.role}
       </div>
-      <p className="text-slate-600 text-sm leading-relaxed">
+      <p className="text-slate-600 text-base md:text-sm leading-relaxed">
         {member.desc}
       </p>
       {member.linkedin && (

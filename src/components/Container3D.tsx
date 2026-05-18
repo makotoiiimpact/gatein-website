@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 // Container dimensions
 const W = 440;
 const H = 180;
@@ -86,6 +86,73 @@ bg: string)
     transform: 'rotateY(90deg)'
   };
 }
+
+// ── Front (door) face hardware ───────────────────────────────────────────────
+// Twin-door shipping-container front: centre seam, 4 vertical locking rods
+// (2 per door) with mid handles + cam keepers, and hinge plates on the outer
+// edges. Decorative only (pointer-events-none) so AI overlays stay interactive.
+// Matte industrial metal (no specular). Hinge plates ~13% darker than the body
+// shade for contrast — no new hue introduced (per spec). Perf: box-shadow only
+// on the handles; none on rods/keepers/hinges; no filters.
+const ROD_METAL = 'linear-gradient(90deg,#888,#ccc,#888)';
+const HINGE_DARK = '#243348'; // ~13% darker than FRONT_BG #2A3D58
+const ROD_LEFTS = [12, 38, 62, 88]; // % from face left — 2 rods per door panel
+
+function LockingRod({ leftPct }: { leftPct: number }) {
+  return (
+    <div className="absolute" style={{ left: `${leftPct}%`, top: '7%', bottom: '7%', width: 4, transform: 'translateX(-50%)' }}>
+      {/* rod shaft — matte metal, no specular, no shadow */}
+      <div className="absolute inset-0 rounded-full" style={{ background: ROD_METAL }} />
+      {/* cam keeper — top */}
+      <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 rounded-[1px]" style={{ width: 6, height: 6, background: ROD_METAL }} />
+      {/* cam keeper — bottom */}
+      <div className="absolute -bottom-[5px] left-1/2 -translate-x-1/2 rounded-[1px]" style={{ width: 6, height: 6, background: ROD_METAL }} />
+      {/* mid-rod handle (~55% height) — the only element with a shadow */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[1px]"
+        style={{ top: '55%', width: 8, height: 12, background: ROD_METAL, boxShadow: '0 1px 2px rgba(0,0,0,0.4)' }}
+      />
+    </div>
+  );
+}
+
+function HingePlate({ side, vPos }: { side: 'left' | 'right'; vPos: 'top' | 'bottom' }) {
+  return (
+    <div
+      className="absolute rounded-[1px]"
+      style={{
+        [side]: '1.5%',
+        [vPos]: '12%',
+        width: 6,
+        height: 18,
+        background: HINGE_DARK,
+      } as React.CSSProperties}
+    />
+  );
+}
+
+function ContainerDoorFace() {
+  return (
+    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+      {/* centre seam splitting the face into two equal door panels */}
+      <div
+        className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2"
+        style={{ width: 2, background: 'rgba(0,0,0,0.45)', boxShadow: 'inset 1px 0 0 rgba(255,255,255,0.04)' }}
+      />
+      {/* faint door-panel inset borders */}
+      <div className="absolute inset-y-[3%] left-[2%] right-[51%] rounded-[1px]" style={{ boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)' }} />
+      <div className="absolute inset-y-[3%] left-[51%] right-[2%] rounded-[1px]" style={{ boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)' }} />
+      {ROD_LEFTS.map((l) => (
+        <LockingRod key={l} leftPct={l} />
+      ))}
+      <HingePlate side="left" vPos="top" />
+      <HingePlate side="left" vPos="bottom" />
+      <HingePlate side="right" vPos="top" />
+      <HingePlate side="right" vPos="bottom" />
+    </div>
+  );
+}
+
 export function Container3D() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -114,104 +181,33 @@ export function Container3D() {
     ['0 0 20px 2px rgba(37,99,235,0.5)', '0 0 20px 2px rgba(251,191,36,0.5)']
   );
   const blueprintOp = useTransform(progress, [0.35, 0.45], [0, 1]);
-  // ACT 3: 0.70 - 1.0 (Dashboard)
-  const contScale = useTransform(progress, [0.7, 0.85], [1, 0.6]);
-  const contY = useTransform(progress, [0.7, 0.85], [0, -200]);
-  const contOp = useTransform(progress, [0.7, 0.85], [1, 0.4]);
-  const dashY = useTransform(progress, [0.7, 0.85], [800, 0]);
-  const dashOp = useTransform(progress, [0.7, 0.85], [0, 1]);
-  // Damage Cards Flyaway (Transition 2 -> 3)
-  const cardX = useTransform(progress, [0.65, 0.75], [0, 200]);
-  const cardY = useTransform(progress, [0.65, 0.75], [0, 300]);
-  const cardScale = useTransform(progress, [0.65, 0.75], [1, 0.3]);
-  const cardOp = useTransform(progress, [0.45, 0.5, 0.65, 0.75], [0, 1, 1, 0]);
-  // Act 2: sequential damage-label reveal — one zone at a time so the callouts
-  // never pile up unreadably (the interior box is too short to stack three).
-  // Windows are nested inside the parent cardOp stable band (0.5→0.65, before
-  // the 0.65 flyaway) and staggered so at most a brief 2-label crossfade occurs.
-  const floorLabelOp = useTransform(progress, [0.500, 0.515, 0.555, 0.570], [0, 1, 1, 0]);
-  const wallLabelOp = useTransform(progress, [0.560, 0.575, 0.610, 0.625], [0, 1, 1, 0]);
-  const ceilLabelOp = useTransform(progress, [0.615, 0.630, 0.660, 0.670], [0, 1, 1, 0]);
+  // Phase-2 interior damage callouts (Floor / Wall Puncture / Ceiling
+  // Corrosion) and their fly-away transforms (cardX/Y/Scale/Op) were removed
+  // pre-launch — they never rendered reliably. The interior view itself stays
+  // (bare blueprint sweep). Final detected set is the 3 front-face labels.
   // Labels & Headers Opacity
-  const headerOp = useTransform(progress, [0, 0.05], [1, 0]);
-  const act1Op = useTransform(progress, [0.02, 0.05, 0.3, 0.35], [0, 1, 1, 0]);
-  const act2Op = useTransform(progress, [0.35, 0.4, 0.65, 0.7], [0, 1, 1, 0]);
-  const act3Op = useTransform(progress, [0.7, 0.75, 0.95, 1], [0, 1, 1, 1]);
-  // ==========================================
-  // ACT 3: DASHBOARD ANIMATIONS
-  // ==========================================
-  const [dashActive, setDashActive] = useState(false);
-  const [dashTime, setDashTime] = useState(0);
-  const dashStartRef = useRef<number | null>(null);
-  const rafRef = useRef<number>(0);
-
-  useMotionValueEvent(progress, 'change', (v) => {
-    if (v >= 0.85 && !dashActive) {
-      setDashActive(true);
-      dashStartRef.current = null;
-    }
-    if (v < 0.7) {
-      setDashActive(false);
-      setDashTime(0);
-      dashStartRef.current = null;
-    }
-  });
-
-  const animateDash = useCallback((timestamp: number) => {
-    if (dashStartRef.current === null) dashStartRef.current = timestamp;
-    const elapsed = timestamp - dashStartRef.current;
-    setDashTime(elapsed);
-    if (elapsed < 5000) {
-      rafRef.current = requestAnimationFrame(animateDash);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (dashActive) {
-      rafRef.current = requestAnimationFrame(animateDash);
-    }
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [dashActive, animateDash]);
-
-  // Counter values (count up over 1.2s)
-  const counterProgress = Math.min(dashTime / 1200, 1);
-  const eased = 1 - Math.pow(1 - counterProgress, 3); // easeOutCubic
-  const scannedCount = Math.round(eased * 847);
-  const issuesCount = Math.round(eased * 23);
-  const scanTimeCount = (eased * 1.8).toFixed(1);
-
-  // Terminal report lines (appear one by one, 300ms apart, starting at 400ms)
-  const reportLines = [
-    { text: '┌── CONTAINER INSPECTION REPORT ──┐', className: 'text-white font-bold mb-4' },
-    { text: 'ID: EGHU 826260-6', className: 'text-[#2563EB] mb-4' },
-    { text: 'External: ✓ Code Validated', className: 'mb-2', hasGreen: true },
-    { text: 'Internal: 3 issues found', className: 'mb-2', hasYellow: true },
-    { text: '  • Floor Damage — CRITICAL (92)', className: 'pl-4 mb-1 text-red-400' },
-    { text: '  • Wall Puncture — HIGH (79)', className: 'pl-4 mb-1 text-orange-400' },
-    { text: '  • Corrosion — MODERATE (63)', className: 'pl-4 mb-4 text-yellow-400' },
-    { text: 'Overall: ✗ FAIL', className: 'mb-1', hasFail: true },
-    { text: 'Standard: CEDEX / IICL', className: 'mb-6' },
-  ];
-  const REPORT_START = 400;
-  const REPORT_LINE_DELAY = 250;
-
-  // Recent scans slide in (stagger 200ms, starting at 2200ms)
-  const SCANS_START = 2200;
-  const SCAN_STAGGER = 200;
-
+  // Issue 7 (round 2): heading is now STATIC at full opacity — the
+  // scroll-driven headerOp fade caused repeated "permanently faded" reports
+  // (fragile pinned-progress mapping). Readable header > the fade gesture.
+  // Issue C: clean, non-overlapping caption cross-fades — each phase fades
+  // fully to 0 as the next reaches 1, so Phase 2 never lingers under Phase 3.
+  const act1Op = useTransform(progress, [0.02, 0.05, 0.30, 0.36], [0, 1, 1, 0]);
+  const act2Op = useTransform(progress, [0.34, 0.40, 0.56, 0.62], [0, 1, 1, 0]);
+  // Phase 3 rises as Phase 2 hits 0 (~0.62) and holds full to pin release.
+  const act3Op = useTransform(progress, [0.60, 0.66, 1, 1], [0, 1, 1, 1]);
   // Bounding Boxes Act 1
   const frontBoxOp = useTransform(
     progress,
-    [0.05, 0.1, 0.3, 0.35],
+    [0.19, 0.25, 0.3, 0.35],
     [0, 1, 1, 0]
   );
-  const sideBoxOp = useTransform(progress, [0.15, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
+  const sideBoxOp = useTransform(progress, [0.22, 0.26, 0.3, 0.35], [0, 1, 1, 0]);
 
   // ── Scroll-driven grid scan (Act 1 pre-roll) ──
   // Cyan scanning square sweeps the front panel before the code detection box lands.
-  const scanOp = useTransform(progress, [0.0, 0.03, 0.16, 0.2], [0, 1, 1, 0]);
+  const scanOp = useTransform(progress, [0.0, 0.03, 0.17, 0.21], [0, 1, 1, 0]);
   // Cell index 0..19 on a 5 × 4 grid (cols × rows), left-to-right then top-to-bottom.
-  const scanIdx = useTransform(progress, [0.0, 0.18], [0, 19.999]);
+  const scanIdx = useTransform(progress, [0.02, 0.16], [0, 19.999]);
   const scanLeftPct = useTransform(scanIdx, (v: number) => {
     const i = Math.max(0, Math.min(19, Math.floor(v)));
     return `${(i % 5) * 20}%`;
@@ -221,8 +217,8 @@ export function Container3D() {
     return `${Math.floor(i / 5) * 25}%`;
   });
   // Extra damage bounding boxes (appear after the scan sweep + before Act 1 fades)
-  const damageBox1Op = useTransform(progress, [0.16, 0.2, 0.3, 0.35], [0, 1, 1, 0]);
-  const damageBox2Op = useTransform(progress, [0.2, 0.24, 0.3, 0.35], [0, 1, 1, 0]);
+  const damageBox1Op = useTransform(progress, [0.23, 0.27, 0.3, 0.35], [0, 1, 1, 0]);
+  const damageBox2Op = useTransform(progress, [0.25, 0.29, 0.3, 0.35], [0, 1, 1, 0]);
   // ==========================================
   // 3D TRANSFORMS
   // ==========================================
@@ -262,7 +258,7 @@ export function Container3D() {
   const EDGE_MID = '#1E2D42';
   const EDGE_LIGHT = '#263E58';
   return (
-    <section ref={sectionRef} className="relative h-[300vh] bg-[#0A0F1A]">
+    <section ref={sectionRef} className="relative h-[240vh] bg-[#0A0F1A]">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         {/* Background Dot Grid */}
         <div
@@ -291,20 +287,17 @@ export function Container3D() {
           SYSTEM ACTIVE
         </div>
 
-        {/* Header (Fades out) */}
+        {/* Header (static — full opacity, no scroll fade) */}
         <motion.div
-          className="absolute top-16 md:top-24 left-0 w-full text-center z-50 px-6"
-          style={{
-            opacity: headerOp
-          }}>
+          className="absolute top-20 md:top-24 left-0 w-full text-center z-50 px-6">
 
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 text-[#2563EB] font-mono text-xs md:text-sm uppercase tracking-[0.2em] mb-5">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-5 sm:py-2 rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 text-[#2563EB] font-mono text-[10px] sm:text-xs md:text-sm uppercase tracking-[0.2em] mb-3 sm:mb-5">
             After · GateIn AI
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight font-sans">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white mb-3 sm:mb-4 tracking-tight font-sans max-w-xs sm:max-w-none mx-auto">
             Automated scan. Bounded detections. Digital record.
           </h2>
-          <div className="text-base md:text-lg text-gray-400 mx-auto leading-relaxed font-sans space-y-3">
+          <div className="text-xs sm:text-base md:text-lg text-gray-300 max-w-md mx-auto leading-relaxed font-sans space-y-2 sm:space-y-3">
             <p>
               A complete AI vision system in a single edge deployment. Cameras quickly sweep inside
               and out of the containers.
@@ -342,7 +335,7 @@ export function Container3D() {
             }}
             className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap text-[#22C55E]">
             
-            Phase 3: AI Analysis & Reporting
+            Phase 3: Distribution Centre Dashboard
           </motion.div>
         </div>
 
@@ -352,14 +345,11 @@ export function Container3D() {
         <motion.div
           className="relative z-10 w-full h-full flex items-center justify-center"
           style={{
-            perspective: '1600px',
-            scale: contScale,
-            y: contY,
-            opacity: contOp
+            perspective: '1600px'
           }}>
           
           {/* Responsive scale wrapper */}
-          <div className="scale-[0.65] sm:scale-[0.85] md:scale-100 lg:scale-[1.8] xl:scale-[2] transition-transform">
+          <div className="mt-[30vh] sm:mt-[16vh] md:mt-[8vh] scale-[0.5] sm:scale-[0.7] md:scale-100 lg:scale-[1.8] xl:scale-[2] transition-transform">
             {/* ====== FLOATING: AI Vision Camera (Act 1) ====== */}
             <motion.div
               className="absolute z-20"
@@ -464,7 +454,7 @@ export function Container3D() {
                     corrugationSide,
                     '0 4px 30px rgba(0,0,0,0.5)'
                   )}>
-                  
+
                   {/* Grid scan overlay (pre-Act 1: cyan sweeper) */}
                   <motion.div
                     className="absolute inset-0 pointer-events-none"
@@ -475,7 +465,7 @@ export function Container3D() {
                       className="absolute inset-0"
                       style={{
                         backgroundImage:
-                          'linear-gradient(rgba(6,182,212,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.18) 1px, transparent 1px)',
+                          'linear-gradient(rgba(6,182,212,0.30) 1px, transparent 1px), linear-gradient(90deg, rgba(6,182,212,0.30) 1px, transparent 1px)',
                         backgroundSize: '20% 25%',
                       }}
                     />
@@ -488,8 +478,8 @@ export function Container3D() {
                         width: '20%',
                         height: '25%',
                         border: '2px solid #06B6D4',
-                        background: 'rgba(6,182,212,0.22)',
-                        boxShadow: '0 0 12px rgba(6,182,212,0.6)',
+                        background: 'rgba(6,182,212,0.32)',
+                        boxShadow: '0 0 16px rgba(6,182,212,0.75)',
                       }}
                     />
                   </motion.div>
@@ -503,10 +493,7 @@ export function Container3D() {
 
                     <div className="absolute -inset-3 border-2 border-[#FF7F6E] bg-[#FF7F6E]/10" />
                     <div className="relative text-white font-mono text-sm font-bold tracking-wider bg-[#0A0F1A]/90 p-2.5 border border-[#FF7F6E]/30 whitespace-nowrap translate-x-[110%]">
-                      EGHU 826260-6
-                      <div className="text-[#22C55E] text-xs mt-1">
-                        ✓ VALIDATED
-                      </div>
+                      Dent damage · 95.3%
                     </div>
                   </motion.div>
 
@@ -524,7 +511,7 @@ export function Container3D() {
                     }}
                   >
                     <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#F59E0B]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#F59E0B] whitespace-nowrap">
-                      RST-11 · 96.1%
+                      Rust · 96.1%
                     </div>
                   </motion.div>
 
@@ -542,15 +529,10 @@ export function Container3D() {
                     }}
                   >
                     <div className="absolute -top-6 left-0 bg-[#0A0F1A]/90 border border-[#2563EB]/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#2563EB] whitespace-nowrap">
-                      HBL-02 · 94.8%
+                      Panel Hole · 94.8%
                     </div>
                   </motion.div>
 
-                  {/* Door details */}
-                  <div className="absolute right-7 top-[10%] bottom-[10%] flex flex-col justify-between">
-                    <div className="w-[3px] h-14 rounded-full bg-white/10" />
-                    <div className="w-[3px] h-14 rounded-full bg-white/10" />
-                  </div>
                 </div>
                 <div
                   className="absolute backface-hidden"
@@ -627,7 +609,14 @@ export function Container3D() {
                     corrugationSide,
                     '0 4px 30px rgba(0,0,0,0.6)'
                   )}>
-                  
+
+                  {/* Door-end hardware lives on this narrow end (the real
+                      container's door end) — NOT on the corrugated long sides
+                      (FRONT/BACK) or the solid RIGHT end. If the preview shows
+                      the visible door end is actually the RIGHT face, move this
+                      <ContainerDoorFace /> to the RIGHT panel — straight swap. */}
+                  <ContainerDoorFace />
+
                   {/* Act 1: Side Bounding Box & Code */}
                   <motion.div
                     style={{
@@ -741,115 +730,6 @@ export function Container3D() {
                   }} />
                 
 
-                {/* Act 2: Damage Zones (Fly away in Act 3) */}
-                <motion.div
-                  style={{
-                    x: cardX,
-                    y: cardY,
-                    scale: cardScale,
-                    opacity: cardOp
-                  }}
-                  className="absolute inset-0 preserve-3d">
-                  
-                  {/* Floor Damage — revealed first */}
-                  <motion.div className="absolute bottom-4 left-20" style={{ opacity: floorLabelOp }}>
-                    <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />
-                    <svg
-                      className="absolute bottom-full left-1/2 -translate-x-1/2"
-                      width="2"
-                      height="30">
-                      
-                      <line
-                        x1="1"
-                        y1="0"
-                        x2="1"
-                        y2="30"
-                        stroke="#FBBF24"
-                        strokeWidth="1"
-                        strokeDasharray="2 2" />
-                      
-                    </svg>
-                    <div className="absolute bottom-[calc(100%+30px)] left-1/2 -translate-x-1/2 bg-[#0A0F1A]/95 border border-[#FBBF24]/30 p-3 rounded shadow-lg whitespace-nowrap">
-                      <div className="text-[#FBBF24] font-mono text-xs font-bold mb-1">
-                        FLOOR DAMAGE (ROT/BREAK)
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-red-500/20 text-red-400 text-[11px] px-1.5 py-0.5 rounded font-bold">
-                          CRITICAL
-                        </span>
-                        <span className="text-gray-400 text-[11px] font-mono">
-                          SCORE: 92
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Wall Puncture — revealed second */}
-                  <motion.div className="absolute top-1/2 left-4 -translate-y-1/2" style={{ opacity: wallLabelOp }}>
-                    <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />
-                    <svg
-                      className="absolute left-full top-1/2 -translate-y-1/2"
-                      width="30"
-                      height="2">
-                      
-                      <line
-                        x1="0"
-                        y1="1"
-                        x2="30"
-                        y2="1"
-                        stroke="#FBBF24"
-                        strokeWidth="1"
-                        strokeDasharray="2 2" />
-                      
-                    </svg>
-                    <div className="absolute left-[calc(100%+30px)] top-1/2 -translate-y-1/2 bg-[#0A0F1A]/95 border border-[#FBBF24]/30 p-3 rounded shadow-lg whitespace-nowrap">
-                      <div className="text-[#FBBF24] font-mono text-xs font-bold mb-1">
-                        WALL PUNCTURE
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-orange-500/20 text-orange-400 text-[11px] px-1.5 py-0.5 rounded font-bold">
-                          HIGH
-                        </span>
-                        <span className="text-gray-400 text-[11px] font-mono">
-                          SCORE: 79
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* Ceiling Corrosion — revealed third */}
-                  <motion.div className="absolute top-4 right-24" style={{ opacity: ceilLabelOp }}>
-                    <div className="absolute -inset-1 border border-[#FBBF24] bg-[#FBBF24]/10" />
-                    <svg
-                      className="absolute top-full left-1/2 -translate-x-1/2"
-                      width="2"
-                      height="40">
-                      
-                      <line
-                        x1="1"
-                        y1="0"
-                        x2="1"
-                        y2="40"
-                        stroke="#FBBF24"
-                        strokeWidth="1"
-                        strokeDasharray="2 2" />
-                      
-                    </svg>
-                    <div className="absolute top-[calc(100%+40px)] left-1/2 -translate-x-1/2 bg-[#0A0F1A]/95 border border-[#FBBF24]/30 p-3 rounded shadow-lg whitespace-nowrap">
-                      <div className="text-[#FBBF24] font-mono text-xs font-bold mb-1">
-                        CORROSION / RUST
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="bg-yellow-500/20 text-yellow-400 text-[11px] px-1.5 py-0.5 rounded font-bold">
-                          MODERATE
-                        </span>
-                        <span className="text-gray-400 text-[11px] font-mono">
-                          SCORE: 63
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
-                </motion.div>
               </motion.div>
 
               {/* ====== SWEEPING SCAN LINES ====== */}
@@ -898,124 +778,6 @@ export function Container3D() {
           </div>
         </motion.div>
 
-        {/* ========================================== */}
-        {/* DASHBOARD (ACT 3) */}
-        {/* ========================================== */}
-        <motion.div
-          className="absolute bottom-24 w-full max-w-4xl px-6 z-40"
-          style={{
-            y: dashY,
-            opacity: dashOp
-          }}>
-          
-          <div className="bg-[#1E293B] border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col">
-            {/* Top Stats — Counting Up */}
-            <div className="grid grid-cols-3 border-b border-white/5 bg-white/5">
-              <div className="p-4 border-r border-white/5 text-center">
-                <div className="text-gray-400 text-[10px] uppercase tracking-wider font-sans mb-1">
-                  Containers Scanned
-                </div>
-                <div className="text-white font-mono text-2xl font-bold">
-                  {dashActive ? scannedCount.toLocaleString() : '0'}
-                </div>
-              </div>
-              <div className="p-4 border-r border-white/5 text-center">
-                <div className="text-gray-400 text-[10px] uppercase tracking-wider font-sans mb-1">
-                  Issues Detected
-                </div>
-                <div className="text-[#FBBF24] font-mono text-2xl font-bold">
-                  {dashActive ? issuesCount : '0'}
-                </div>
-              </div>
-              <div className="p-4 text-center">
-                <div className="text-gray-400 text-[10px] uppercase tracking-wider font-sans mb-1">
-                  Avg Scan Time
-                </div>
-                <div className="text-[#22C55E] font-mono text-2xl font-bold">
-                  {dashActive ? `${scanTimeCount}s` : '0.0s'}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col md:flex-row">
-              {/* Terminal Report — Typewriter */}
-              <div className="flex-1 p-6 border-r border-white/5 font-mono text-xs leading-relaxed text-gray-300">
-                {reportLines.map((line, i) => {
-                  const lineStart = REPORT_START + i * REPORT_LINE_DELAY;
-                  const lineEnd = lineStart + 400;
-                  const visible = dashActive && dashTime >= lineStart;
-                  const typing = dashActive && dashTime >= lineStart && dashTime < lineEnd;
-                  const charProgress = !visible ? 0 : Math.min((dashTime - lineStart) / 400, 1);
-                  const displayText = line.text.slice(0, Math.ceil(charProgress * line.text.length));
-
-                  if (!visible) return null;
-
-                  let content: React.ReactNode = displayText;
-                  if (line.hasGreen && charProgress >= 1) {
-                    content = <>External: <span className="text-[#22C55E]">✓ Code Validated</span></>;
-                  } else if (line.hasYellow && charProgress >= 1) {
-                    content = <>Internal: <span className="text-[#FBBF24]">3 issues found</span></>;
-                  } else if (line.hasFail && charProgress >= 1) {
-                    content = <>Overall: <span className="text-red-500 font-bold">✗ FAIL</span></>;
-                  }
-
-                  return (
-                    <div key={i} className={line.className}>
-                      {content}
-                      {typing && <span className="animate-pulse">▌</span>}
-                    </div>
-                  );
-                })}
-
-                {dashActive && dashTime >= REPORT_START + reportLines.length * REPORT_LINE_DELAY + 200 && (
-                  <div className="flex gap-4 text-[10px]">
-                    <button className="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition-colors">
-                      [View Full Report]
-                    </button>
-                    <button className="bg-red-500/20 text-red-400 hover:bg-red-500/30 px-3 py-1.5 rounded transition-colors">
-                      [Flag for Review]
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Mini Table — Slide In */}
-              <div className="w-full md:w-72 p-6 bg-black/20 font-mono text-[10px]">
-                <div className="text-gray-500 mb-4 uppercase tracking-wider">
-                  Recent Scans
-                </div>
-                <div className="flex flex-col gap-3">
-                  {[
-                    { code: 'EGHU 826260-6', status: 'FAIL', statusColor: 'text-red-400', issues: '3 issues', dotColor: 'bg-red-500', borderColor: 'border-red-500/20' },
-                    { code: 'TRHU 534444-0', status: 'PASS', statusColor: 'text-green-400', issues: '0 issues', dotColor: 'bg-green-500', borderColor: 'border-green-500/20' },
-                    { code: 'MCDU 307712-9', status: 'REVIEW', statusColor: 'text-yellow-400', issues: '1 issue', dotColor: 'bg-yellow-500', borderColor: 'border-yellow-500/20' },
-                  ].map((scan, i) => {
-                    const scanStart = SCANS_START + i * SCAN_STAGGER;
-                    const visible = dashActive && dashTime >= scanStart;
-                    const slideProgress = !visible ? 0 : Math.min((dashTime - scanStart) / 300, 1);
-                    const slideEased = 1 - Math.pow(1 - slideProgress, 3);
-
-                    return (
-                      <div
-                        key={i}
-                        className={`flex items-center justify-between bg-white/5 p-2 rounded border ${scan.borderColor}`}
-                        style={{
-                          opacity: slideEased,
-                          transform: `translateY(${(1 - slideEased) * 20}px)`,
-                        }}
-                      >
-                        <span className="text-white">{scan.code}</span>
-                        <span className={scan.statusColor}>{scan.status}</span>
-                        <span className="text-gray-400">{scan.issues}</span>
-                        <div className={`w-2 h-2 rounded-full ${scan.dotColor}`} />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>);
 
