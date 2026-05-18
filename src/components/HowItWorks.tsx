@@ -33,33 +33,122 @@ function StepIcon({ idx, play, cycle, reduce }: IconProps) {
 
   // ---- Step 01: Image Capture — kept <Camera> + flash + ISO glimpse ----
   if (idx === 0) {
+    // Static fallback: camera + blueprint container + serial + scan box.
+    if (reduce) {
+      return (
+        <div className="relative w-full h-full">
+          <Camera size={18} className="absolute top-2 left-1/2 -translate-x-1/2 text-[#2563EB]" />
+          <svg className="absolute inset-0" viewBox="0 0 96 96" fill="none" aria-hidden>
+            <path d="M12 34 H84 V62 H12 Z" stroke="#06B6D4" strokeWidth="1.5" fill="rgba(6,182,212,0.05)" />
+            {[30, 48, 66].map((x) => (
+              <line key={x} x1={x} y1="36" x2={x} y2="43" stroke="#2563EB" strokeOpacity="0.35" strokeWidth="1" />
+            ))}
+            <rect x="27" y="47" width="42" height="12" rx="1" stroke="#FF7F6E" strokeWidth="1.5" fill="rgba(255,127,110,0.14)" />
+            <text x="48" y="56" textAnchor="middle" className="font-mono" fontSize="9" fill="#06B6D4">
+              EGHU 826
+            </text>
+          </svg>
+        </div>
+      );
+    }
     return (
       <div className="relative flex items-center justify-center w-full h-full">
-        <Camera size={32} />
-        {!reduce && (
-          <>
-            <motion.div
-              key={`flash-${cycle}`}
-              className="absolute inset-0 rounded-lg pointer-events-none"
-              style={{
-                background:
-                  'radial-gradient(circle, rgba(186,230,253,0.95) 0%, rgba(6,182,212,0.45) 40%, transparent 70%)',
-              }}
+        <motion.div
+          key={`cam-${cycle}`}
+          className="absolute inset-0 flex items-center justify-center"
+          initial={{ opacity: 1 }}
+          animate={play ? { opacity: [1, 1, 0] } : { opacity: 1 }}
+          transition={{ duration: 0.33, times: [0, 0.55, 1], delay }}
+        >
+          <Camera size={32} />
+        </motion.div>
+        <motion.div
+          key={`flash-${cycle}`}
+          className="absolute inset-0 rounded-lg pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(186,230,253,0.95) 0%, rgba(6,182,212,0.45) 40%, transparent 70%)',
+          }}
+          initial={{ opacity: 0 }}
+          animate={play ? { opacity: [0, 0.9, 0] } : { opacity: 0 }}
+          transition={{ duration: 0.22, times: [0, 0.4, 1], delay }}
+        />
+        <svg className="absolute inset-0" viewBox="0 0 96 96" fill="none" aria-hidden>
+          <motion.path
+            key={`box-${cycle}`}
+            d="M12 34 H84 V62 H12 Z"
+            stroke="#06B6D4"
+            strokeWidth="1.5"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={play ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+            transition={{
+              pathLength: { duration: 0.2, delay: delay + 0.3 },
+              opacity: { duration: 0.05, delay: delay + 0.3 },
+            }}
+          />
+          {[30, 48, 66].map((x) => (
+            <motion.line
+              key={`tick-${x}-${cycle}`}
+              x1={x}
+              y1="36"
+              x2={x}
+              y2="43"
+              stroke="#2563EB"
+              strokeWidth="1"
               initial={{ opacity: 0 }}
-              animate={play ? { opacity: [0, 0.9, 0] } : { opacity: 0 }}
-              transition={{ duration: 0.22, times: [0, 0.4, 1], delay }}
+              animate={play ? { opacity: 0.35 } : { opacity: 0 }}
+              transition={{ duration: 0.12, delay: delay + 0.45 }}
             />
-            <motion.div
-              key={`iso-${cycle}`}
-              className="absolute bottom-1.5 left-1/2 -translate-x-1/2 font-mono text-[9px] tracking-wider text-[#06B6D4] whitespace-nowrap pointer-events-none"
-              initial={{ opacity: 0, y: 3 }}
-              animate={play ? { opacity: [0, 1, 1, 0], y: [3, 0, 0, 0] } : { opacity: 0, y: 3 }}
-              transition={{ duration: 0.45, times: [0, 0.25, 0.7, 1], delay: delay + 0.15 }}
-            >
-              ISO 45G1
-            </motion.div>
-          </>
-        )}
+          ))}
+          <motion.text
+            key={`ser-${cycle}`}
+            x="48"
+            y="56"
+            textAnchor="middle"
+            className="font-mono"
+            fontSize="9"
+            fill="#06B6D4"
+            initial={{ opacity: 0 }}
+            animate={play ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 0.12, delay: delay + 0.5 }}
+          >
+            EGHU 826
+          </motion.text>
+          <motion.g
+            key={`scan-${cycle}`}
+            initial={{ x: -36, opacity: 0 }}
+            animate={
+              play
+                ? {
+                    x: [-36, 0],
+                    opacity: [0, 1],
+                    filter: [
+                      'drop-shadow(0 0 0 rgba(255,127,110,0))',
+                      'drop-shadow(0 0 0 rgba(255,127,110,0))',
+                      'drop-shadow(0 0 6px rgba(255,127,110,0.85))',
+                      'drop-shadow(0 0 3px rgba(255,127,110,0.4))',
+                    ],
+                  }
+                : { x: -36, opacity: 0 }
+            }
+            transition={{
+              x: { duration: 0.26, ease: 'easeOut', delay: delay + 0.5 },
+              opacity: { duration: 0.1, delay: delay + 0.5 },
+              filter: { duration: 0.4, times: [0, 0.6, 0.8, 1], delay: delay + 0.5 },
+            }}
+          >
+            <rect
+              x="27"
+              y="47"
+              width="42"
+              height="12"
+              rx="1"
+              stroke="#FF7F6E"
+              strokeWidth="1.5"
+              fill="rgba(255,127,110,0.14)"
+            />
+          </motion.g>
+        </svg>
       </div>
     );
   }
@@ -67,28 +156,41 @@ function StepIcon({ idx, play, cycle, reduce }: IconProps) {
   // ---- Step 02: AI Processing — kept <Cpu> + side traces + power-up ----
   if (idx === 1) {
     const traces = [
-      { side: 'left' as const, top: '40%' },
-      { side: 'left' as const, top: '60%' },
-      { side: 'right' as const, top: '40%' },
-      { side: 'right' as const, top: '60%' },
+      { side: 'left' as const, top: '42%' },
+      { side: 'left' as const, top: '58%' },
+      { side: 'right' as const, top: '42%' },
+      { side: 'right' as const, top: '58%' },
     ];
     return (
       <div className="relative flex items-center justify-center w-full h-full">
         {!reduce &&
           traces.map((t, i) => (
-            <motion.div
-              key={`trace-${i}-${cycle}`}
-              className="absolute h-[2px] w-4 bg-[#06B6D4]"
-              style={{
-                top: t.top,
-                [t.side]: '0.5rem',
-                transformOrigin: t.side,
-                boxShadow: '0 0 4px rgba(6,182,212,0.8)',
-              }}
-              initial={{ scaleX: 0 }}
-              animate={play ? { scaleX: [0, 1] } : { scaleX: 0 }}
-              transition={{ duration: 0.35, delay }}
-            />
+            <React.Fragment key={`tr-${i}-${cycle}`}>
+              <motion.div
+                className="absolute h-[2px] w-8 bg-[#06B6D4]"
+                style={{
+                  top: t.top,
+                  [t.side]: 0,
+                  transformOrigin: t.side,
+                  boxShadow: '0 0 4px rgba(6,182,212,0.8)',
+                }}
+                initial={{ scaleX: 0 }}
+                animate={play ? { scaleX: [0, 1] } : { scaleX: 0 }}
+                transition={{ duration: 0.35, delay }}
+              />
+              <motion.div
+                className="absolute w-[4px] h-[4px] rounded-full"
+                style={{
+                  top: `calc(${t.top} - 1px)`,
+                  [t.side]: '30px',
+                  background: '#A5F3FC',
+                  boxShadow: '0 0 6px 1px rgba(34,211,238,0.9)',
+                }}
+                initial={{ opacity: 0, scale: 0.4 }}
+                animate={play ? { opacity: [0, 0, 1, 0.55], scale: [0.4, 0.4, 1.4, 1] } : { opacity: 0, scale: 0.4 }}
+                transition={{ duration: 0.45, times: [0, 0.72, 0.86, 1], delay }}
+              />
+            </React.Fragment>
           ))}
         <motion.div
           key={`cpu-${cycle}`}
@@ -106,7 +208,7 @@ function StepIcon({ idx, play, cycle, reduce }: IconProps) {
                 }
               : {}
           }
-          transition={{ duration: 0.5, times: [0, 0.5, 1], delay: delay + 0.3 }}
+          transition={{ duration: 0.5, times: [0, 0.5, 1], delay: delay + 0.35 }}
         >
           <Cpu size={32} />
         </motion.div>
