@@ -5,51 +5,13 @@ import { motion, useInView } from 'framer-motion'
 
 /**
  * AfterScanDashboard — dark-themed dashboard shown in the dark zone directly
- * below the Container3D scan animation. Carries forward only the 8 touchpoint
- * cards + 4 stat cards from the (deleted) light JourneyMapHighlight. Background
- * is #0A0F1A to read as a seamless continuation of the Container3D section.
+ * below the Container3D scan animation. Renders the 4 "Systems in Use" cards
+ * + 4 stat cards. (The "Container Data at This Point" column was removed per
+ * Bernardo round 2 feedback #3.) Background is #0A0F1A to read as a seamless
+ * continuation of the Container3D section.
  * Content verbatim per spec; product claims ("5 of 8" / "7–10 min" / "< 2 min")
  * are not paraphrased.
  */
-
-type DataRow = {
-  title: string
-  detail: string
-  tag: string
-  tagClass: string
-  cardClass: string
-}
-
-const containerData: DataRow[] = [
-  {
-    title: 'Container ID at DC Gate',
-    detail: 'Security guard or WMS scan — often just truck plate',
-    tag: 'MANUAL/PAPER',
-    tagClass: 'text-red-400',
-    cardClass: 'bg-red-950/30 border border-red-900/50 border-l-4 border-l-red-500',
-  },
-  {
-    title: 'Seal Verification',
-    detail: 'Manually checked against B/L — often skipped',
-    tag: 'MANUAL/PAPER',
-    tagClass: 'text-red-400',
-    cardClass: 'bg-red-950/30 border border-red-900/50 border-l-4 border-l-red-500',
-  },
-  {
-    title: 'Cargo Condition at Opening',
-    detail: 'Receiving team inspects cargo, not container',
-    tag: 'MANUAL/PAPER',
-    tagClass: 'text-red-400',
-    cardClass: 'bg-red-950/30 border border-red-900/50 border-l-4 border-l-red-500',
-  },
-  {
-    title: 'Container Departure',
-    detail: 'Empty departure rarely logged',
-    tag: 'NOT CAPTURED',
-    tagClass: 'text-slate-400',
-    cardClass: 'bg-slate-800/50 border border-slate-700 border-l-4 border-l-slate-500',
-  },
-]
 
 type Status = 'full' | 'half' | 'empty'
 
@@ -152,9 +114,8 @@ const card = (delayMs: number, inView: boolean) => ({
   transition: { duration: 0.4, ease: 'easeOut' as const, delay: delayMs / 1000 },
 })
 
-// Interleaved L-R-L-R cascade (120ms between sides, 240ms down a column).
-const LEFT_DELAYS = [0, 240, 480, 720]
-const RIGHT_DELAYS = [120, 360, 600, 840]
+// Staggered entrance cascade for the Systems-in-Use column.
+const RIGHT_DELAYS = [0, 120, 240, 360]
 const STAT_STAGGER = 100
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
@@ -179,54 +140,26 @@ export function AfterScanDashboard() {
   return (
     <section ref={sectionRef} className="bg-[#0A0F1A] text-slate-100 pt-10 pb-24 md:pt-14 md:pb-32">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Two columns — 8 cards */}
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-10">
-          {/* LEFT */}
-          <div>
-            <Eyebrow>Container Data at This Point</Eyebrow>
-            <div className="space-y-3">
-              {containerData.map((row, i) => (
-                <motion.div
-                  key={row.title}
-                  {...card(LEFT_DELAYS[i], inView)}
-                  className={`rounded-lg p-4 ${row.cardClass}`}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="font-semibold text-slate-100">{row.title}</div>
-                      <div className="mt-1 text-sm text-slate-400">{row.detail}</div>
-                    </div>
-                    <span
-                      className={`shrink-0 text-xs font-bold uppercase tracking-wide ${row.tagClass}`}
-                    >
-                      {row.tag}
-                    </span>
+        {/* Systems in Use — single column (the "Container Data at This
+            Point" column was removed per Bernardo round 2 feedback #3) */}
+        <div className="max-w-2xl mx-auto">
+          <Eyebrow>Systems in Use</Eyebrow>
+          <div className="space-y-3">
+            {systems.map((sys, i) => (
+              <motion.div
+                key={sys.name}
+                {...card(RIGHT_DELAYS[i], inView)}
+                className="rounded-lg border border-slate-800 bg-slate-900/50 p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <StatusDot status={sys.status} />
+                  <div>
+                    <div className="font-semibold text-slate-100">{sys.name}</div>
+                    <div className="mt-1 text-sm text-slate-400">{sys.detail}</div>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* RIGHT */}
-          <div>
-            <Eyebrow>Systems in Use</Eyebrow>
-            <div className="space-y-3">
-              {systems.map((sys, i) => (
-                <motion.div
-                  key={sys.name}
-                  {...card(RIGHT_DELAYS[i], inView)}
-                  className="rounded-lg border border-slate-800 bg-slate-900/50 p-4"
-                >
-                  <div className="flex items-start gap-3">
-                    <StatusDot status={sys.status} />
-                    <div>
-                      <div className="font-semibold text-slate-100">{sys.name}</div>
-                      <div className="mt-1 text-sm text-slate-400">{sys.detail}</div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
 

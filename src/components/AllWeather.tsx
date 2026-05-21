@@ -11,6 +11,10 @@ const conditions = [
     desc: 'Clear conditions, full accuracy',
     video: '/day-scan.mp4',
     ariaLabel: 'Container scanning demonstration in clear daylight conditions',
+    // day-scan.mp4 is portrait-source (540×960) in a landscape aspect-video
+    // box — anchor to bottom so the plate/chassis/container-code captures
+    // (bottom of frame) stay visible instead of being center-cropped off.
+    objectPosition: 'object-bottom',
   },
   {
     icon: <CloudRain className="text-blue-500" size={24} />,
@@ -18,6 +22,8 @@ const conditions = [
     desc: 'Wet weather, no degradation',
     video: '/assets/videos/rain.mp4',
     ariaLabel: 'Container scanning demonstration in wet weather conditions',
+    // rain.mp4 is landscape-source (1920×920) — center is correct.
+    objectPosition: 'object-center',
   },
   {
     icon: <Moon className="text-indigo-400" size={24} />,
@@ -25,6 +31,8 @@ const conditions = [
     desc: 'Complete darkness, infrared capable',
     video: '/assets/videos/night.mp4',
     ariaLabel: 'Container scanning demonstration in darkness with infrared',
+    // night.mp4 is landscape-source (1920×920) — center is correct.
+    objectPosition: 'object-center',
   },
 ];
 
@@ -61,7 +69,7 @@ export function AllWeather() {
                   muted
                   playsInline
                   aria-label={condition.ariaLabel}
-                  className="absolute inset-0 w-full h-full object-cover object-center"
+                  className={`absolute inset-0 w-full h-full object-cover ${condition.objectPosition}`}
                 />
               </div>
               <div className="flex items-center gap-3 mb-2">

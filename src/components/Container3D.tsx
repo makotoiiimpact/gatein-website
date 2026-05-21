@@ -292,12 +292,12 @@ export function Container3D() {
           className="absolute top-20 md:top-24 left-0 w-full text-center z-50 px-6">
 
           <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-5 sm:py-2 rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 text-[#2563EB] font-mono text-[10px] sm:text-xs md:text-sm uppercase tracking-[0.2em] mb-3 sm:mb-5">
-            After · GateIn AI
+            SOLUTION · <span className="normal-case">GateIn AI</span>
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white mb-3 sm:mb-4 tracking-tight font-sans max-w-xs sm:max-w-none mx-auto">
             Automated scan. Bounded detections. Digital record.
           </h2>
-          <div className="text-xs sm:text-base md:text-lg text-gray-300 max-w-md mx-auto leading-relaxed font-sans space-y-2 sm:space-y-3">
+          <div className="text-xs sm:text-base md:text-lg text-gray-300 max-w-md md:max-w-2xl mx-auto leading-relaxed font-sans space-y-2 sm:space-y-3">
             <p>
               A complete AI vision system in a single edge deployment. Cameras quickly sweep inside
               and out of the containers.
@@ -349,7 +349,7 @@ export function Container3D() {
           }}>
           
           {/* Responsive scale wrapper */}
-          <div className="mt-[30vh] sm:mt-[16vh] md:mt-[8vh] scale-[0.5] sm:scale-[0.7] md:scale-100 lg:scale-[1.8] xl:scale-[2] transition-transform">
+          <div className="mt-[30vh] sm:mt-[16vh] md:mt-[26vh] scale-[0.5] sm:scale-[0.7] md:scale-100 lg:scale-[1.8] xl:scale-[2] transition-transform">
             {/* ====== FLOATING: AI Vision Camera (Act 1) ====== */}
             <motion.div
               className="absolute z-20"
