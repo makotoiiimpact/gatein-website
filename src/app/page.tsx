@@ -2,7 +2,6 @@ import { Navbar } from '@/components/Navbar'
 import { Hero } from '@/components/Hero'
 import { PainPoints } from '@/components/PainPoints'
 import { DamageInspection } from '@/components/DamageInspection'
-import { Container3D } from '@/components/Container3D'
 import { AfterScanDashboard } from '@/components/AfterScanDashboard'
 import { Products } from '@/components/Products'
 import { HowItWorks } from '@/components/HowItWorks'
@@ -28,7 +27,6 @@ export default function Home() {
             after the challenges section. */}
         <Products />
         <DamageInspection />
-        <Container3D />
         <AfterScanDashboard />
         <HowItWorks />
         <GateScanVisualization />

@@ -84,53 +84,60 @@ export function AllWeather() {
         </div>
 
         {/* V5 May-21 additions: damage detection (landscape) + Lázaro Cárdenas
-            container detection (portrait). Stacked rather than gridded — mixed
-            orientation; portrait keeps its native 9:16 frame so the bottom-half
-            detection zone stays in view (would clip if forced into aspect-video). */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16"
-        >
-          <div className="w-full aspect-video rounded-lg mb-6 relative overflow-hidden bg-black">
-            <video
-              src="/assets/videos/damage-detection.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              aria-label="Live damage detection demonstration with on-frame bounding box and classification"
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
-          </div>
-          <p className="text-slate-600 text-center md:text-left">
-            Live damage detection — bounding box + classification
-          </p>
-        </motion.div>
+            container detection (portrait). Same 3-col grid as the top weather
+            row so both rows share cell dimensions — cells 1+2 filled, cell 3
+            intentionally empty (left-aligned "2 below" pattern per V6 Phase 4
+            decision). Portrait MX clip uses object-cover object-bottom inside
+            the landscape aspect-video frame, clipping the top half so the
+            lower-half detection zone stays in view at the shared cell size. */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col"
+          >
+            <div className="w-full aspect-video rounded-lg mb-6 relative overflow-hidden bg-black">
+              <video
+                src="/assets/videos/damage-detection.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                aria-label="Live damage detection demonstration with on-frame bounding box and classification"
+                className="absolute inset-0 w-full h-full object-cover object-center"
+              />
+            </div>
+            <p className="text-slate-600">
+              Live damage detection — bounding box + classification
+            </p>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="mb-16 max-w-sm mx-auto"
-        >
-          <div className="w-full aspect-[9/16] rounded-lg mb-6 relative overflow-hidden bg-black">
-            <video
-              src="/assets/videos/container-detection-mx.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              aria-label="Container detection demonstration at Lázaro Cárdenas, Mexico"
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
-          </div>
-          <p className="text-slate-600 text-center">
-            Container detection — Lázaro Cárdenas
-          </p>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="flex flex-col"
+          >
+            <div className="w-full aspect-video rounded-lg mb-6 relative overflow-hidden bg-black">
+              <video
+                src="/assets/videos/container-detection-mx.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                aria-label="Container detection demonstration at Lázaro Cárdenas, Mexico"
+                className="absolute inset-0 w-full h-full object-cover object-bottom"
+              />
+            </div>
+            <p className="text-slate-600">
+              Container detection — Lázaro Cárdenas
+            </p>
+          </motion.div>
+
+          {/* Cell 3 intentionally empty — "2 below" pattern matching top-row cell dims. */}
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
