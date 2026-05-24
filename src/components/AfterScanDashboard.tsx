@@ -1,16 +1,19 @@
 'use client'
 
 import React, { useRef } from 'react'
+import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
 
 /**
  * AfterScanDashboard — dark-themed panel shown in the dark zone directly below
  * the Container3D scan animation. Renders the 4 "Systems in Use" cards on a
- * single centered column. ("Container Data at This Point" column removed per
- * Bernardo round 2 feedback #3; the four-stat row removed pre-launch per the
- * May 21 Bernardo/Jordi meeting — confidentiality of site-count and target-
- * site stats.) Background is #0A0F1A to read as a seamless continuation of
- * the Container3D section.
+ * single centered column, layered over a faded Detention & Demurrage dashboard
+ * backdrop that fills the visual weight the removed stat row vacated.
+ * ("Container Data at This Point" column removed per Bernardo round 2 feedback
+ * #3; the four-stat row removed pre-launch per the May 21 Bernardo/Jordi
+ * meeting — confidentiality of site-count and target-site stats.) Section
+ * background is #0A0F1A to read as a seamless continuation of the Container3D
+ * section.
  */
 
 type Status = 'full' | 'half' | 'empty'
@@ -73,8 +76,22 @@ export function AfterScanDashboard() {
   // played the once:true animation off-screen → static end state).
   const inView = useInView(sectionRef, { once: true, amount: 0.3 })
   return (
-    <section ref={sectionRef} className="bg-[#0A0F1A] text-slate-100 pt-10 pb-24 md:pt-14 md:pb-32">
-      <div className="max-w-7xl mx-auto px-6">
+    <section ref={sectionRef} className="relative overflow-hidden bg-[#0A0F1A] text-slate-100 pt-10 pb-24 md:pt-14 md:pb-32">
+      {/* Faded Detention & Demurrage dashboard backdrop. Decorative — sits
+          behind the systems cards and provides visual weight where the four-
+          stat row used to be. Starting opacity 0.15 (midpoint of the spec's
+          0.10–0.20 range); tune the opacity-[…] class for shallower/deeper
+          fade. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.15]">
+        <Image
+          src="/assets/images/detention-demurrage-bg.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="max-w-2xl mx-auto">
           <Eyebrow>Systems in Use</Eyebrow>
           <div className="space-y-3">
