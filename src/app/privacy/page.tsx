@@ -12,6 +12,9 @@ export const metadata: Metadata = {
 const EFFECTIVE_DATE = 'April 2026'
 const COMPANY = 'GateIn AI, Inc.'
 const CONTACT_EMAIL = 'websitecontactus@gatein.ai'
+// Obfuscated form for visible display — defeats naive mailto-harvesting
+// regex sweeps. Real address still in the mailto: href.
+const CONTACT_EMAIL_DISPLAY = 'websitecontactus(at)gatein.ai'
 
 export default function PrivacyPolicyPage() {
   return (
@@ -79,7 +82,7 @@ export default function PrivacyPolicyPage() {
               the personal information we hold about you, and to opt out of certain uses. To
               exercise any of these rights, contact us at{' '}
               <a className="text-[#2563EB] hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
-                {CONTACT_EMAIL}
+                {CONTACT_EMAIL_DISPLAY}
               </a>
               . We will respond within a reasonable timeframe.
             </p>
@@ -89,7 +92,7 @@ export default function PrivacyPolicyPage() {
             <p>
               Questions about this policy or how we handle your information can be sent to{' '}
               <a className="text-[#2563EB] hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
-                {CONTACT_EMAIL}
+                {CONTACT_EMAIL_DISPLAY}
               </a>
               .
             </p>

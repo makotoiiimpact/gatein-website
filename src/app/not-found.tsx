@@ -30,7 +30,7 @@ export default function NotFound() {
             href="mailto:hello@gatein.ai"
             className="text-white/70 hover:text-white transition-colors text-sm font-medium"
           >
-            Or email hello@gatein.ai
+            Or email hello(at)gatein.ai
           </a>
         </div>
       </div>

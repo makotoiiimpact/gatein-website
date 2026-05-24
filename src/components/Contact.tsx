@@ -237,7 +237,7 @@ export function Contact() {
               </div>
               <h3 className="text-xl font-bold mb-2">Email us directly</h3>
               <a href="mailto:hello@gatein.ai" className="text-gray-400 hover:text-white transition-colors">
-                hello@gatein.ai
+                hello(at)gatein.ai
               </a>
             </motion.div>
 
