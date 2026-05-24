@@ -75,3 +75,10 @@
     height: 100%;
   }
 }
+
+/* V6 walkthrough — hotspot pulse ring (used by ContainerDamageWalkthrough's
+   revealed hotspots; applied via inline style: { animation: 'hotspot-pulse ...' }). */
+@keyframes hotspot-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50%      { transform: scale(1.4); opacity: 0; }
+}

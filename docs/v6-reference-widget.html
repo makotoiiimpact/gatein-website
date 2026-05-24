@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GateIn AI V6 Reference Widget — Container Damage Walkthrough (with Vision Camera)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --panel: #11141a;
+    --ink: #e8eaed;
+    --ink-dim: #9aa0a6;
+    --teal: #5DCAA5;
+    --teal-dim: #3a8f72;
+    --major-bg: #FCEBEB;
+    --major-ink: #791F1F;
+    --moderate-bg: #FAEEDA;
+    --moderate-ink: #633806;
+    --minor-bg: #EAF3DE;
+    --minor-ink: #27500A;
+    --radius: 12px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #f5f5f4;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--ink);
+  }
+  .page {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .page-header {
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #555;
+    font-weight: 500;
+  }
+  .gatein-walkthrough {
+    position: relative;
+    width: 100%;
+    height: 620px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .gatein-walkthrough canvas { display: block; width: 100%; height: 100%; }
+  .scan-summary {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: rgba(93, 202, 165, 0.15);
+    border: 1px solid var(--teal);
+    border-radius: 999px;
+    color: var(--teal);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 360ms ease-out, transform 360ms ease-out;
+    pointer-events: none;
+  }
+  .scan-summary.visible { opacity: 1; transform: translateY(0); }
+  .scan-summary i { font-size: 16px; }
+  .replay-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 160ms ease-out;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .replay-btn.visible { opacity: 1; pointer-events: auto; }
+  .replay-btn:hover { background: rgba(255,255,255,0.14); }
+  .replay-btn i { font-size: 14px; }
+  .hotspot {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--teal);
+    color: #062018;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 220ms ease-out;
+    box-shadow: 0 0 0 4px rgba(93, 202, 165, 0.2);
+    z-index: 5;
+  }
+  .hotspot.revealed { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  .hotspot::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid var(--teal);
+    opacity: 0;
+    animation: hotspot-pulse 2.2s ease-in-out infinite;
+  }
+  .hotspot.revealed::before { opacity: 1; }
+  @keyframes hotspot-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50%      { transform: scale(1.4); opacity: 0; }
+  }
+  @media (min-width: 641px) {
+    .hotspot { width: 32px; height: 32px; font-size: 13px; }
+  }
+  @media (max-width: 640px) {
+    .hotspot { width: 38px; height: 38px; font-size: 14px; }
+    .gatein-walkthrough { height: 520px; }
+  }
+  .helper {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    padding: 8px 14px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    color: var(--ink-dim);
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 320ms ease-out, transform 320ms ease-out;
+    pointer-events: none;
+  }
+  .helper.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .card {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 320px;
+    max-height: calc(100% - 32px);
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 18px;
+    transform: translateX(calc(100% + 24px));
+    transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1);
+    overflow-y: auto;
+    z-index: 10;
+  }
+  .card.open { transform: translateX(0); }
+  @media (max-width: 640px) {
+    .card {
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-height: 75%;
+      border-radius: var(--radius) var(--radius) 0 0;
+      transform: translateY(100%);
+    }
+    .card.open { transform: translateY(0); }
+  }
+  .card-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    border-radius: 6px;
+    color: var(--ink-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-close:hover { background: rgba(255,255,255,0.12); color: var(--ink); }
+  .card-photo {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, rgba(93,202,165,0.08), rgba(93,202,165,0.02));
+    border: 1px solid rgba(93,202,165,0.12);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--teal-dim);
+    margin-bottom: 14px;
+  }
+  .card-photo i { font-size: 32px; opacity: 0.5; }
+  .card-photo span { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.6; }
+  .card-photo.has-image { background-size: cover; background-position: center; border: none; }
+  .card-photo.has-image i, .card-photo.has-image span { display: none; }
+  .card-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 12px 0;
+    line-height: 1.3;
+  }
+  .severity-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .severity-pill::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .severity-major   { background: var(--major-bg); color: var(--major-ink); }
+  .severity-major::before { background: var(--major-ink); }
+  .severity-moderate{ background: var(--moderate-bg); color: var(--moderate-ink); }
+  .severity-moderate::before { background: var(--moderate-ink); }
+  .severity-minor   { background: var(--minor-bg); color: var(--minor-ink); }
+  .severity-minor::before { background: var(--minor-ink); }
+  .card-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .chip {
+    padding: 4px 9px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--ink);
+    font-family: 'SF Mono', Monaco, monospace;
+  }
+  .card-caption {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-dim);
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="page-header">
+    GateIn AI V6 Direction Deploy — reference widget (vision camera + slowed scan timing).<br>
+    Drop at <code>~/IIIMPACT/clients/gatein-ai/build/gatein-website/docs/v6-reference-widget.html</code> for Mac CC reference.
+  </div>
+
+  <div class="gatein-walkthrough" id="walkthrough">
+    <canvas id="three-canvas"></canvas>
+    <div class="scan-summary" id="scan-summary">
+      <i class="ti ti-radar-2"></i>
+      <span>Scan complete — 3 findings detected</span>
+    </div>
+    <button class="replay-btn" id="replay-btn">
+      <i class="ti ti-refresh"></i>
+      Replay scan
+    </button>
+    <div class="helper" id="helper">Tap any marker to inspect</div>
+    <div class="card" id="card">
+      <button class="card-close" id="card-close"><i class="ti ti-x"></i></button>
+      <div class="card-photo" id="card-photo">
+        <i class="ti ti-photo"></i>
+        <span>Inspection photo</span>
+      </div>
+      <div class="card-label" id="card-label"></div>
+      <h3 class="card-title" id="card-title"></h3>
+      <span class="severity-pill" id="card-severity"></span>
+      <div class="card-chips" id="card-chips"></div>
+      <p class="card-caption" id="card-caption"></p>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+/* ============ ZONES ============ */
+const ZONES = [
+  { id: 'dent',      label: 'Right side panel — section 3',     title: 'Impact dent — major',
+    codes: ['RSP — RIGHT SIDE PANEL','DT — DENTED','IN — INSERT PANEL'],
+    severity: 'major',    severityLabel: 'Major — structural',
+    caption: 'Visible impact deformation, approximately 15cm × 8cm. Panel integrity compromised. Full panel insert recommended before next voyage.',
+    worldPos: [0.6, 0.15, 0.86],  face: '+z' },
+  { id: 'corrosion', label: 'Cargo doors — lower right hinge',  title: 'Rust corrosion — moderate',
+    codes: ['DRR — DOOR RIGHT REAR','RS — RUST/CORROSION','RP — REPAIR PATCH'],
+    severity: 'moderate', severityLabel: 'Moderate — cosmetic + spread risk',
+    caption: 'Surface corrosion spreading from door seal interface, ~20cm × 30cm. Repair patch recommended within 30 days to prevent through-rust.',
+    worldPos: [-2.02, -0.4, 0.5], face: '-x' },
+  { id: 'scrape',    label: 'Left side panel — section 1',      title: 'Surface scrape — minor',
+    codes: ['LSP — LEFT SIDE PANEL','SC — SCRATCHED','PA — REPAINT'],
+    severity: 'minor',    severityLabel: 'Minor — surface only',
+    caption: 'Paint stripped along 40cm horizontal line, likely yard contact. No structural concern. Standard repaint at next maintenance window.',
+    worldPos: [0.4, 0.25, -0.86], face: '-z' },
+];
+const IMAGES = { dent: '', corrosion: '', scrape: '' };
+
+/* ============ TIMING CONSTANTS ============ */
+const CELL_STAGGER   = 32;
+const CELL_RAMP      = 160;
+const CELL_HOLD      = 120;
+const CELL_FADE      = 280;
+const CELL_FULL      = CELL_RAMP + CELL_HOLD + CELL_FADE; // 560
+const CAM_ENTRY_DUR  = 800;
+const CAM_EXIT_DUR   = 400;
+const CAM_SETTLE     = 200;
+
+/* ============ DOM ============ */
+const wrapper      = document.getElementById('walkthrough');
+const canvas       = document.getElementById('three-canvas');
+const summaryEl    = document.getElementById('scan-summary');
+const replayBtn    = document.getElementById('replay-btn');
+const helperEl     = document.getElementById('helper');
+const cardEl       = document.getElementById('card');
+const cardCloseEl  = document.getElementById('card-close');
+const cardPhotoEl  = document.getElementById('card-photo');
+const cardLabelEl  = document.getElementById('card-label');
+const cardTitleEl  = document.getElementById('card-title');
+const cardSevEl    = document.getElementById('card-severity');
+const cardChipsEl  = document.getElementById('card-chips');
+const cardCaptionEl= document.getElementById('card-caption');
+
+/* ============ SCENE ============ */
+const scene  = new THREE.Scene();
+const isMobile = () => window.innerWidth < 641;
+const camera = new THREE.PerspectiveCamera(isMobile() ? 42 : 38, 1, 0.1, 100);
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = false;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+function resize() {
+  const w = wrapper.clientWidth, h = wrapper.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.fov    = isMobile() ? 42 : 38;
+  if (isMobile()) camera.position.set(5.8, 3.2, 5.4);
+  else            camera.position.set(6.5, 3.6, 6.0);
+  camera.lookAt(0, 0, 0);
+  camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener('resize', resize);
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+const key = new THREE.DirectionalLight(0xffffff, 0.9); key.position.set(5,8,5); scene.add(key);
+const fill = new THREE.DirectionalLight(0x88aaff, 0.25); fill.position.set(-5,3,-3); scene.add(fill);
+
+/* ============ CONTAINER ============ */
+const containerGroup = new THREE.Group();
+scene.add(containerGroup);
+const W = 4.0, H = 1.8, D = 1.7;
+const halfW = W/2, halfH = H/2, halfD = D/2;
+const bodyMat = new THREE.MeshStandardMaterial({ color: 0xc14a35, roughness: 0.7, metalness: 0.15 });
+const corrugationMat = new THREE.MeshStandardMaterial({ color: 0xa83d2a, roughness: 0.75, metalness: 0.18 });
+const body = new THREE.Mesh(new THREE.BoxGeometry(W, H, D), bodyMat);
+containerGroup.add(body);
+for (let i = -8; i <= 8; i++) {
+  const xPos = (i / 8) * (W * 0.46);
+  const rib = new THREE.Mesh(new THREE.BoxGeometry(0.06, H * 0.9, 0.01), corrugationMat);
+  rib.position.set(xPos, 0, halfD + 0.005); containerGroup.add(rib);
+  const rib2 = rib.clone(); rib2.position.set(xPos, 0, -halfD - 0.005); containerGroup.add(rib2);
+}
+const doorMat = new THREE.MeshStandardMaterial({ color: 0xa53726, roughness: 0.75, metalness: 0.18 });
+const doors = new THREE.Mesh(new THREE.BoxGeometry(0.02, H, D), doorMat);
+doors.position.set(-halfW - 0.011, 0, 0); containerGroup.add(doors);
+const handleMat = new THREE.MeshStandardMaterial({ color: 0x2a2d33, roughness: 0.5, metalness: 0.7 });
+for (let i = 0; i < 4; i++) {
+  const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, H * 0.85, 8), handleMat);
+  handle.position.set(-halfW - 0.025, 0, -halfD * 0.7 + i * (D * 0.45)); containerGroup.add(handle);
+}
+
+/* ============ SCAN GRID ============ */
+const COLS = 8, ROWS = 4;
+const cellW = (W * 0.92) / COLS;
+const cellH = (H * 0.88) / ROWS;
+const cellGeo = new THREE.PlaneGeometry(cellW * 0.92, cellH * 0.92);
+const scanCells = [];
+for (let r = 0; r < ROWS; r++) {
+  for (let c = 0; c < COLS; c++) {
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0x5DCAA5, transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
+    });
+    const mesh = new THREE.Mesh(cellGeo, mat);
+    mesh.position.set(-W*0.46 + c * cellW + cellW/2, H*0.44 - r * cellH - cellH/2, halfD + 0.012);
+    containerGroup.add(mesh);
+    scanCells.push({ mesh, mat, col: c, row: r, fadeStart: -1 });
+  }
+}
+
+/* ============ VISION CAMERA (world space — not parented to containerGroup) ============ */
+const visionCameraGroup = new THREE.Group();
+visionCameraGroup.visible = false;
+
+const camBodyMat   = new THREE.MeshStandardMaterial({ color: 0x2a2d33, roughness: 0.5, metalness: 0.7, transparent: true, opacity: 0 });
+const camTrimMat   = new THREE.MeshStandardMaterial({ color: 0x4a5058, roughness: 0.4, metalness: 0.6, transparent: true, opacity: 0 });
+const lensGlassMat = new THREE.MeshStandardMaterial({ color: 0x0a0c10, roughness: 0.1, metalness: 0.9, transparent: true, opacity: 0 });
+const ledRingMat   = new THREE.MeshBasicMaterial   ({ color: 0x5DCAA5, transparent: true, opacity: 0, blending: THREE.AdditiveBlending });
+
+const camBody = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.34, 0.38), camBodyMat);
+visionCameraGroup.add(camBody);
+[[ 0.19,  0.21],[ 0.19, -0.21],[-0.19,  0.21],[-0.19, -0.21]].forEach(([y,z]) => {
+  const rail = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.04, 0.04), camTrimMat);
+  rail.position.set(0, y, z); visionCameraGroup.add(rail);
+});
+const lensHousing = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.16, 24), camTrimMat);
+lensHousing.rotation.z = Math.PI / 2; lensHousing.position.set(0.32, 0, 0); visionCameraGroup.add(lensHousing);
+const lensGlass = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, 0.025, 24), lensGlassMat);
+lensGlass.rotation.z = Math.PI / 2; lensGlass.position.set(0.42, 0, 0); visionCameraGroup.add(lensGlass);
+const ledRing = new THREE.Mesh(new THREE.TorusGeometry(0.135, 0.018, 12, 32), ledRingMat);
+ledRing.rotation.y = Math.PI / 2; ledRing.position.set(0.41, 0, 0); visionCameraGroup.add(ledRing);
+const mountStub = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.22, 12), camTrimMat);
+mountStub.position.set(0, 0.28, 0); visionCameraGroup.add(mountStub);
+
+visionCameraGroup.position.set(-3.5, 1.2, 1.5);
+visionCameraGroup.lookAt(0, 0.2, halfD);
+scene.add(visionCameraGroup);
+
+let camEntryStart = -1, camExitStart = -1;
+
+function setCamOpacity(o) {
+  camBodyMat.opacity   = o * 1.0;
+  camTrimMat.opacity   = o * 1.0;
+  lensGlassMat.opacity = o * 1.0;
+  ledRingMat.opacity   = o * 0.9;
+}
+
+function updateVisionCamera(now) {
+  if (camEntryStart >= 0) {
+    const t = Math.min(1, (now - camEntryStart) / CAM_ENTRY_DUR);
+    const eased = 1 - Math.pow(1 - t, 3);
+    setCamOpacity(eased);
+    visionCameraGroup.position.x = -4.5 + 1.0 * eased;
+    if (t >= 1) camEntryStart = -1;
+  }
+  if (camExitStart >= 0) {
+    const t = Math.min(1, (now - camExitStart) / CAM_EXIT_DUR);
+    const eased = t * t;
+    setCamOpacity(1 - eased);
+    visionCameraGroup.position.x = -3.5 - 1.0 * eased;
+    if (t >= 1) {
+      camExitStart = -1;
+      visionCameraGroup.visible = false;
+      setCamOpacity(0);
+      visionCameraGroup.position.x = -4.5;
+    }
+  }
+}
+
+/* ============ HOTSPOTS ============ */
+const hotspotMap = new Map();
+ZONES.forEach((z, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'hotspot'; btn.textContent = String(i + 1);
+  btn.setAttribute('aria-label', `View ${z.title}`);
+  btn.addEventListener('click', () => openCard(z.id));
+  wrapper.appendChild(btn);
+  hotspotMap.set(z.id, btn);
+});
+
+function projectHotspots() {
+  const rect = wrapper.getBoundingClientRect();
+  ZONES.forEach(z => {
+    const btn = hotspotMap.get(z.id);
+    const v = new THREE.Vector3(z.worldPos[0], z.worldPos[1], z.worldPos[2]);
+    v.applyMatrix4(containerGroup.matrixWorld);
+    const normalWorld = new THREE.Vector3(
+      z.face === '+z' ? 0 : z.face === '-z' ? 0 : z.face === '+x' ? 1 : -1, 0,
+      z.face === '+z' ? 1 : z.face === '-z' ? -1 : 0
+    );
+    normalWorld.transformDirection(containerGroup.matrixWorld);
+    const toCam = new THREE.Vector3().subVectors(camera.position, v).normalize();
+    const dot = normalWorld.dot(toCam);
+    btn.style.opacity = dot < 0.05 ? '0' : '';
+    if (dot < 0.05) { btn.style.pointerEvents = 'none'; return; }
+    btn.style.pointerEvents = 'auto';
+    v.project(camera);
+    btn.style.left = ((v.x + 1) / 2 * rect.width) + 'px';
+    btn.style.top  = ((1 - (v.y + 1) / 2) * rect.height) + 'px';
+  });
+}
+
+/* ============ STATE ============ */
+let activeZoneId = null, isScanning = false, isHovering = false;
+let summaryVisible = false, helperVisible = false;
+let lastInteractionTime = performance.now();
+const discoveredZones = new Set();
+const timeouts = [];
+function clearTimeouts() { timeouts.forEach(clearTimeout); timeouts.length = 0; }
+
+function resetState() {
+  clearTimeouts();
+  isScanning = false; summaryVisible = false; helperVisible = false; activeZoneId = null;
+  discoveredZones.clear();
+  scanCells.forEach(c => { c.mat.opacity = 0; c.fadeStart = -1; });
+  camEntryStart = -1; camExitStart = -1;
+  visionCameraGroup.visible = false;
+  setCamOpacity(0);
+  visionCameraGroup.position.x = -4.5;
+  hotspotMap.forEach(btn => btn.classList.remove('revealed'));
+  summaryEl.classList.remove('visible');
+  helperEl.classList.remove('visible');
+  replayBtn.classList.remove('visible');
+  cardEl.classList.remove('open');
+}
+
+/* ============ SCAN ============ */
+function runScanSequence() {
+  resetState();
+  isScanning = true;
+
+  // Camera entry — starts at t=0
+  visionCameraGroup.visible = true;
+  camEntryStart = performance.now();
+
+  // Sweep starts after camera fully in + settle beat
+  const sweepStartDelay = CAM_ENTRY_DUR + CAM_SETTLE; // 1000ms
+
+  timeouts.push(setTimeout(() => {
+    const sweepStart = performance.now();
+    scanCells.forEach((cell) => {
+      cell.fadeStart = sweepStart + cell.col * CELL_STAGGER;
+    });
+    const sweepDuration = (COLS - 1) * CELL_STAGGER + CELL_FULL; // 1552ms
+
+    // Camera exit + summary
+    timeouts.push(setTimeout(() => {
+      camExitStart = performance.now();
+      isScanning = false;
+    }, sweepDuration));
+    timeouts.push(setTimeout(() => {
+      summaryEl.classList.add('visible'); summaryVisible = true;
+    }, sweepDuration + 100));
+
+    // Hotspot reveal after 600ms beat
+    timeouts.push(setTimeout(() => {
+      ZONES.forEach((z, i) => {
+        timeouts.push(setTimeout(() => {
+          hotspotMap.get(z.id).classList.add('revealed');
+          discoveredZones.add(z.id);
+        }, i * 200));
+      });
+    }, sweepDuration + 700));
+
+    // Helper + replay button
+    timeouts.push(setTimeout(() => {
+      helperEl.classList.add('visible'); helperVisible = true;
+      replayBtn.classList.add('visible');
+    }, sweepDuration + 700 + (ZONES.length - 1) * 200 + 200));
+  }, sweepStartDelay));
+}
+
+function updateScanCells(now) {
+  scanCells.forEach(cell => {
+    if (cell.fadeStart < 0) return;
+    const t = now - cell.fadeStart;
+    if (t < 0) return;
+    let o;
+    if      (t < CELL_RAMP)                       o = 0.7 * (t / CELL_RAMP);
+    else if (t < CELL_RAMP + CELL_HOLD)           o = 0.7;
+    else if (t < CELL_FULL) {
+      const fadeT = (t - CELL_RAMP - CELL_HOLD) / CELL_FADE;
+      o = 0.7 * (1 - fadeT);
+    } else { o = 0; cell.fadeStart = -1; }
+    cell.mat.opacity = o;
+  });
+}
+
+/* ============ CARD ============ */
+function openCard(zoneId) {
+  const z = ZONES.find(zz => zz.id === zoneId); if (!z) return;
+  activeZoneId = zoneId;
+  cardLabelEl.textContent = z.label;
+  cardTitleEl.textContent = z.title;
+  cardSevEl.className = 'severity-pill severity-' + z.severity;
+  cardSevEl.textContent = z.severityLabel;
+  cardChipsEl.innerHTML = z.codes.map(c => `<span class="chip">${c}</span>`).join('');
+  cardCaptionEl.textContent = z.caption;
+  const imgUrl = IMAGES[z.id];
+  if (imgUrl) { cardPhotoEl.classList.add('has-image'); cardPhotoEl.style.backgroundImage = `url('${imgUrl}')`; }
+  else        { cardPhotoEl.classList.remove('has-image'); cardPhotoEl.style.backgroundImage = ''; }
+  cardEl.classList.add('open');
+}
+function closeCard() { activeZoneId = null; cardEl.classList.remove('open'); }
+cardCloseEl.addEventListener('click', closeCard);
+replayBtn.addEventListener('click', runScanSequence);
+
+/* ============ INTERACTION ============ */
+wrapper.addEventListener('mouseenter', () => { isHovering = true; lastInteractionTime = performance.now(); });
+wrapper.addEventListener('mouseleave', () => { isHovering = false; lastInteractionTime = performance.now(); });
+wrapper.addEventListener('mousemove',  () => { lastInteractionTime = performance.now(); });
+
+/* ============ RENDER LOOP ============ */
+function animate() {
+  requestAnimationFrame(animate);
+  const now = performance.now();
+  const idle = now - lastInteractionTime > 1800;
+  if (idle && !isScanning && !isHovering && activeZoneId === null) {
+    containerGroup.rotation.y += 0.0035;
+  }
+  updateScanCells(now);
+  updateVisionCamera(now);
+  projectHotspots();
+  renderer.render(scene, camera);
+}
+animate();
+
+/* ============ INTERSECTION OBSERVER ============ */
+let wasVisible = false;
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.intersectionRatio >= 0.4 && !wasVisible) {
+      wasVisible = true;
+      runScanSequence();
+    } else if (e.intersectionRatio < 0.1) {
+      wasVisible = false;
+    }
+  });
+}, { threshold: [0, 0.1, 0.4] });
+io.observe(wrapper);
+</script>
+</body>
+</html>

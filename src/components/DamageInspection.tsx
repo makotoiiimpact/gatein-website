@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { PenLine, Clock } from 'lucide-react'
+import { ContainerDamageWalkthrough } from './ContainerDamageWalkthrough'
 
 type DamageType = {
   label: string
@@ -214,7 +215,7 @@ export function DamageInspection() {
           className="relative rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-12 flex flex-col"
         >
           <div className="flex items-center mb-6">
-            <Eyebrow tone="manual">How damage is done today · Manual</Eyebrow>
+            <Eyebrow tone="manual">Damage assessment today · Slow &amp; manual</Eyebrow>
           </div>
 
           <h3 className="text-2xl md:text-3xl font-semibold mb-3">Clipboards, codes, and best-guess visibility.</h3>
@@ -241,6 +242,25 @@ export function DamageInspection() {
             <StatPill icon={Clock} tone="manual" label="Time per audit" value="~30 min" />
             <StatPill icon={PenLine} tone="manual" label="Record type" value="Handwritten" />
           </div>
+        </motion.div>
+
+        {/* AFTER — Modern AI process (V6 direction deploy, paired card) */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="relative rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-12 flex flex-col mt-10"
+        >
+          <div className="flex items-center mb-6">
+            <Eyebrow tone="ai">Damage assessment now · GateIn AI</Eyebrow>
+          </div>
+
+          <h3 className="text-2xl md:text-3xl font-semibold mb-3">Every finding mapped in seconds, not hours.</h3>
+          <p className="text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-5xl">
+            Same container, same damage codes. Now every finding is a hotspot on the asset — with photo, position, and a structured severity score. Tap any zone to see the record.
+          </p>
+
+          <ContainerDamageWalkthrough />
         </motion.div>
       </div>
     </section>
