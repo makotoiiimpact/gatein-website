@@ -72,24 +72,26 @@ export function AllWeather() {
                   className={`absolute inset-0 w-full h-full object-cover ${condition.objectPosition}`}
                 />
               </div>
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center justify-center gap-3 mb-2">
                 {condition.icon}
                 <h3 className="text-2xl font-bold font-mono tracking-wide">
                   {condition.title}
                 </h3>
               </div>
-              <p className="text-slate-600">{condition.desc}</p>
+              <p className="text-slate-600 text-center">{condition.desc}</p>
             </motion.div>
           ))}
         </div>
 
-        {/* V5 May-21 additions: damage detection (landscape) + Lázaro Cárdenas
-            container detection (portrait). Same 3-col grid as the top weather
-            row so both rows share cell dimensions — cells 1+2 filled, cell 3
-            intentionally empty (left-aligned "2 below" pattern per V6 Phase 4
-            decision). Portrait MX clip uses object-cover object-bottom inside
-            the landscape aspect-video frame, clipping the top half so the
-            lower-half detection zone stays in view at the shared cell size. */}
+        {/* V5 May-21 + V6 Phase 4 F3.4 + F10 additions: damage detection +
+            Lázaro Cárdenas container detection. Both bottom cells share the
+            same dimensions as the top-row weather cells via col-span-2 in
+            a 6-col grid; centered horizontally with symmetric empty cols
+            (1 + 6). Both videos use object-cover for edge-to-edge fill —
+            damage clip uses object-bottom to bias toward the bounding-box
+            action in the lower half of the source frame; MX clip uses
+            object-center as a safe default for the portrait source cropped
+            into the landscape frame. */}
         <div className="grid md:grid-cols-6 gap-8 mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -105,10 +107,10 @@ export function AllWeather() {
                 muted
                 playsInline
                 aria-label="Live damage detection demonstration with on-frame bounding box and classification"
-                className="absolute inset-0 w-full h-full object-cover object-center"
+                className="absolute inset-0 w-full h-full object-cover object-bottom"
               />
             </div>
-            <p className="text-slate-600">
+            <p className="text-slate-600 text-center">
               Live damage detection — bounding box + classification
             </p>
           </motion.div>
@@ -128,10 +130,10 @@ export function AllWeather() {
                 muted
                 playsInline
                 aria-label="Container detection demonstration at Lázaro Cárdenas, Mexico"
-                className="absolute inset-0 w-full h-full object-contain"
+                className="absolute inset-0 w-full h-full object-cover object-center"
               />
             </div>
-            <p className="text-slate-600">
+            <p className="text-slate-600 text-center">
               Container detection — Lázaro Cárdenas
             </p>
           </motion.div>
