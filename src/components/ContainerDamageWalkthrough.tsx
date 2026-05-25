@@ -628,14 +628,17 @@ export function ContainerDamageWalkthrough() {
     const animate = () => {
       rafId = requestAnimationFrame(animate)
       const now = performance.now()
-      // V6 Phase 4 F6 + F11: rotation is continuous during the walkthrough
-      // — no idle wait, no scan-active gate. F11 dialed from 0.0087 → 0.007
-      // rad/frame (30°/sec → 24°/sec) so the read is a touch slower; full
-      // revolution lands at ~15s (was 12s). Pauses only when the user has
-      // a hotspot card open or is hovering the widget — those are user-
-      // initiated "I want to look at it" signals.
+      // V6 Phase 4 F6 + F11 + F11-revise: rotation is continuous during
+      // the walkthrough — no idle wait, no scan-active gate. Dialed down
+      // in three steps:
+      //   F6:         0.0035  →  0.0087  rad/frame (12°/sec → 30°/sec)
+      //   F11:        0.0087  →  0.007   rad/frame (30°/sec → 24°/sec)
+      //   F11-revise: 0.007   →  0.0058  rad/frame (24°/sec → 20°/sec)
+      // Full revolution now ~18s (was 15s, was 12s). Pauses only when the
+      // user has a hotspot card open or is hovering the widget — those
+      // are user-initiated "I want to look at it" signals.
       if (!isHoveringRef.current && activeZoneIdRef.current === null) {
-        containerGroup.rotation.y += 0.007
+        containerGroup.rotation.y += 0.0058
       }
       updateScanCells(now)
       updateVisionCamera(now)
