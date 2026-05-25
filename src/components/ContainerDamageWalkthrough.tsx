@@ -294,9 +294,23 @@ export function ContainerDamageWalkthrough() {
       metalness: 0.7,
     })
     const handleGeo = new THREE.CylinderGeometry(0.025, 0.025, H * 0.85, 8)
-    for (let i = 0; i < 4; i++) {
+    // V6 Phase 4 F8 fix: two locking rods per door, symmetric about the
+    // door's z-center at z = ±halfD/2 (= ±0.425 with D=1.7). Was four rods
+    // ported verbatim from the reference widget, but the original loop's
+    // formula `-halfD*0.7 + i*(D*0.45)` placed handles 2 and 3 OUTSIDE
+    // the door's z bounds (z=0.935 and z=1.70 vs halfD=0.85). Handle 3
+    // floated 0.85 units in front of the +z face — a dark vertical line
+    // dangling in world space, visible against the page background once
+    // the container started rotating (F6).
+    //
+    // Two rods matches real shipping-container hardware (each door leaf
+    // has its own pair of locking rods, but seen edge-on from a side
+    // camera angle they read as two parallel rods). All four rods were
+    // never strictly necessary — the reference widget got away with the
+    // bug because no one was scrutinizing post-rotation.
+    for (let i = 0; i < 2; i++) {
       const handle = new THREE.Mesh(handleGeo, handleMat)
-      handle.position.set(-halfW - 0.025, 0, -halfD * 0.7 + i * (D * 0.45))
+      handle.position.set(-halfW - 0.025, 0, -halfD * 0.5 + i * halfD)
       containerGroup.add(handle)
     }
 
