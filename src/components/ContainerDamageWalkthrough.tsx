@@ -471,6 +471,11 @@ export function ContainerDamageWalkthrough() {
       visionCameraGroup.visible = false
       setCamOpacity(0)
       visionCameraGroup.position.x = -4.5
+      // V6 Phase 4 F6 fix: reset container rotation on replay. Without this,
+      // the user-clicks-replay timing collided with idle auto-rotation and
+      // the grid sweep played on a +z face that had already rotated out of
+      // camera view → invisible behind the opaque container body.
+      containerGroup.rotation.y = 0
       setSummaryVisible(false)
       setHelperVisible(false)
       setReplayVisible(false)
@@ -572,14 +577,12 @@ export function ContainerDamageWalkthrough() {
     const animate = () => {
       rafId = requestAnimationFrame(animate)
       const now = performance.now()
-      const idle = now - lastInteractionRef.current > 1800
-      if (
-        idle &&
-        !isScanningRef.current &&
-        !isHoveringRef.current &&
-        activeZoneIdRef.current === null
-      ) {
-        containerGroup.rotation.y += 0.0035
+      // V6 Phase 4 F6: rotation is continuous during the walkthrough — no
+      // idle wait, no scan-active gate. 30°/sec (0.0087 rad/frame @ 60fps).
+      // Pauses only when the user has a hotspot card open or is hovering
+      // the widget — those are user-initiated "I want to look at it" signals.
+      if (!isHoveringRef.current && activeZoneIdRef.current === null) {
+        containerGroup.rotation.y += 0.0087
       }
       updateScanCells(now)
       updateVisionCamera(now)
