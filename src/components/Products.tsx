@@ -26,9 +26,14 @@ const products: Product[] = [
     bg: '/assets/images/product-cards/damage-detection-bg.png',
   },
   {
-    title: 'Vehicle Manager',
-    desc: 'Track human-operated and autonomous vehicles across the facility.',
-    bg: '/assets/images/product-cards/container_people.webp',
+    title: 'Basic Analytics',
+    desc: 'Standard dashboards for daily yard operations and KPIs.',
+    bg: '/assets/images/product-cards/dashboard.jpg',
+  },
+  {
+    title: 'Advanced Analytics',
+    desc: 'AI-driven predictive insights and deep yard intelligence.',
+    bg: '/assets/images/product-cards/dashboard.jpg',
   },
 ]
 
@@ -183,11 +188,11 @@ export function Products() {
           className="mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-            One platform. Four amazing products.
+            One platform. Five amazing products.
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-20">
           {products.map((product, index) => (
             <div key={product.title} data-product-card>
               <ProductCard
