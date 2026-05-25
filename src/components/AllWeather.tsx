@@ -90,12 +90,12 @@ export function AllWeather() {
             decision). Portrait MX clip uses object-cover object-bottom inside
             the landscape aspect-video frame, clipping the top half so the
             lower-half detection zone stays in view at the shared cell size. */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid md:grid-cols-6 gap-8 mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col"
+            className="flex flex-col md:col-start-2 md:col-span-2"
           >
             <div className="w-full aspect-video rounded-lg mb-6 relative overflow-hidden bg-black">
               <video
@@ -118,7 +118,7 @@ export function AllWeather() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="flex flex-col"
+            className="flex flex-col md:col-span-2"
           >
             <div className="w-full aspect-video rounded-lg mb-6 relative overflow-hidden bg-black">
               <video
@@ -128,15 +128,13 @@ export function AllWeather() {
                 muted
                 playsInline
                 aria-label="Container detection demonstration at Lázaro Cárdenas, Mexico"
-                className="absolute inset-0 w-full h-full object-cover object-bottom"
+                className="absolute inset-0 w-full h-full object-contain"
               />
             </div>
             <p className="text-slate-600">
               Container detection — Lázaro Cárdenas
             </p>
           </motion.div>
-
-          {/* Cell 3 intentionally empty — "2 below" pattern matching top-row cell dims. */}
         </div>
 
         <motion.div
