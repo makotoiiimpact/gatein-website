@@ -107,7 +107,7 @@ export function AllWeather() {
                 muted
                 playsInline
                 aria-label="Live damage detection demonstration with on-frame bounding box and classification"
-                className="absolute inset-0 w-full h-full object-cover object-bottom"
+                className="absolute inset-0 w-full h-full object-cover object-bottom scale-[1.15]"
               />
             </div>
             <p className="text-slate-600 text-center">
@@ -130,7 +130,7 @@ export function AllWeather() {
                 muted
                 playsInline
                 aria-label="Container detection demonstration at Lázaro Cárdenas, Mexico"
-                className="absolute inset-0 w-full h-full object-cover object-center"
+                className="absolute inset-0 w-full h-full object-cover object-center scale-[0.92]"
               />
             </div>
             <p className="text-slate-600 text-center">
