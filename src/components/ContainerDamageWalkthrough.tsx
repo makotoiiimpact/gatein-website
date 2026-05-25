@@ -73,11 +73,14 @@ const ZONES: Zone[] = [
   },
 ]
 
-// Public-deploy fallback. Real Drive URLs land in a follow-up commit when Bernardo signs off.
+// V6 Phase 4 photos — Makoto-confirmed mapping from public/assets/damage/.
+// Fallback (teal gradient + Camera icon) still renders if any path is empty
+// or the image fails to load; render path uses object-fit: cover with center
+// background-position.
 const IMAGES: Record<string, string> = {
-  dent: '',
-  corrosion: '',
-  scrape: '',
+  dent: '/assets/damage/9.jpeg',
+  corrosion: '/assets/damage/12.jpeg',
+  scrape: '/assets/damage/5.jpeg',
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -117,6 +120,10 @@ export function ContainerDamageWalkthrough() {
   const [replayVisible, setReplayVisible] = useState(false)
   const [helperVisible, setHelperVisible] = useState(false)
   const [discoveredZones, setDiscoveredZones] = useState<Set<string>>(new Set())
+  // Severity-row reveal state for the persistent scan-summary card. Rows
+  // stagger in 100ms apart starting 200ms after the card header appears,
+  // or all-immediate under prefers-reduced-motion.
+  const [summaryRowsVisible, setSummaryRowsVisible] = useState<Set<string>>(new Set())
 
   // DOM refs.
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -132,6 +139,9 @@ export function ContainerDamageWalkthrough() {
   const camExitStartRef = useRef(-1)
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const wasVisibleRef = useRef(false)
+  // Matched once at mount; if true, the runScanSequence skips the row-stagger
+  // and reveals all summary rows immediately when summaryVisible flips on.
+  const prefersReducedMotionRef = useRef(false)
 
   // Mirror activeZoneId into a ref so the raf loop can read the current
   // value without re-creating the loop on every state change.
@@ -159,6 +169,7 @@ export function ContainerDamageWalkthrough() {
     camExitStartRef.current = -1
     timeoutsRef.current = []
     wasVisibleRef.current = false
+    prefersReducedMotionRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     const isMobile = () => window.innerWidth < 641
 
@@ -464,6 +475,7 @@ export function ContainerDamageWalkthrough() {
       setHelperVisible(false)
       setReplayVisible(false)
       setDiscoveredZones(new Set())
+      setSummaryRowsVisible(new Set())
       setActiveZoneId(null)
     }
 
@@ -493,10 +505,31 @@ export function ContainerDamageWalkthrough() {
             }, sweepDuration),
           )
 
-          // Summary 100ms after sweep ends.
+          // Summary card 100ms after sweep ends — header reveals, then
+          // severity rows stagger in 100ms apart starting 200ms after the
+          // header. Under prefers-reduced-motion, all rows reveal with the
+          // header (no stagger).
           timeoutsRef.current.push(
             setTimeout(() => {
               setSummaryVisible(true)
+              if (prefersReducedMotionRef.current) {
+                setSummaryRowsVisible(new Set(ZONES.map((z) => z.id)))
+              } else {
+                ZONES.forEach((z, i) => {
+                  timeoutsRef.current.push(
+                    setTimeout(
+                      () => {
+                        setSummaryRowsVisible((prev) => {
+                          const next = new Set(prev)
+                          next.add(z.id)
+                          return next
+                        })
+                      },
+                      200 + i * 100,
+                    ),
+                  )
+                })
+              }
             }, sweepDuration + 100),
           )
 
@@ -646,20 +679,63 @@ export function ContainerDamageWalkthrough() {
     >
       <canvas ref={canvasRef} className="block w-full h-full" />
 
-      {/* Scan summary badge — top-left */}
+      {/* Scan summary card — top-left, persists through the walkthrough as a
+          severity-keyed index. Rows are interactive: clicking opens the same
+          inspection card the hotspot does and highlights the active row. */}
       <div
-        className={`absolute top-4 left-4 inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[13px] font-semibold tracking-wide pointer-events-none transition-[opacity,transform] duration-[360ms] ease-out ${
+        className={`absolute top-4 left-4 max-w-[calc(100%-32px)] sm:max-w-xs rounded-2xl pointer-events-none transition-[opacity,transform] duration-[360ms] ease-out ${
           summaryVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
         }`}
         style={{
-          background: 'rgba(93, 202, 165, 0.15)',
+          background: 'rgba(93, 202, 165, 0.12)',
           border: '1px solid #5DCAA5',
-          color: '#5DCAA5',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
         }}
         role="status"
       >
-        <Radar size={16} aria-hidden />
-        <span>Scan complete — 3 findings detected</span>
+        <div
+          className="flex items-center gap-2 px-5 py-3 text-[13px] font-semibold tracking-wide"
+          style={{ color: '#5DCAA5' }}
+        >
+          <Radar size={16} aria-hidden />
+          <span>Scan complete — 3 findings</span>
+        </div>
+        <div className="border-t border-[#5DCAA5]/20 p-1.5 pointer-events-auto">
+          {ZONES.map((zone) => {
+            const visible = summaryRowsVisible.has(zone.id)
+            const active = activeZoneId === zone.id
+            const sev = SEVERITY_STYLES[zone.severity]
+            const displayTitle = zone.title.replace(/\s*—\s*(major|moderate|minor)\s*$/i, '')
+            return (
+              <button
+                key={zone.id}
+                type="button"
+                onClick={() => setActiveZoneId(zone.id)}
+                className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-left transition-[opacity,transform,background-color] duration-[280ms] ease-out hover:bg-white/[0.06] ${
+                  visible
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-2 pointer-events-none'
+                } ${active ? 'bg-white/[0.04]' : ''}`}
+              >
+                <span
+                  aria-hidden
+                  className="inline-block w-2 h-2 rounded-full shrink-0"
+                  style={{ background: sev.ink }}
+                />
+                <span
+                  className="uppercase text-[11px] tracking-wider shrink-0 font-semibold"
+                  style={{ color: sev.ink }}
+                >
+                  {zone.severity}
+                </span>
+                <span className="text-[14px] text-white flex-1 min-w-0 truncate font-normal">
+                  {displayTitle}
+                </span>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Replay button — top-right */}
@@ -797,9 +873,11 @@ export function ContainerDamageWalkthrough() {
       </div>
 
       {/* Hotspots — DOM-positioned each frame by projectHotspots(); React
-          owns the reveal state and the click handler. */}
+          owns the reveal state and the click handler. Active hotspot scales
+          up slightly + gets a bolder ring for the row-→-hotspot highlight. */}
       {ZONES.map((z, i) => {
         const revealed = discoveredZones.has(z.id)
+        const active = activeZoneId === z.id
         return (
           <button
             key={z.id}
@@ -809,16 +887,18 @@ export function ContainerDamageWalkthrough() {
             }}
             type="button"
             onClick={() => setActiveZoneId(z.id)}
-            className={`absolute z-[5] w-8 h-8 max-sm:w-[38px] max-sm:h-[38px] rounded-full flex items-center justify-center font-bold text-[13px] max-sm:text-sm cursor-pointer transition-[transform,opacity] duration-[280ms] ${
+            className={`absolute z-[5] w-8 h-8 max-sm:w-[38px] max-sm:h-[38px] rounded-full flex items-center justify-center font-bold text-[13px] max-sm:text-sm cursor-pointer transition-[transform,opacity,box-shadow] duration-[280ms] ${
               revealed
-                ? 'opacity-100 -translate-x-1/2 -translate-y-1/2 scale-100'
+                ? `opacity-100 -translate-x-1/2 -translate-y-1/2 ${active ? 'scale-[1.15]' : 'scale-100'}`
                 : 'opacity-0 -translate-x-1/2 -translate-y-1/2 scale-0 pointer-events-none'
             }`}
             style={{
               background: '#5DCAA5',
               color: '#062018',
               border: 'none',
-              boxShadow: '0 0 0 4px rgba(93, 202, 165, 0.2)',
+              boxShadow: active
+                ? '0 0 0 6px rgba(93, 202, 165, 0.45), 0 0 24px rgba(93, 202, 165, 0.4)'
+                : '0 0 0 4px rgba(93, 202, 165, 0.2)',
               transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
             }}
             aria-label={`View ${z.title}`}
