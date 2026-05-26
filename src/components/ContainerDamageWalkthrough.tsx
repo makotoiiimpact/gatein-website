@@ -73,11 +73,14 @@ const ZONES: Zone[] = [
   },
 ]
 
-// Public-deploy fallback. Real Drive URLs land in a follow-up commit when Bernardo signs off.
+// V6 Phase 4 photos — Makoto-confirmed mapping from public/assets/damage/.
+// Fallback (teal gradient + Camera icon) still renders if any path is empty
+// or the image fails to load; render path uses object-fit: cover with center
+// background-position.
 const IMAGES: Record<string, string> = {
-  dent: '',
-  corrosion: '',
-  scrape: '',
+  dent: '/assets/damage/9.jpeg',
+  corrosion: '/assets/damage/7.jpeg',
+  scrape: '/assets/damage/5.jpeg',
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -98,12 +101,19 @@ const CAM_SETTLE = 200 // beat after camera fully in, before sweep starts
 const COLS = 8
 const ROWS = 4
 
-// Severity pill colors per the reference widget — literal hex (not in the
-// project palette; intentionally light pastels for inside the dark card).
-const SEVERITY_STYLES: Record<Zone['severity'], { bg: string; ink: string }> = {
-  major: { bg: '#FCEBEB', ink: '#791F1F' },
-  moderate: { bg: '#FAEEDA', ink: '#633806' },
-  minor: { bg: '#EAF3DE', ink: '#27500A' },
+// Severity color tokens. Two ink variants because the same severity color
+// appears in two different lighting contexts:
+//   `ink`       — for the inspection card severity PILL (dark text on the
+//                 light pastel `bg` — high contrast that way).
+//   `inkBright` — for the persistent summary card severity ROWS, which sit
+//                 on the dark walkthrough bg. The deep wine/brown/forest inks
+//                 read as dim/muddy on the dark card; the bright variant
+//                 (Tailwind 400-tier dark-mode severity convention) reads
+//                 cleanly against the dark teal-tinted backdrop. F13.
+const SEVERITY_STYLES: Record<Zone['severity'], { bg: string; ink: string; inkBright: string }> = {
+  major:    { bg: '#FCEBEB', ink: '#791F1F', inkBright: '#F87171' }, // red-400
+  moderate: { bg: '#FAEEDA', ink: '#633806', inkBright: '#FBBF24' }, // amber-400
+  minor:    { bg: '#EAF3DE', ink: '#27500A', inkBright: '#4ADE80' }, // green-400
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -117,11 +127,18 @@ export function ContainerDamageWalkthrough() {
   const [replayVisible, setReplayVisible] = useState(false)
   const [helperVisible, setHelperVisible] = useState(false)
   const [discoveredZones, setDiscoveredZones] = useState<Set<string>>(new Set())
+  // Severity-row reveal state for the persistent scan-summary card. Rows
+  // stagger in 100ms apart starting 200ms after the card header appears,
+  // or all-immediate under prefers-reduced-motion.
+  const [summaryRowsVisible, setSummaryRowsVisible] = useState<Set<string>>(new Set())
 
   // DOM refs.
   const wrapperRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const hotspotsRef = useRef<Map<string, HTMLButtonElement>>(new Map())
+  // F9: ref on the detail card so the click-outside listener can short-
+  // circuit pointerdowns that originate inside the card itself.
+  const cardRef = useRef<HTMLDivElement>(null)
 
   // Mutable scan state — refs so the raf loop reads fresh values without
   // re-creating closures, and so timeouts don't pile re-renders.
@@ -132,12 +149,49 @@ export function ContainerDamageWalkthrough() {
   const camExitStartRef = useRef(-1)
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const wasVisibleRef = useRef(false)
+  // Matched once at mount; if true, the runScanSequence skips the row-stagger
+  // and reveals all summary rows immediately when summaryVisible flips on.
+  const prefersReducedMotionRef = useRef(false)
 
   // Mirror activeZoneId into a ref so the raf loop can read the current
   // value without re-creating the loop on every state change.
   const activeZoneIdRef = useRef<string | null>(null)
   useEffect(() => {
     activeZoneIdRef.current = activeZoneId
+  }, [activeZoneId])
+
+  // F9: click-outside + Escape to close the inspection card. Listener is
+  // scoped to the walkthrough wrapper (not document) so clicks elsewhere
+  // on the marketing page don't dismiss; Escape uses document-level
+  // keydown so the user can dismiss with focus anywhere on the page.
+  // Listener mounts only while a card is open; tears itself down when
+  // activeZoneId returns to null (or transitions between zones).
+  useEffect(() => {
+    if (!activeZoneId) return
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
+
+    const handlePointer = (e: PointerEvent) => {
+      if (!(e.target instanceof Element)) return
+      // Click inside the card (incl. close button + photo + chips) → ignore.
+      if (cardRef.current?.contains(e.target)) return
+      // Hotspot or summary row → its own onClick switches the zone; do
+      // not close (would race the open).
+      if (e.target.closest('[data-hotspot]')) return
+      if (e.target.closest('[data-summary-row]')) return
+      setActiveZoneId(null)
+    }
+    wrapper.addEventListener('pointerdown', handlePointer)
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActiveZoneId(null)
+    }
+    document.addEventListener('keydown', handleEscape)
+
+    return () => {
+      wrapper.removeEventListener('pointerdown', handlePointer)
+      document.removeEventListener('keydown', handleEscape)
+    }
   }, [activeZoneId])
 
   // Replay-button handler indirection. The actual runScanSequence function
@@ -159,6 +213,7 @@ export function ContainerDamageWalkthrough() {
     camExitStartRef.current = -1
     timeoutsRef.current = []
     wasVisibleRef.current = false
+    prefersReducedMotionRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     const isMobile = () => window.innerWidth < 641
 
@@ -246,9 +301,23 @@ export function ContainerDamageWalkthrough() {
       metalness: 0.7,
     })
     const handleGeo = new THREE.CylinderGeometry(0.025, 0.025, H * 0.85, 8)
-    for (let i = 0; i < 4; i++) {
+    // V6 Phase 4 F8 fix: two locking rods per door, symmetric about the
+    // door's z-center at z = ±halfD/2 (= ±0.425 with D=1.7). Was four rods
+    // ported verbatim from the reference widget, but the original loop's
+    // formula `-halfD*0.7 + i*(D*0.45)` placed handles 2 and 3 OUTSIDE
+    // the door's z bounds (z=0.935 and z=1.70 vs halfD=0.85). Handle 3
+    // floated 0.85 units in front of the +z face — a dark vertical line
+    // dangling in world space, visible against the page background once
+    // the container started rotating (F6).
+    //
+    // Two rods matches real shipping-container hardware (each door leaf
+    // has its own pair of locking rods, but seen edge-on from a side
+    // camera angle they read as two parallel rods). All four rods were
+    // never strictly necessary — the reference widget got away with the
+    // bug because no one was scrutinizing post-rotation.
+    for (let i = 0; i < 2; i++) {
       const handle = new THREE.Mesh(handleGeo, handleMat)
-      handle.position.set(-halfW - 0.025, 0, -halfD * 0.7 + i * (D * 0.45))
+      handle.position.set(-halfW - 0.025, 0, -halfD * 0.5 + i * halfD)
       containerGroup.add(handle)
     }
 
@@ -460,10 +529,16 @@ export function ContainerDamageWalkthrough() {
       visionCameraGroup.visible = false
       setCamOpacity(0)
       visionCameraGroup.position.x = -4.5
+      // V6 Phase 4 F6 fix: reset container rotation on replay. Without this,
+      // the user-clicks-replay timing collided with idle auto-rotation and
+      // the grid sweep played on a +z face that had already rotated out of
+      // camera view → invisible behind the opaque container body.
+      containerGroup.rotation.y = 0
       setSummaryVisible(false)
       setHelperVisible(false)
       setReplayVisible(false)
       setDiscoveredZones(new Set())
+      setSummaryRowsVisible(new Set())
       setActiveZoneId(null)
     }
 
@@ -493,10 +568,31 @@ export function ContainerDamageWalkthrough() {
             }, sweepDuration),
           )
 
-          // Summary 100ms after sweep ends.
+          // Summary card 100ms after sweep ends — header reveals, then
+          // severity rows stagger in 100ms apart starting 200ms after the
+          // header. Under prefers-reduced-motion, all rows reveal with the
+          // header (no stagger).
           timeoutsRef.current.push(
             setTimeout(() => {
               setSummaryVisible(true)
+              if (prefersReducedMotionRef.current) {
+                setSummaryRowsVisible(new Set(ZONES.map((z) => z.id)))
+              } else {
+                ZONES.forEach((z, i) => {
+                  timeoutsRef.current.push(
+                    setTimeout(
+                      () => {
+                        setSummaryRowsVisible((prev) => {
+                          const next = new Set(prev)
+                          next.add(z.id)
+                          return next
+                        })
+                      },
+                      200 + i * 100,
+                    ),
+                  )
+                })
+              }
             }, sweepDuration + 100),
           )
 
@@ -539,14 +635,17 @@ export function ContainerDamageWalkthrough() {
     const animate = () => {
       rafId = requestAnimationFrame(animate)
       const now = performance.now()
-      const idle = now - lastInteractionRef.current > 1800
-      if (
-        idle &&
-        !isScanningRef.current &&
-        !isHoveringRef.current &&
-        activeZoneIdRef.current === null
-      ) {
-        containerGroup.rotation.y += 0.0035
+      // V6 Phase 4 F6 + F11 + F11-revise: rotation is continuous during
+      // the walkthrough — no idle wait, no scan-active gate. Dialed down
+      // in three steps:
+      //   F6:         0.0035  →  0.0087  rad/frame (12°/sec → 30°/sec)
+      //   F11:        0.0087  →  0.007   rad/frame (30°/sec → 24°/sec)
+      //   F11-revise: 0.007   →  0.0058  rad/frame (24°/sec → 20°/sec)
+      // Full revolution now ~18s (was 15s, was 12s). Pauses only when the
+      // user has a hotspot card open or is hovering the widget — those
+      // are user-initiated "I want to look at it" signals.
+      if (!isHoveringRef.current && activeZoneIdRef.current === null) {
+        containerGroup.rotation.y += 0.0058
       }
       updateScanCells(now)
       updateVisionCamera(now)
@@ -646,20 +745,64 @@ export function ContainerDamageWalkthrough() {
     >
       <canvas ref={canvasRef} className="block w-full h-full" />
 
-      {/* Scan summary badge — top-left */}
+      {/* Scan summary card — top-left, persists through the walkthrough as a
+          severity-keyed index. Rows are interactive: clicking opens the same
+          inspection card the hotspot does and highlights the active row. */}
       <div
-        className={`absolute top-4 left-4 inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[13px] font-semibold tracking-wide pointer-events-none transition-[opacity,transform] duration-[360ms] ease-out ${
+        className={`absolute top-4 left-4 max-w-[calc(100%-32px)] sm:max-w-xs rounded-2xl pointer-events-none transition-[opacity,transform] duration-[360ms] ease-out ${
           summaryVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
         }`}
         style={{
-          background: 'rgba(93, 202, 165, 0.15)',
+          background: 'rgba(93, 202, 165, 0.12)',
           border: '1px solid #5DCAA5',
-          color: '#5DCAA5',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
         }}
         role="status"
       >
-        <Radar size={16} aria-hidden />
-        <span>Scan complete — 3 findings detected</span>
+        <div
+          className="flex items-center gap-2 px-5 py-3 text-[13px] font-semibold tracking-wide"
+          style={{ color: '#5DCAA5' }}
+        >
+          <Radar size={16} aria-hidden />
+          <span>Scan complete — 3 findings</span>
+        </div>
+        <div className="border-t border-[#5DCAA5]/20 p-1.5 pointer-events-auto">
+          {ZONES.map((zone) => {
+            const visible = summaryRowsVisible.has(zone.id)
+            const active = activeZoneId === zone.id
+            const sev = SEVERITY_STYLES[zone.severity]
+            const displayTitle = zone.title.replace(/\s*—\s*(major|moderate|minor)\s*$/i, '')
+            return (
+              <button
+                key={zone.id}
+                type="button"
+                data-summary-row
+                onClick={() => setActiveZoneId(zone.id)}
+                className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-left transition-[opacity,transform,background-color] duration-[280ms] ease-out hover:bg-white/[0.06] ${
+                  visible
+                    ? 'opacity-100 translate-x-0'
+                    : 'opacity-0 -translate-x-2 pointer-events-none'
+                } ${active ? 'bg-white/[0.04]' : ''}`}
+              >
+                <span
+                  aria-hidden
+                  className="inline-block w-2 h-2 rounded-full shrink-0"
+                  style={{ background: sev.inkBright }}
+                />
+                <span
+                  className="uppercase text-[11px] tracking-wider shrink-0 font-semibold"
+                  style={{ color: sev.inkBright }}
+                >
+                  {zone.severity}
+                </span>
+                <span className="text-[14px] text-white flex-1 min-w-0 truncate font-normal">
+                  {displayTitle}
+                </span>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Replay button — top-right */}
@@ -692,6 +835,7 @@ export function ContainerDamageWalkthrough() {
 
       {/* Inspection card — slides in from right on desktop, up from bottom on mobile */}
       <div
+        ref={cardRef}
         className={`absolute z-10 overflow-y-auto sm:top-4 sm:right-4 sm:left-auto sm:bottom-auto sm:w-[320px] sm:max-h-[calc(100%-32px)] sm:rounded-xl bottom-0 left-0 right-0 w-full max-h-[75%] rounded-t-xl transition-transform duration-[320ms] ${
           activeZoneId
             ? 'sm:translate-x-0 sm:translate-y-0 translate-y-0'
@@ -708,11 +852,10 @@ export function ContainerDamageWalkthrough() {
         <button
           type="button"
           onClick={() => setActiveZoneId(null)}
-          className="absolute top-3 right-3 w-7 h-7 rounded-md flex items-center justify-center text-[#9aa0a6] hover:bg-white/10 hover:text-[#e8eaed] transition-colors"
-          style={{ background: 'rgba(255,255,255,0.06)', border: 'none' }}
+          className="absolute top-3 right-3 p-2 rounded-full flex items-center justify-center text-white/80 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] transition-colors"
           aria-label="Close inspection card"
         >
-          <X size={16} aria-hidden />
+          <X size={18} strokeWidth={2} aria-hidden />
         </button>
 
         {activeZone && (
@@ -797,9 +940,11 @@ export function ContainerDamageWalkthrough() {
       </div>
 
       {/* Hotspots — DOM-positioned each frame by projectHotspots(); React
-          owns the reveal state and the click handler. */}
+          owns the reveal state and the click handler. Active hotspot scales
+          up slightly + gets a bolder ring for the row-→-hotspot highlight. */}
       {ZONES.map((z, i) => {
         const revealed = discoveredZones.has(z.id)
+        const active = activeZoneId === z.id
         return (
           <button
             key={z.id}
@@ -808,17 +953,20 @@ export function ContainerDamageWalkthrough() {
               else hotspotsRef.current.delete(z.id)
             }}
             type="button"
+            data-hotspot
             onClick={() => setActiveZoneId(z.id)}
-            className={`absolute z-[5] w-8 h-8 max-sm:w-[38px] max-sm:h-[38px] rounded-full flex items-center justify-center font-bold text-[13px] max-sm:text-sm cursor-pointer transition-[transform,opacity] duration-[280ms] ${
+            className={`absolute z-[5] w-8 h-8 max-sm:w-[38px] max-sm:h-[38px] rounded-full flex items-center justify-center font-bold text-[13px] max-sm:text-sm cursor-pointer transition-[transform,opacity,box-shadow] duration-[280ms] ${
               revealed
-                ? 'opacity-100 -translate-x-1/2 -translate-y-1/2 scale-100'
+                ? `opacity-100 -translate-x-1/2 -translate-y-1/2 ${active ? 'scale-[1.15]' : 'scale-100'}`
                 : 'opacity-0 -translate-x-1/2 -translate-y-1/2 scale-0 pointer-events-none'
             }`}
             style={{
               background: '#5DCAA5',
               color: '#062018',
               border: 'none',
-              boxShadow: '0 0 0 4px rgba(93, 202, 165, 0.2)',
+              boxShadow: active
+                ? '0 0 0 6px rgba(93, 202, 165, 0.45), 0 0 24px rgba(93, 202, 165, 0.4)'
+                : '0 0 0 4px rgba(93, 202, 165, 0.2)',
               transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
             }}
             aria-label={`View ${z.title}`}

@@ -18,7 +18,7 @@ const products: Product[] = [
   {
     title: 'Yard Analytics',
     desc: 'Real-time dashboards, detention tracking, and NLP queries.',
-    bg: '/assets/images/product-cards/dashboard.jpg',
+    bg: '/assets/products/yard-analytics-hover.png',
   },
   {
     title: 'Damage Detection',
@@ -26,9 +26,14 @@ const products: Product[] = [
     bg: '/assets/images/product-cards/damage-detection-bg.png',
   },
   {
-    title: 'Vehicle Manager',
-    desc: 'Track human-operated and autonomous vehicles across the facility.',
-    bg: '/assets/images/product-cards/container_people.webp',
+    title: 'Basic Analytics',
+    desc: 'Standard dashboards for daily yard operations and KPIs.',
+    bg: '/assets/images/product-cards/dashboard.jpg',
+  },
+  {
+    title: 'Advanced Analytics',
+    desc: 'AI-driven predictive insights and deep yard intelligence.',
+    bg: '/assets/products/advanced-analytics-hover.png',
   },
 ]
 
@@ -145,7 +150,10 @@ export function Products() {
       id="products"
       className="relative py-32 bg-white text-slate-900 overflow-hidden"
     >
-      {/* Full-section hover background — crossfades on active card, 500ms ease */}
+      {/* Full-section hover background — crossfades on active card, 500ms ease.
+          All 5 tiles use the same section-level pattern (F12-revise rolled
+          back the per-tile in-tile rendering experiment and moved Yard +
+          Advanced Analytics' hover images into the existing `bg` field). */}
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
@@ -183,11 +191,11 @@ export function Products() {
           className="mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-            One platform. Four amazing products.
+            One platform. Five amazing products.
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-20">
           {products.map((product, index) => (
             <div key={product.title} data-product-card>
               <ProductCard
