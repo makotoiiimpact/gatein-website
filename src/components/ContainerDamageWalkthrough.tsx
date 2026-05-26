@@ -79,7 +79,7 @@ const ZONES: Zone[] = [
 // background-position.
 const IMAGES: Record<string, string> = {
   dent: '/assets/damage/9.jpeg',
-  corrosion: '/assets/damage/12.jpeg',
+  corrosion: '/assets/damage/7.jpeg',
   scrape: '/assets/damage/5.jpeg',
 }
 
