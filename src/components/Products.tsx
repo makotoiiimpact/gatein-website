@@ -1,12 +1,17 @@
 'use client'
 
 import React, { Fragment, useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 
 type Product = {
   title: string
   desc: string
   bg: string
+  // F12: optional per-tile hover image. When set, replaces the section-level
+  // bg crossfade for that tile and renders inside the tile itself with a
+  // dark overlay for text readability.
+  hoverImage: string | null
 }
 
 const products: Product[] = [
@@ -14,26 +19,31 @@ const products: Product[] = [
     title: 'Gate OCR',
     desc: 'AI-powered container code reading at the gate. 82% faster processing.',
     bg: '/assets/images/product-cards/gate-ocr-bg.png',
+    hoverImage: null,
   },
   {
     title: 'Yard Analytics',
     desc: 'Real-time dashboards, detention tracking, and NLP queries.',
     bg: '/assets/images/product-cards/dashboard.jpg',
+    hoverImage: '/assets/products/yard-analytics-hover.png',
   },
   {
     title: 'Damage Detection',
     desc: 'External + internal container damage assessment.',
     bg: '/assets/images/product-cards/damage-detection-bg.png',
+    hoverImage: null,
   },
   {
     title: 'Basic Analytics',
     desc: 'Standard dashboards for daily yard operations and KPIs.',
     bg: '/assets/images/product-cards/dashboard.jpg',
+    hoverImage: null,
   },
   {
     title: 'Advanced Analytics',
     desc: 'AI-driven predictive insights and deep yard intelligence.',
     bg: '/assets/images/product-cards/dashboard.jpg',
+    hoverImage: '/assets/products/advanced-analytics-hover.png',
   },
 ]
 
@@ -83,6 +93,34 @@ function ProductCard({
       onClick={handleClick}
       className="group relative p-8 rounded-lg border border-slate-200 bg-white flex flex-col h-full cursor-default transition-[transform,box-shadow,border-color,background-color] duration-300 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] hover:border-dashed hover:border-[#2563EB]"
     >
+      {/* F12: per-tile hover background — only on tiles with hoverImage set.
+          Driven by isActive (covers desktop hover + mobile tap parity since
+          handleEnter and handleClick both call onActivate). */}
+      {product.hoverImage && (
+        <>
+          <div
+            aria-hidden="true"
+            className={`absolute inset-0 rounded-lg overflow-hidden pointer-events-none z-0 transition-opacity duration-300 ease-out ${
+              isActive ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <Image
+              src={product.hoverImage}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 20vw"
+              className="object-cover"
+            />
+          </div>
+          <div
+            aria-hidden="true"
+            className={`absolute inset-0 rounded-lg pointer-events-none z-10 bg-black/60 transition-opacity duration-300 ease-out ${
+              isActive ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        </>
+      )}
+
       {/* Cursor-following radial border glow (mask-composite trick) */}
       <div
         aria-hidden="true"
@@ -107,13 +145,29 @@ function ProductCard({
         }}
       />
 
-      <h3 className="relative text-2xl font-bold mb-3">{product.title}</h3>
-      <p className="relative text-slate-600 flex-grow">
+      <h3
+        className={`relative z-20 text-2xl font-bold mb-3 transition-colors duration-300 ${
+          product.hoverImage && isActive ? 'text-white' : ''
+        }`}
+      >
+        {product.title}
+      </h3>
+      <p
+        className={`relative z-20 flex-grow transition-colors duration-300 ${
+          product.hoverImage && isActive ? 'text-white/90' : 'text-slate-600'
+        }`}
+      >
         {product.desc.split('82%').map((part, i, arr) => (
           <Fragment key={i}>
             {part}
             {i < arr.length - 1 && (
-              <span className="font-mono font-medium text-slate-800">82%</span>
+              <span
+                className={`font-mono font-medium ${
+                  product.hoverImage && isActive ? 'text-white' : 'text-slate-800'
+                }`}
+              >
+                82%
+              </span>
             )}
           </Fragment>
         ))}
@@ -150,12 +204,16 @@ export function Products() {
       id="products"
       className="relative py-32 bg-white text-slate-900 overflow-hidden"
     >
-      {/* Full-section hover background — crossfades on active card, 500ms ease */}
+      {/* Full-section hover background — crossfades on active card, 500ms ease.
+          F12: skipped for tiles with a per-tile hoverImage (Yard Analytics,
+          Advanced Analytics) since the in-tile bg image is the hover treatment
+          for those. Tiles without hoverImage keep the existing section-level
+          crossfade behavior. */}
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
         style={{
-          opacity: activeProduct ? 1 : 0,
+          opacity: activeProduct && !activeProduct.hoverImage ? 1 : 0,
           transition: 'opacity 500ms ease',
         }}
       >
