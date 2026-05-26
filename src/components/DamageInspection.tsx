@@ -203,8 +203,8 @@ export function DamageInspection() {
             From paper forms to pixel-perfect detection.
           </h2>
           <p className="text-white/60 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-            Today&apos;s damage audits rely on clipboards, handwritten codes, and the inspector&apos;s line of sight.
-            GateIn AI scans every surface in under 30 seconds and ships a digital record of what it found.
+            Today&apos;s damage audits rely on clipboards, handwritten codes, and the inspector&apos;s criteria.
+            GateIn AI scans every surface in minutes and delivers a digital record of what it found.
           </p>
         </motion.div>
 
@@ -222,7 +222,7 @@ export function DamageInspection() {
           <h3 className="text-2xl md:text-3xl font-semibold mb-3">Clipboards, codes, and best-guess visibility.</h3>
           <p className="text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-5xl">
             Inspectors walk the container, eyeball the damage, and mark handwritten codes on a paper form.
-            Photos live on someone&apos;s phone. The record is a faxable scan.
+            Photos live on someone&apos;s phone. The record needs to be reconciled and digitized which leads to errors and misinterpretations.
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 mb-10">
@@ -240,8 +240,8 @@ export function DamageInspection() {
           <SurveyFormDocument />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto pt-10">
-            <StatPill icon={Clock} tone="manual" label="Time per audit" value="~30 min" />
-            <StatPill icon={PenLine} tone="manual" label="Record type" value="Handwritten" />
+            <StatPill icon={Clock} tone="manual" label="Time per audit" value="~20 minutes" />
+            <StatPill icon={PenLine} tone="manual" label="Time for image reconciliation and report generation" value="~60 minutes" />
           </div>
         </motion.div>
 
@@ -256,9 +256,9 @@ export function DamageInspection() {
             <Eyebrow tone="ai">Damage assessment now · GateIn AI</Eyebrow>
           </div>
 
-          <h3 className="text-2xl md:text-3xl font-semibold mb-3">Every finding mapped in seconds, not hours.</h3>
+          <h3 className="text-2xl md:text-3xl font-semibold mb-3">Every finding mapped in minutes, not hours.</h3>
           <p className="text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-5xl">
-            Same container, same damage codes. Now every finding is a hotspot on the asset — with photo, position, and a structured severity score. Tap any zone to see the record.
+            Same container, same CEDEX and IICL damage codes. Now every finding is a hotspot on the asset — with photo, position, and a structured severity score. Each digital report is delivered with pre-defined damage categories and customer defined damage assessment scores. Tap any zone to see the record.
           </p>
 
           <ContainerDamageWalkthrough />

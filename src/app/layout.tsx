@@ -109,7 +109,7 @@ const softwareApplicationSchema = {
   applicationSubCategory: 'Logistics Software',
   operatingSystem: 'Web-based, Cloud',
   description:
-    'AI-powered container intelligence platform with Gate OCR, Yard Analytics, Damage Detection, and Vehicle Manager modules.',
+    "Agentic-AI container intelligence platform with Gate and Yard OCR, Damage Detection, Basic Yard Analytics, and Advanced Yard Analytics modules — powered by GateIn.AI's proprietary Physical Truth Engine with CEDEX/IICL damage coding and Text-to-SQL queries.",
   offers: {
     '@type': 'Offer',
     priceCurrency: 'USD',

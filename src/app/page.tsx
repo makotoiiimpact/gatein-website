@@ -25,12 +25,12 @@ export default function Home() {
         {/* Bernardo round 2 feedback #1: surface solutions immediately
             after the challenges section. */}
         <Products />
-        <DamageInspection />
         <HowItWorks />
         <GateScanVisualization />
         <DroneScanVisualization />
-        <AllWeather />
+        <DamageInspection />
         <CompetitiveEdge />
+        <AllWeather />
         <FloatingMarkets />
         <Team />
         {/* Hidden per client feedback Apr 26 2026 */}

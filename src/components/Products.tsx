@@ -11,28 +11,23 @@ type Product = {
 
 const products: Product[] = [
   {
-    title: 'Gate OCR',
-    desc: 'AI-powered container code reading at the gate. 82% faster processing.',
+    title: 'Gate and Yard OCR',
+    desc: 'AI-powered container data reading at the gate and across the yard. 82% faster processing.',
     bg: '/assets/images/product-cards/gate-ocr-bg.png',
   },
   {
-    title: 'Yard Analytics',
-    desc: 'Real-time dashboards, detention tracking, and NLP queries.',
-    bg: '/assets/products/yard-analytics-hover.png',
-  },
-  {
     title: 'Damage Detection',
-    desc: 'External + internal container damage assessment.',
+    desc: 'External + Internal AI-Assisted assessment.',
     bg: '/assets/images/product-cards/damage-detection-bg.png',
   },
   {
-    title: 'Basic Analytics',
-    desc: 'Standard dashboards for daily yard operations and KPIs.',
+    title: 'Basic Yard Analytics',
+    desc: 'Fully customizable real-time dashboards, e.g. detention & demurrage tracking, In & Out flow trends, damage types and costs, etc.',
     bg: '/assets/images/product-cards/dashboard.jpg',
   },
   {
-    title: 'Advanced Analytics',
-    desc: 'AI-driven predictive insights and deep yard intelligence.',
+    title: 'Advanced Yard Analytics',
+    desc: "Agentic-AI predictive insights. Data audits for error detection and correction based on GateIn.AI's proprietary Physical Truth Engine. Natural Language Processing for Text-to-SQL queries.",
     bg: '/assets/products/advanced-analytics-hover.png',
   },
 ]
@@ -151,9 +146,7 @@ export function Products() {
       className="relative py-32 bg-white text-slate-900 overflow-hidden"
     >
       {/* Full-section hover background — crossfades on active card, 500ms ease.
-          All 5 tiles use the same section-level pattern (F12-revise rolled
-          back the per-tile in-tile rendering experiment and moved Yard +
-          Advanced Analytics' hover images into the existing `bg` field). */}
+          All 4 tiles use the same section-level pattern via the `bg` field. */}
       <div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
@@ -191,11 +184,11 @@ export function Products() {
           className="mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-            One platform. Five amazing products.
+            One platform. Four amazing products.
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-20">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {products.map((product, index) => (
             <div key={product.title} data-product-card>
               <ProductCard

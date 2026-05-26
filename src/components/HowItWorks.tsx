@@ -335,7 +335,7 @@ export function HowItWorks() {
         >
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
             From camera to dashboard in under{' '}
-            <span className="font-mono">2</span> seconds.
+            <span className="font-mono">8</span> seconds.
           </h2>
         </motion.div>
 

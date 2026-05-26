@@ -62,7 +62,7 @@ export function CompetitiveEdge() {
           className="mb-24 text-center max-w-3xl mx-auto">
           
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-            The only platform that reconciles physical truth.
+            Advanced Analytics: The only platform that reconciles physical truth across all your systems data
           </h2>
           <p className="text-xl text-gray-400">
             Competitors read container codes. We verify what actually happened.
