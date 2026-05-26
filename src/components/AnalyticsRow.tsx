@@ -15,7 +15,7 @@
  */
 
 import React, { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, useReducedMotion, type Transition } from 'framer-motion'
 
 // ──────────────────────────────────────────────────────────────────────────
 // Data (mock — Bernardo swaps later)
@@ -107,6 +107,24 @@ const rootVariants = {
   },
 }
 
+// Bar fill animation cadence (data-refresh pulse — per iterate-2 spec)
+// Each cycle: 1.0s ease-out fill from 0 → full value, 50ms intra-chart
+// stagger, 6s hold at full, then snap to 0 and repeat. Respects
+// prefers-reduced-motion (factory returns { duration: 0 } in that case).
+const FILL_DURATION = 1.0 // seconds per bar fill
+const FILL_STAGGER = 0.05 // 50ms between bars within a chart
+const LOOP_CYCLE = 7 // total seconds per cycle (1s fill + 6s hold)
+
+// ──────────────────────────────────────────────────────────────────────────
+// Chart props — barTransition factory + reduced-motion guard are threaded
+// from AnalyticsRow down to each chart component (single source of truth).
+// ──────────────────────────────────────────────────────────────────────────
+
+interface ChartProps {
+  barTransition: (index: number) => Transition
+  shouldReduceMotion: boolean | null
+}
+
 // ──────────────────────────────────────────────────────────────────────────
 // Chart card chrome
 // ──────────────────────────────────────────────────────────────────────────
@@ -138,7 +156,7 @@ function ChartCard({
 // Chart 1 — Weekly container repairs (vertical bars)
 // ──────────────────────────────────────────────────────────────────────────
 
-function WeeklyChart() {
+function WeeklyChart({ barTransition, shouldReduceMotion }: ChartProps) {
   const W = 320
   const H = 180
   const padL = 16
@@ -176,7 +194,7 @@ function WeeklyChart() {
         const y = padT + innerH - h
         return (
           <g key={i}>
-            <rect
+            <motion.rect
               x={x}
               y={y}
               width={barW}
@@ -184,11 +202,15 @@ function WeeklyChart() {
               rx="2"
               fill="#F59E0B"
               className="transition-colors duration-150 hover:fill-[#D97706]"
+              style={{ originY: 1, transformBox: 'fill-box' }}
+              initial={{ scaleY: shouldReduceMotion ? 1 : 0 }}
+              animate={{ scaleY: 1 }}
+              transition={barTransition(i)}
             >
               <title>
                 {WEEKLY_LABELS[i]} · {value} repairs
               </title>
-            </rect>
+            </motion.rect>
             <text
               x={x + barW / 2}
               y={H - 10}
@@ -209,7 +231,7 @@ function WeeklyChart() {
 // Chart 2 — Monthly damage by category (stacked vertical bars, no legend)
 // ──────────────────────────────────────────────────────────────────────────
 
-function MonthlyChart() {
+function MonthlyChart({ barTransition, shouldReduceMotion }: ChartProps) {
   const W = 320
   const H = 180
   const padL = 16
@@ -248,26 +270,36 @@ function MonthlyChart() {
         let yBottom = padT + innerH
         return (
           <g key={i}>
-            {STACK_KEYS.map((cat) => {
-              const v = m[cat]
-              const h = (v / max) * innerH
-              const y = yBottom - h
-              yBottom = y
-              return (
-                <rect
-                  key={cat}
-                  x={x}
-                  y={y}
-                  width={barW}
-                  height={h}
-                  fill={CATEGORY_COLORS[cat]}
-                >
-                  <title>
-                    {CATEGORY_LABELS[cat]} · {m.month} · {v}
-                  </title>
-                </rect>
-              )
-            })}
+            {/* motion.g wraps the 5-segment stack — grows the whole column
+                from baseline up as a unit; individual segments keep their
+                relative y-offsets inside the group transform. */}
+            <motion.g
+              style={{ originY: 1, transformBox: 'fill-box' }}
+              initial={{ scaleY: shouldReduceMotion ? 1 : 0 }}
+              animate={{ scaleY: 1 }}
+              transition={barTransition(i)}
+            >
+              {STACK_KEYS.map((cat) => {
+                const v = m[cat]
+                const h = (v / max) * innerH
+                const y = yBottom - h
+                yBottom = y
+                return (
+                  <rect
+                    key={cat}
+                    x={x}
+                    y={y}
+                    width={barW}
+                    height={h}
+                    fill={CATEGORY_COLORS[cat]}
+                  >
+                    <title>
+                      {CATEGORY_LABELS[cat]} · {m.month} · {v}
+                    </title>
+                  </rect>
+                )
+              })}
+            </motion.g>
             <text
               x={x + barW / 2}
               y={H - 10}
@@ -288,7 +320,7 @@ function MonthlyChart() {
 // Chart 3 — Inspection time by container type (horizontal bars + error bars)
 // ──────────────────────────────────────────────────────────────────────────
 
-function InspectionTimeChart() {
+function InspectionTimeChart({ barTransition, shouldReduceMotion }: ChartProps) {
   const W = 320
   const H = 180
   const padL = 40 // gutter for 3-letter container code labels
@@ -333,7 +365,7 @@ function InspectionTimeChart() {
               {c.code}
             </text>
             {/* Bar */}
-            <rect
+            <motion.rect
               x={padL}
               y={barY}
               width={barLen}
@@ -341,11 +373,15 @@ function InspectionTimeChart() {
               rx="2"
               fill="#0D9488"
               className="transition-colors duration-150 hover:fill-[#0F766E]"
+              style={{ originX: 0, transformBox: 'fill-box' }}
+              initial={{ scaleX: shouldReduceMotion ? 1 : 0 }}
+              animate={{ scaleX: 1 }}
+              transition={barTransition(i)}
             >
               <title>
                 {c.display} · {c.mean.toFixed(2)} min ± {c.err.toFixed(2)}
               </title>
-            </rect>
+            </motion.rect>
             {/* T-shaped error bar: horizontal line + two end caps */}
             <line
               x1={errStartX}
@@ -385,6 +421,23 @@ function InspectionTimeChart() {
 export default function AnalyticsRow() {
   const rootRef = useRef<HTMLDivElement>(null)
   const inView = useInView(rootRef, { once: true, amount: 0.3 })
+  const shouldReduceMotion = useReducedMotion()
+
+  // Bar fill transition factory — DRY across the 3 charts. When the user
+  // prefers reduced motion, returns { duration: 0 } so bars render at
+  // full scale immediately with no loop. Otherwise: 1.0s ease-out fill
+  // with 50ms intra-chart stagger, infinite repeat with 6s hold between
+  // fills (LOOP_CYCLE - FILL_DURATION).
+  const barTransition = (index: number): Transition =>
+    shouldReduceMotion
+      ? { duration: 0 }
+      : {
+          duration: FILL_DURATION,
+          ease: 'easeOut' as const,
+          delay: index * FILL_STAGGER,
+          repeat: Infinity,
+          repeatDelay: LOOP_CYCLE - FILL_DURATION,
+        }
 
   return (
     <motion.div
@@ -407,19 +460,19 @@ export default function AnalyticsRow() {
           title="Weekly container repairs"
           subtitle="Last 8 weeks"
         >
-          <WeeklyChart />
+          <WeeklyChart barTransition={barTransition} shouldReduceMotion={shouldReduceMotion} />
         </ChartCard>
         <ChartCard
           title="Monthly damage by category"
           subtitle="Trailing 12 months"
         >
-          <MonthlyChart />
+          <MonthlyChart barTransition={barTransition} shouldReduceMotion={shouldReduceMotion} />
         </ChartCard>
         <ChartCard
           title="Inspection time by type"
           subtitle="Mean ± 1σ (minutes)"
         >
-          <InspectionTimeChart />
+          <InspectionTimeChart barTransition={barTransition} shouldReduceMotion={shouldReduceMotion} />
         </ChartCard>
       </div>
     </motion.div>
