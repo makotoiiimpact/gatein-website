@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { PenLine, Clock } from 'lucide-react'
 import { ContainerDamageWalkthrough } from './ContainerDamageWalkthrough'
+import AnalyticsRow from './AnalyticsRow'
 
 type DamageType = {
   label: string
@@ -262,6 +263,13 @@ export function DamageInspection() {
 
           <ContainerDamageWalkthrough />
         </motion.div>
+
+        {/* AP-3: AnalyticsPreview bottom row — three white-card charts
+            below the V6 paired layout, fronted by an "Across your fleet"
+            divider. Self-gated reveal via useInView; not coupled to the
+            walkthrough's internal scan-complete state. Mock data ships
+            first; Bernardo swaps real numbers post-launch. */}
+        <AnalyticsRow />
       </div>
     </section>
   )
