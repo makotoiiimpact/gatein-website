@@ -134,7 +134,7 @@ export function AllWeather() {
               />
             </div>
             <p className="text-slate-600 text-center">
-              Container detection
+              Container Damage Detection
             </p>
           </motion.div>
         </div>
