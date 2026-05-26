@@ -122,11 +122,11 @@ function ChartCard({
   return (
     <motion.div
       variants={childVariants}
-      className="bg-white border border-neutral-200 rounded-2xl p-4 md:p-5 shadow-sm flex flex-col gap-3"
+      className="bg-white/[0.04] border border-white/10 rounded-2xl p-4 md:p-5 flex flex-col gap-3"
     >
       <div>
-        <h3 className="text-sm font-semibold text-neutral-900">{title}</h3>
-        <p className="text-xs text-neutral-500">{subtitle}</p>
+        <h3 className="text-sm font-semibold text-white">{title}</h3>
+        <p className="text-xs text-white/60">{subtitle}</p>
       </div>
       <div className="min-h-[180px]">{children}</div>
     </motion.div>
@@ -165,7 +165,7 @@ function WeeklyChart() {
         x2={W - padR}
         y1={padT + innerH / 2}
         y2={padT + innerH / 2}
-        stroke="#E2E8F0"
+        stroke="rgba(255,255,255,0.08)"
         strokeWidth="1"
         strokeDasharray="2 2"
       />
@@ -193,7 +193,7 @@ function WeeklyChart() {
               y={H - 10}
               textAnchor="middle"
               fontSize="9"
-              fill="#64748B"
+              fill="#94A3B8"
             >
               {WEEKLY_LABELS[i]}
             </text>
@@ -272,7 +272,7 @@ function MonthlyChart() {
               y={H - 10}
               textAnchor="middle"
               fontSize="9"
-              fill="#64748B"
+              fill="#94A3B8"
             >
               {m.month}
             </text>
@@ -326,7 +326,7 @@ function InspectionTimeChart() {
               textAnchor="end"
               dominantBaseline="middle"
               fontSize="10"
-              fill="#475569"
+              fill="#CBD5E1"
               fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
             >
               {c.code}
@@ -351,7 +351,7 @@ function InspectionTimeChart() {
               x2={errEndX}
               y1={cy}
               y2={cy}
-              stroke="#475569"
+              stroke="#94A3B8"
               strokeWidth="1"
             />
             <line
@@ -359,7 +359,7 @@ function InspectionTimeChart() {
               x2={errStartX}
               y1={cy - capHalf}
               y2={cy + capHalf}
-              stroke="#475569"
+              stroke="#94A3B8"
               strokeWidth="1"
             />
             <line
@@ -367,7 +367,7 @@ function InspectionTimeChart() {
               x2={errEndX}
               y1={cy - capHalf}
               y2={cy + capHalf}
-              stroke="#475569"
+              stroke="#94A3B8"
               strokeWidth="1"
             />
           </g>
@@ -393,17 +393,12 @@ export default function AnalyticsRow() {
       variants={rootVariants}
       className="mt-16 md:mt-20"
     >
-      {/* Divider: "Across your fleet" */}
-      <motion.div
+      <motion.h3
         variants={childVariants}
-        className="flex items-center gap-4 mb-8 md:mb-10"
+        className="text-xl md:text-2xl font-semibold text-white text-center mb-8 md:mb-10"
       >
-        <div className="h-px flex-1 bg-white/15" />
-        <span className="text-xs md:text-sm tracking-[0.18em] uppercase text-white/50">
-          Across your fleet
-        </span>
-        <div className="h-px flex-1 bg-white/15" />
-      </motion.div>
+        Repair Management Dashboard Across Your Fleet
+      </motion.h3>
 
       {/* 3-card grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
