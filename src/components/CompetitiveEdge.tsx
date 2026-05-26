@@ -61,8 +61,11 @@ export function CompetitiveEdge() {
           }}
           className="mb-24 text-center max-w-3xl mx-auto">
           
+          <span className="block text-sm md:text-base font-bold tracking-[0.2em] text-[#2563EB] uppercase font-mono mb-4 md:mb-6">
+            Advanced Analytics
+          </span>
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">
-            Advanced Analytics: The only platform that reconciles physical truth across all your systems data
+            The only platform that reconciles physical truth across all your systems data
           </h2>
           <p className="text-xl text-gray-400">
             Competitors read container codes. We verify what actually happened.
