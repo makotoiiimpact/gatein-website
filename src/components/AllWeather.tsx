@@ -130,7 +130,7 @@ export function AllWeather() {
                 muted
                 playsInline
                 aria-label="Container detection demonstration at Lázaro Cárdenas, Mexico"
-                className="absolute inset-0 w-full h-full object-cover object-bottom scale-[0.82]"
+                className="absolute inset-0 w-full h-full object-cover scale-[2] origin-bottom"
               />
             </div>
             <p className="text-slate-600 text-center">
