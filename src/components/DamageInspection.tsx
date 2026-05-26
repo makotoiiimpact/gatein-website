@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { PenLine, Clock } from 'lucide-react'
+import { Clock } from 'lucide-react'
 import { ContainerDamageWalkthrough } from './ContainerDamageWalkthrough'
 import AnalyticsRow from './AnalyticsRow'
 
@@ -241,7 +241,7 @@ export function DamageInspection() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto pt-10">
             <StatPill icon={Clock} tone="manual" label="Time per audit" value="~20 minutes" />
-            <StatPill icon={PenLine} tone="manual" label="Time for image reconciliation and report generation" value="~60 minutes" />
+            <StatPill icon={Clock} tone="manual" label="Time for image reconciliation and report generation" value="~60 minutes" />
           </div>
         </motion.div>
 

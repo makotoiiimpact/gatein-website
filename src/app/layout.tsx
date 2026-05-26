@@ -120,10 +120,12 @@ const softwareApplicationSchema = {
     },
   },
   featureList: [
-    'AI-powered container code OCR — 82% faster gate processing',
-    'Real-time yard analytics with NLP queries',
-    'Automated damage detection with IICL coding',
-    'Vehicle and personnel tracking across facilities',
+    'Gate and Yard OCR — AI-powered container code reading with 82% faster gate processing',
+    'External and internal AI-assisted Damage Detection',
+    'Basic Yard Analytics — real-time customizable dashboards including detention and demurrage tracking',
+    'Advanced Yard Analytics — Agentic-AI predictive insights with Physical Truth Engine reconciliation',
+    'Natural Language Processing for Text-to-SQL queries across yard data',
+    'CEDEX and IICL damage code support',
   ],
 }
 
