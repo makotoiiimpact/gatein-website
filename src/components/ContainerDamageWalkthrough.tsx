@@ -101,12 +101,19 @@ const CAM_SETTLE = 200 // beat after camera fully in, before sweep starts
 const COLS = 8
 const ROWS = 4
 
-// Severity pill colors per the reference widget — literal hex (not in the
-// project palette; intentionally light pastels for inside the dark card).
-const SEVERITY_STYLES: Record<Zone['severity'], { bg: string; ink: string }> = {
-  major: { bg: '#FCEBEB', ink: '#791F1F' },
-  moderate: { bg: '#FAEEDA', ink: '#633806' },
-  minor: { bg: '#EAF3DE', ink: '#27500A' },
+// Severity color tokens. Two ink variants because the same severity color
+// appears in two different lighting contexts:
+//   `ink`       — for the inspection card severity PILL (dark text on the
+//                 light pastel `bg` — high contrast that way).
+//   `inkBright` — for the persistent summary card severity ROWS, which sit
+//                 on the dark walkthrough bg. The deep wine/brown/forest inks
+//                 read as dim/muddy on the dark card; the bright variant
+//                 (Tailwind 400-tier dark-mode severity convention) reads
+//                 cleanly against the dark teal-tinted backdrop. F13.
+const SEVERITY_STYLES: Record<Zone['severity'], { bg: string; ink: string; inkBright: string }> = {
+  major:    { bg: '#FCEBEB', ink: '#791F1F', inkBright: '#F87171' }, // red-400
+  moderate: { bg: '#FAEEDA', ink: '#633806', inkBright: '#FBBF24' }, // amber-400
+  minor:    { bg: '#EAF3DE', ink: '#27500A', inkBright: '#4ADE80' }, // green-400
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -781,11 +788,11 @@ export function ContainerDamageWalkthrough() {
                 <span
                   aria-hidden
                   className="inline-block w-2 h-2 rounded-full shrink-0"
-                  style={{ background: sev.ink }}
+                  style={{ background: sev.inkBright }}
                 />
                 <span
                   className="uppercase text-[11px] tracking-wider shrink-0 font-semibold"
-                  style={{ color: sev.ink }}
+                  style={{ color: sev.inkBright }}
                 >
                   {zone.severity}
                 </span>
