@@ -134,7 +134,7 @@ export function AllWeather() {
               />
             </div>
             <p className="text-slate-600 text-center">
-              Container detection — Lázaro Cárdenas
+              Container detection
             </p>
           </motion.div>
         </div>
