@@ -3,9 +3,10 @@
 /**
  * AP-3 — AnalyticsPreview bottom row inside V6 DamageInspection.
  *
- * Three white-card chart row below the V6 walkthrough, fronted by an
- * "Across your fleet" divider. Self-gated reveal via useInView (no
- * parent-state coupling), staggered fade + slide-up via Framer Motion.
+ * Three dark translucent chart cards below the V6 walkthrough, fronted by
+ * a "Repair Management Dashboard Across Your Fleet" heading. Self-gated
+ * reveal via useInView (no parent-state coupling), staggered fade + slide-up
+ * via Framer Motion.
  *
  * Mock data ships first; Bernardo will swap to real numbers in a
  * follow-up commit after preview-deploy review.
@@ -238,7 +239,7 @@ function MonthlyChart() {
         x2={W - padR}
         y1={padT + innerH / 2}
         y2={padT + innerH / 2}
-        stroke="#E2E8F0"
+        stroke="rgba(255,255,255,0.08)"
         strokeWidth="1"
         strokeDasharray="2 2"
       />
