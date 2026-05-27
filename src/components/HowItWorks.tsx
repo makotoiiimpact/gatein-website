@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { Camera, Cpu } from 'lucide-react';
+import DashboardPreviewRow from './DashboardPreviewRow';
 
 /**
  * "From camera to dashboard in under 2 seconds" — 4-step pipeline.
@@ -397,6 +398,7 @@ export function HowItWorks() {
           </div>
         </div>
       </div>
+      <DashboardPreviewRow />
     </section>
   );
 }
