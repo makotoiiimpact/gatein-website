@@ -28,9 +28,9 @@ export default function Home() {
         <HowItWorks />
         <GateScanVisualization />
         <DroneScanVisualization />
+        <AllWeather />
         <DamageInspection />
         <CompetitiveEdge />
-        <AllWeather />
         <FloatingMarkets />
         <Team />
         {/* Hidden per client feedback Apr 26 2026 */}
