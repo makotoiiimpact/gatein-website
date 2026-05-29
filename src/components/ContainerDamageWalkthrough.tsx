@@ -6,8 +6,6 @@
  * Zone classification codes and severity wording are mocked-plausible,
  * pending verification against Bernardo's IICL ECS output.
  * Photo URLs land in a follow-up commit.
- *
- * See: /docs/v6-reference-widget.html for behavior reference
  */
 
 import React, { useEffect, useRef, useState } from 'react'

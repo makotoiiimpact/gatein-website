@@ -10,6 +10,7 @@ Marketing website for GateIn AI. Single-page Next.js app deployed to Vercel, ser
 - **Language:** TypeScript (strict mode)
 - **Styling:** Tailwind CSS 3.4.17 (default breakpoints)
 - **Animation:** framer-motion 12.6.0
+- **3D rendering:** three.js (WebGL) — used only in `ContainerDamageWalkthrough.tsx` for the damage scan visualization
 - **Icons:** lucide-react
 - **Hosting:** Vercel (auto-deploy on push to `main`)
 - **Package manager:** npm (has `package-lock.json`)
@@ -55,7 +56,7 @@ src/
 │   ├── AllWeather.tsx
 │   ├── DamageInspection.tsx  # Renders AnalyticsRow inline
 │   ├── AnalyticsRow.tsx
-│   ├── Container3D.tsx       # Scroll-pinned 3D container scene
+│   ├── ContainerDamageWalkthrough.tsx  # Three.js 3D damage walkthrough (used by DamageInspection)
 │   ├── CompetitiveEdge.tsx
 │   ├── FloatingMarkets.tsx
 │   ├── Team.tsx
@@ -105,26 +106,18 @@ Reordering sections does not break nav links.
 
 ### Animation system
 
-Two reveal patterns in use:
+Two animation patterns in use:
 
-1. **Standard reveal** — `useInView({ once: true, amount: 0.3 })` + framer-motion variants with `staggerChildren`. Used in almost every section.
-2. **Scroll-pinned scrubbing** — Only in `Container3D.tsx`. Uses `useScroll({ target: sectionRef, offset: ['start start', 'end end'] })` with a `h-[240vh]` outer + `sticky top-0 h-screen` inner. The 3D container scene scrubs through phases as the section scrolls.
+1. **Reveal animations** — `useInView({ once: true, amount: 0.3 })` + framer-motion variants with `staggerChildren`. Used in almost every section for entrance animations.
+2. **WebGL 3D walkthrough** — `ContainerDamageWalkthrough.tsx` uses Three.js to render an interactive 3D container model with damage-zone hotspots. Imperative animation (not scroll-scrubbed); heaviest individual component in the bundle.
 
 `useReducedMotion` is honored in `AnalyticsRow` and `DashboardPreviewRow` — animations short-circuit to static end-state for users with reduced-motion preference.
-
-### Container3D fragility (read before touching)
-
-`Container3D.tsx` uses `useScroll` mapping `scrollYProgress` to opacity/transform windows for phase reveals (Phase 1/2/3 captions, damage labels, etc.). This mapping is empirically fragile — narrow opacity windows (`[0.42, 0.50, 0.62, 0.66]`) can fail to render visibly on different viewport heights because the live progress value doesn't align cleanly with the visual pin position.
-
-**Workaround currently shipped:** widen opacity windows to ~0.05–0.07 progress range (~7–10vh of pin visibility) rather than narrow ~0.04 blinks. Standing rule: any new reveal in this component needs a window ≥ 0.05 progress.
-
-**Deferred refactor:** Re-architect Phase-2 reveals off `scrollYProgress` onto time/intersection-based triggers (e.g., fire sequence on `useInView` of the pinned interior). Scoped as a substantial refactor; not done. See "Known Follow-ups" below.
 
 ### Design tokens
 
 No formal design system file. Colors and typography conventions live inline in components, but follow these patterns:
 
-- **Dark sections** (`#0A0F1A`, `#0A1628`): Container3D, DamageInspection
+- **Dark sections** (`#0A0F1A`, `#0A1628`): DamageInspection (via ContainerDamageWalkthrough), HowItWorks
 - **Card chrome on dark:** `bg-white/[0.04] border-white/10 rounded-2xl`
 - **Brand blue accent:** `#2563EB` — used in eyebrows (PainPoints, CompetitiveEdge), accent borders
 - **Severity tokens (bright for dark bg):** `#F87171` (red) / `#FBBF24` (amber) / `#4ADE80` (green)
@@ -211,30 +204,28 @@ Items deferred from the launch sprint, in rough priority order:
 
 4. **JSON-LD `featureList` alignment** — `src/app/layout.tsx` `featureList` was rewritten in the F16 batch to match the 4-tile product structure. Verify after any future Products changes.
 
-5. **Container3D Phase-2 reveal refactor** — Move reveal triggers off `scrollYProgress` onto time/intersection-based triggers for reliability across viewport heights. See "Container3D fragility" above.
+5. **Real fleet numbers for AnalyticsRow + DashboardPreviewRow** — Both components currently use mock data. The components are designed for single-file data swap (data arrays at top of file). Bernardo flagged this for follow-up.
 
-6. **Real fleet numbers for AnalyticsRow + DashboardPreviewRow** — Both components currently use mock data. The components are designed for single-file data swap (data arrays at top of file). Bernardo flagged this for follow-up.
+6. **F19 chart 1 title style** — `DashboardPreviewRow.tsx` line ~430 reads "Accumulated Detention&Demurrage Total Days Count" (no spaces, literal `&`); chart 2 reads "Accumulated Detention and Demurrage Cost" (spelled "and"). Stylistic inconsistency — recommend harmonizing to chart 2's pattern.
 
-7. **F19 chart 1 title style** — `DashboardPreviewRow.tsx` line ~430 reads "Accumulated Detention&Demurrage Total Days Count" (no spaces, literal `&`); chart 2 reads "Accumulated Detention and Demurrage Cost" (spelled "and"). Stylistic inconsistency — recommend harmonizing to chart 2's pattern.
+7. **Asset compression pass** — `public/assets/team/anton.jpg` is 386 KB; `bernardo.jpg` is ~6 MB. Both exceed typical headshot ceilings. Compress in a maintenance pass.
 
-8. **Asset compression pass** — `public/assets/team/anton.jpg` is 386 KB; `bernardo.jpg` is ~6 MB. Both exceed typical headshot ceilings. Compress in a maintenance pass.
+8. **Page bytes monitoring** — Production `/` at 169 KB HTML / 369 kB First Load JS. Below the ~250–300 KB threshold where `dynamic({ ssr: false })` lazy-loading of below-fold components (`AnalyticsRow`, `DashboardPreviewRow`) becomes worth considering.
 
-9. **Page bytes monitoring** — Production `/` at 169 KB HTML / 369 kB First Load JS. Below the ~250–300 KB threshold where `dynamic({ ssr: false })` lazy-loading of below-fold components (`AnalyticsRow`, `DashboardPreviewRow`) becomes worth considering.
-
-10. **Dependency major-version bumps** — Next 15 → 16, Tailwind 3 → 4, TypeScript 5 → 6 not yet attempted. None blocking.
+9. **Dependency major-version bumps** — Next 15 → 16, Tailwind 3 → 4, TypeScript 5 → 6 not yet attempted. None blocking.
 
 ---
 
 ## Component Notes
 
-### `Container3D.tsx`
-Scroll-pinned 3D container scene. CSS-3D (not WebGL). The container "explodes" into panels mid-scroll, revealing damage labels. See "Container3D fragility" above before modifying reveal timing.
+### `ContainerDamageWalkthrough.tsx`
+Three.js-based interactive 3D container with damage zone hotspots. Renders a corrugated container model; users navigate damage zones via interactive walkthrough. Heaviest single component in the bundle. Read this component carefully before adjusting damage scan UX — it owns the walkthrough state machine.
 
 ### `AnalyticsRow.tsx` + `DashboardPreviewRow.tsx`
 Inline-SVG chart components. Both use a synchronized 7-second loop pattern (`LOOP_CYCLE = 7s`) with `useReducedMotion` short-circuit. Mock data lives at the top of each file with comment markers for real-data swap.
 
 ### `DamageInspection.tsx`
-Renders the BEFORE/AFTER damage scan walkthrough. The interactive walkthrough state (hotspots, scan progress) lives in `ContainerDamageWalkthrough.tsx` (child component) — `DamageInspection.tsx` itself is stateless.
+Renders the BEFORE/AFTER damage scan walkthrough. The interactive 3D state (hotspots, scan progress, damage zones) lives in `ContainerDamageWalkthrough.tsx` (Three.js child component) — `DamageInspection.tsx` itself is stateless and acts as the section wrapper.
 
 ### `Products.tsx`
 Currently 4 tiles. Section-level background image crossfades on tile hover (not per-tile rendering). Add hover images by populating the `hoverImage` field on the Product object.
